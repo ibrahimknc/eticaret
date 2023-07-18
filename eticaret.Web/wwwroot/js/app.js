@@ -22,7 +22,7 @@
                     else {
                         vba.alert({
                             message: res.message == "" ? "İşlem Başarılı" : res.message,
-                            classes: 'alert-success'
+                            classes: 'alert-danger'
                         });
                         window.location.href = '/';
                     }
