@@ -1,0 +1,47 @@
+﻿<!-- Breadcrumb -->
+<div id="breadcrumb">
+	<div class="container">
+		<h2 class="title">Hesap Oluştur</h2>
+
+		<ul class="breadcrumb">
+			<li><a href="/" title="Ana Sayfa">Ana Sayfa</a></li>
+			<li><span>Hesap Oluştur</span></li>
+		</ul>
+	</div>
+</div>
+
+
+<div class="container">
+	<div class="register-page">
+		<div class="register-form form">
+			<div class="block-title">
+				<h2 class="title"><span>Hesap Oluştur</span></h2>
+			</div> 
+			<form method="post" onsubmit="vba.route.ccnt.funcs.updateItem(this);return false" enctype="multipart/form-data">
+				<div class="form-group">
+					<label>Adı</label>
+					<input type="text" value="" name="firstName">
+				</div>
+
+				<div class="form-group">
+					<label>Soyadı</label>
+					<input type="text" value="" name="lastName">
+				</div>
+
+				<div class="form-group">
+					<label>Email</label>
+					<input type="email" value="" name="email">
+				</div>
+
+				<div class="form-group">
+					<label>Şifre</label>
+					<input type="password" value="" name="password">
+				</div>
+
+				<div class="form-group text-center">
+					<input type="submit" class="btn btn-primary" value="Kayıt Ol">
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

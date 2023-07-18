@@ -1,0 +1,48 @@
+﻿<div id="breadcrumb">
+	<div class="container">
+		<h2 class="title">Giriş</h2>
+
+		<ul class="breadcrumb">
+			<li><a href="/" title="Home">Ana Sayfa</a></li>
+			<li><span>Giriş</span></li>
+		</ul>
+	</div>
+</div>
+
+
+<div class="container">
+	<div class="login-page">
+		<div class="login-form form">
+			<div class="block-title">
+				<h2 class="title"><span>Giriş</span></h2>
+			</div>
+
+			<form method="post" onsubmit="vba.route.ccnt.funcs.updateItem(this);return false" enctype="multipart/form-data">
+				<div class="form-group">
+					<label>Email</label>
+					<input type="email" value="" name="email">
+				</div>
+
+				<div class="form-group">
+					<label>Şifre</label>
+					<input type="password" value="" name="password">
+				</div>
+
+				<div class="form-group text-center">
+					<div class="link">
+						<a href="#">
+							Parolanızı mı unuttunuz?
+						</a>
+						<a href="/register">
+							Hesabınız varmı? Kayıt Ol
+						</a>
+					</div>
+				</div>
+
+				<div class="form-group text-center">
+					<input type="submit" class="btn btn-primary" value="Giriş Yap">
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
