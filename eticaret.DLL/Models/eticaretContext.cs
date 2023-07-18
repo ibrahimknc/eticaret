@@ -23,6 +23,7 @@ namespace eticaret.DLL.Models
         public virtual DbSet<product> products { get; set; }
         public virtual DbSet<productsIMG> productsIMGs { get; set; }
         public virtual DbSet<setting> settings { get; set; }
+        public virtual DbSet<slider> sliders { get; set; }
         public virtual DbSet<user> users { get; set; }
         public virtual DbSet<userFavorite> userFavorites { get; set; }
         public virtual DbSet<viewsFavorite> viewsFavorites { get; set; }
@@ -102,6 +103,13 @@ namespace eticaret.DLL.Models
                     .IsFixedLength(true);
 
                 entity.Property(e => e.title).HasMaxLength(250);
+            });
+
+            modelBuilder.Entity<slider>(entity =>
+            {
+                entity.Property(e => e.image).HasMaxLength(500);
+
+                entity.Property(e => e.title).HasMaxLength(50);
             });
 
             modelBuilder.Entity<user>(entity =>

@@ -261,6 +261,7 @@
     controller: {
         "/": {
             load: function () {
+
                 vba.root.changeLoading(false);
             }
         },
