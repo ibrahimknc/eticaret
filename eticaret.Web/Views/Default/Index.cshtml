@@ -53,91 +53,16 @@
                         <h2 class="title">Kategoriler</h2>
                     </div>
 
-                    <div class="block-content">
-                        <div class="item">
-                            <span class="arrow collapsed" data-toggle="collapse" data-target="#vegetables" aria-expanded="false" role="button">
-                                <i class="fa fa-angle-down" aria-hidden="true"></i>
-                                <i class="fa fa-angle-right" aria-hidden="true"></i>
-                            </span>
+                    <div class="block-content"> 
 
-                            <a class="category-title" href="product-grid-left-sidebar.html">Vegetables</a>
-                            <div class="sub-category collapse" id="vegetables" aria-expanded="true" role="main">
-                                <div class="item">
-                                    <a href="product-grid-left-sidebar.html">Tomato</a>
-                                </div>
-                                <div class="item">
-                                    <a href="product-grid-left-sidebar.html">Broccoli</a>
-                                </div>
-                                <div class="item">
-                                    <a href="product-grid-left-sidebar.html">Cabbage</a>
-                                </div>
-                                <div class="item">
-                                    <a href="product-grid-left-sidebar.html">Cucumber</a>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="item">
-                            <span class="arrow collapsed" data-toggle="collapse" data-target="#fruits" aria-expanded="false" role="button">
-                                <i class="fa fa-angle-down" aria-hidden="true"></i>
-                                <i class="fa fa-angle-right" aria-hidden="true"></i>
-                            </span>
-
-                            <a class="category-title" href="product-grid-left-sidebar.html">Fruits</a>
-                            <div class="sub-category collapse" id="fruits" aria-expanded="true" role="main">
-                                <div class="item">
-                                    <a href="product-grid-left-sidebar.html">Orange</a>
-                                </div>
-                                <div class="item">
-                                    <a href="product-grid-left-sidebar.html">Apple</a>
-                                </div>
-                                <div class="item">
-                                    <a href="product-grid-left-sidebar.html">Banana</a>
-                                </div>
-                                <div class="item">
-                                    <a href="product-grid-left-sidebar.html">Strawberry</a>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="item">
-                            <span class="arrow collapsed" data-toggle="collapse" data-target="#juices" aria-expanded="false" role="button">
-                                <i class="fa fa-angle-down" aria-hidden="true"></i>
-                                <i class="fa fa-angle-right" aria-hidden="true"></i>
-                            </span>
-
-                            <a class="category-title" href="product-grid-left-sidebar.html">Juices</a>
-                            <div class="sub-category collapse" id="juices" aria-expanded="true" role="main">
-                                <div class="item">
-                                    <a href="product-grid-left-sidebar.html">Orange Juices</a>
-                                </div>
-                                <div class="item">
-                                    <a href="product-grid-left-sidebar.html">Tomato Juices</a>
-                                </div>
-                                <div class="item">
-                                    <a href="product-grid-left-sidebar.html">Apple Juices</a>
-                                </div>
-                                <div class="item">
-                                    <a href="product-grid-left-sidebar.html">Peaches Juices</a>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="item">
-                            <a class="category-title" href="product-grid-left-sidebar.html">Tea and Coffee</a>
-                        </div>
-
-                        <div class="item">
-                            <a class="category-title" href="product-grid-left-sidebar.html">Jam</a>
-                        </div>
-
-                        <div class="item">
-                            <a class="category-title" href="product-grid-left-sidebar.html">SeaFood</a>
-                        </div>
-
-                        <div class="item">
-                            <a class="category-title" href="product-grid-left-sidebar.html">Fresh Meats</a>
-                        </div>
+                        @foreach (var item in (List<viewsCategory>)response.geCategories())
+                        { 
+                            <div class="item">
+                                <span class="arrow categoriesCountBox">@item.productCount</span>
+                                <a class="category-title" href="/categories/list?id=@item.id">@item.name</a>
+                            </div> 
+                        } 
+                      
                     </div>
                 </div>
 

@@ -84,3 +84,15 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
+
+.categoriesCountBox {
+    width: auto !important;
+    background-color: #3ba66b !important;
+    padding: 0 10px !important;
+    border-radius: 15px 0px 0px 15px !important;
+    color: white !important;
+    font-weight: 600 !important;
+    opacity: 0.65 !important;
+    cursor: default !important;
+    transform: translate(14px, 4px) !important;
+}

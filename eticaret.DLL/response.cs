@@ -37,5 +37,16 @@ public class response
         }
         return response;
     }
+
+    public static List<viewsCategory> geCategories()
+    {
+        List<viewsCategory> response = new List<viewsCategory> { };
+        using (eticaretContext ec = new eticaretContext())
+        {
+            // Burada aktif olan tüm kategorileri ve her kategoriden kaç tane ürün olduğunu getirir(db de views yazıldı)
+            response = ec.viewsCategories.AsQueryable().ToList();
+        }
+        return response;
+    }
 }
 

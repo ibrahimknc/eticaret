@@ -17,6 +17,7 @@ namespace eticaret.DLL.Models
         {
         }
 
+        public virtual DbSet<bulletin> bulletins { get; set; }
         public virtual DbSet<category> categories { get; set; }
         public virtual DbSet<log> logs { get; set; }
         public virtual DbSet<logType> logTypes { get; set; }
@@ -26,6 +27,7 @@ namespace eticaret.DLL.Models
         public virtual DbSet<slider> sliders { get; set; }
         public virtual DbSet<user> users { get; set; }
         public virtual DbSet<userFavorite> userFavorites { get; set; }
+        public virtual DbSet<viewsCategory> viewsCategories { get; set; }
         public virtual DbSet<viewsFavorite> viewsFavorites { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -40,6 +42,15 @@ namespace eticaret.DLL.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
+
+            modelBuilder.Entity<bulletin>(entity =>
+            {
+                entity.ToTable("bulletin");
+
+                entity.Property(e => e.creatingDate).HasColumnType("smalldatetime");
+
+                entity.Property(e => e.email).HasMaxLength(50);
+            });
 
             modelBuilder.Entity<category>(entity =>
             {
@@ -130,6 +141,15 @@ namespace eticaret.DLL.Models
             modelBuilder.Entity<userFavorite>(entity =>
             {
                 entity.Property(e => e.creatingDate).HasColumnType("smalldatetime");
+            });
+
+            modelBuilder.Entity<viewsCategory>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToView("viewsCategories");
+
+                entity.Property(e => e.name).HasMaxLength(50);
             });
 
             modelBuilder.Entity<viewsFavorite>(entity =>
