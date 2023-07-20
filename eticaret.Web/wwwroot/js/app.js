@@ -401,8 +401,10 @@
             load: function () {
                 vba.route.ccnt.items.filterForm = {};
                 vba.route.ccnt.items.filterForm.page = 1;
-                vba.route.ccnt.items.filterForm.itemsPerPage = 2;
+                vba.route.ccnt.items.filterForm.itemsPerPage = 5;
                 vba.route.ccnt.items.filterForm.totalItems = 0;
+                vba.route.ccnt.items.filterForm.price = "";
+                vba.route.ccnt.items.filterForm.listSorting = 0;
                 vba.route.ccnt.items.filterForm.id = 0;
                 vba.route.ccnt.items.filterForm.defaultProductsGrid = "";
 
@@ -416,6 +418,8 @@
                     vba.route.ccnt.items.filterForm.id = cid;
 
                     var post = {
+                        price: vba.route.ccnt.items.filterForm.price,
+                        listSorting: vba.route.ccnt.items.filterForm.listSorting,
                         search: $("#searchForm input[type='text']").val(),
                         page: vba.route.ccnt.items.filterForm.page,
                         itemsPerPage: vba.route.ccnt.items.filterForm.itemsPerPage,
@@ -435,6 +439,11 @@
                             if (res.data.length > 0) {
                                 var tmpl = "binditems";
                                 $("#pages_placeholder .dataContainer").append(vba.compileTemp(vba.route.ccnt.items[tmpl], res.data));
+
+                                $.each(res.tags, function (index, item) {
+                                    $("#tagsContainer").append("<li><a href=\"#\" title=\"" + item.split(",")[0] + "\">" + item.split(",")[0] + "</a></li> ")
+                                });
+
 
                             } else {
                                 $("#pages_placeholder .dataContainer").html(" <div class='col-lg-12 mb-3'> <div class='row g-0 bg-light py-4'><div class='col-md-12 d-flex align-items-center justify-content-center'> 😔 Üzgünüm, talebinizle eşleşen birşey bulamadık 😔</div></div></div>").hide();
@@ -456,24 +465,37 @@
                 }
                 vba.route.ccnt.funcs.getItems();
 
+                vba.route.ccnt.funcs.filterOperations = function () {
+
+                    vba.route.ccnt.items.filterForm.price = $("#price-filter").val();
+                    vba.route.ccnt.funcs.getItems();
+                }
+
+                $('#listSorting').change(function () {
+                    vba.route.ccnt.items.filterForm.listSorting = this.value;
+                    vba.route.ccnt.items.filterForm.page = 1;
+                    vba.route.ccnt.funcs.getItems();
+                });
+
                 vba.route.ccnt.funcs.getProductsGrid = function () {
                     if (vba.route.ccnt.items.filterForm.defaultProductsGrid != "") {
                         $("#gridProductButton").addClass("active");
                         $("#listProductButton").removeClass("active");
                         $("#products-grid").html(vba.route.ccnt.items.filterForm.defaultProductsGrid);
-                    } 
+                    }
                 }
                 vba.route.ccnt.funcs.getProductsList = function () {
                     $("#gridProductButton").removeClass("active");
                     $("#listProductButton").addClass("active");
-                    vba.route.ccnt.items.filterForm.defaultProductsGrid = $("#products-grid").html(); 
-                    var data = $(".dataContainer").html(); 
+                    vba.route.ccnt.items.filterForm.defaultProductsGrid = $("#products-grid").html();
+                    var data = $(".dataContainer").html();
                     $(".dataContainer").removeClass("row");
                     $(".products-block").addClass("layout-5");
                     $(".dataContainer").html("<div class=\"product-item\"> <div class=\"row\">" + data + "</div> </div>");
 
                 }
 
+                $.getScript("/js/main.js", function () { }); //Template CSS
                 vba.root.changeLoading(false);
 
             }

@@ -18,7 +18,7 @@
 				<!-- Block - Filter -->
 				<div class="block product-filter">
 					<h3 class="block-title">Ürün Filtrele</h3>
-
+					<hr class="hrStyle-seven" />
 					<div class="block-content">
 						<div class="filter-item">
 							<h3 class="filter-title">Categories</h3>
@@ -108,7 +108,7 @@
 								<div id="slider-range" class="tiva-filter">
 									<div class="filter-item price-filter">
 										<div class="layout-slider">
-											<input id="price-filter" name="price" value="0;100" />
+											<input id="price-filter" name="price" value="0;10000" />
 										</div>
 										<div class="layout-slider-settings"></div>
 									</div>
@@ -158,26 +158,23 @@
 								</div>
 							</div>
 						</div>
+						<div class="filter-item" style="margin-top:150px"> 
+							<div class="block-content" >
+								<hr class="hrStyle-seven" />
+							<div class="form-group text-center">
+									<button class="btn btn-primary" onclick="vba.route.ccnt.funcs.filterOperations(); return false;">Filtrele</button>
+							</div>
+							</div>
+						</div>
 					</div>
 				</div>
 
 				<!-- Product Tags -->
 				<div class="block tags product-tags">
-					<h3 class="block-title">Product Tags</h3>
+					<h3 class="block-title">ÜRÜN ETİKETLERİ</h3>
 
 					<div class="block-content">
-						<ul>
-							<li><a href="#" title="Show products matching tag Hot Trend">Hot Trend</a></li>
-							<li><a href="#" title="Show products matching tag Jewelry">Jewelry</a></li>
-							<li><a href="#" title="Show products matching tag Man">Man</a></li>
-							<li><a href="#" title="Show products matching tag Party">Party</a></li>
-							<li><a href="#" title="Show products matching tag SamSung">SamSung</a></li>
-							<li><a href="#" title="Show products matching tag Shirt Dresses">Shirt Dresses</a></li>
-							<li><a href="#" title="Show products matching tag Shoes">Shoes</a></li>
-							<li><a href="#" title="Show products matching tag Summer">Summer</a></li>
-							<li><a href="#" title="Show products matching tag Sweaters">Sweaters</a></li>
-							<li><a href="#" title="Show products matching tag Winter">Winter</a></li>
-							<li><a href="#" title="Show products matching tag Woman">Woman</a></li>
+						<ul id="tagsContainer" > 
 						</ul>
 					</div>
 				</div>
@@ -205,28 +202,16 @@
 								<div class="filter-bar">
 									<form action="#" class="pull-right">
 										<div class="select">
-											<select class="form-control">
-												<option value="">Sort By</option>
-												<option value="1">Price: Lowest first</option>
-												<option value="2">Price: Highest first</option>
-												<option value="3">Product Name: A to Z</option>
-												<option value="4">Product Name: Z to A</option>
-												<option value="5">In stock</option>
+											<select class="form-control" id="listSorting" >
+												<option value="0">Önerilen Sıralama</option>
+												<option value="1">Fiyat: Önce en düşük</option>
+												<option value="2">Fiyat: Önce en yüksek</option>
+												<option value="3">Ürün Adı: A'dan Z'ye</option>
+												<option value="4">Ürün Adı: Z'den A'ya</option>
+												<option value="5">Stokta var</option>
 											</select>
 										</div>
-									</form>
-									<form action="#" class="pull-right">
-										<div class="select">
-											<select class="form-control">
-												<option value="">Relevance</option>
-												<option value="1">Price: Lowest first</option>
-												<option value="2">Price: Highest first</option>
-												<option value="3">Product Name: A to Z</option>
-												<option value="4">Product Name: Z to A</option>
-												<option value="5">In stock</option>
-											</select>
-										</div>
-									</form>
+									</form> 
 								</div>
 							</div>
 						</div>
@@ -260,8 +245,8 @@
 											</div>
 
 											<div class="product-price">
-												<span class="sale-price">{{item.salePrice}}</span>
-												<span class="base-price">{{item.basePrice}}</span>
+												<span class="sale-price">{{item.salePrice}} &#x20BA;</span>
+												<span class="base-price">{{item.basePrice}} &#x20BA;</span>
 											</div>
 
 											<div class="product-buttons">
