@@ -27,7 +27,7 @@ namespace eticaret.Web.Controllers.api
 					}
 
 					var query = ec.products.Where(x =>
-					(listSorting == 0 | (listSorting == 5 && x.stock > 0)) &
+					(listSorting <=4 | (listSorting == 5 && x.stock > 0)) &
 					(filterPrice == false | (filterPrice == true & x.salePrice >= startingPrice & x.salePrice <= endPrice)) &
 					x.isActive == true &
 					x.categoriID == id &

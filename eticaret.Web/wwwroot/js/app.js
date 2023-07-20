@@ -371,7 +371,7 @@
         "/register": {
             load: function () {
                 vba.route.ccnt.funcs.updateItem = function (form) {
-                    vba.root.changeLoading(true);
+                   
                     $.post("/api/user/register", $(form).serialize()
                     ).done(function (res) {
                         if (res.type == "error") {
@@ -379,7 +379,7 @@
                                 message: res.message == '' ? "İşlem Başarısız" : res.message,
                                 classes: 'alert-danger'
                             });
-                            vba.root.checkLogin();
+                            vba.root.changeLoading(false);
                         } else {
                             vba.alert({
                                 message: res.message == '' ? "İşlem Başarılı" : res.message,
