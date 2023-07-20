@@ -442,8 +442,7 @@
 
                                 $.each(res.tags, function (index, item) {
                                     $("#tagsContainer").append("<li><a href=\"#\" title=\"" + item.split(",")[0] + "\">" + item.split(",")[0] + "</a></li> ")
-                                });
-
+                                }); 
 
                             } else {
                                 $("#pages_placeholder .dataContainer").html(" <div class='col-lg-12 mb-3'> <div class='row g-0 bg-light py-4'><div class='col-md-12 d-flex align-items-center justify-content-center'> 😔 Üzgünüm, talebinizle eşleşen birşey bulamadık 😔</div></div></div>").hide();
@@ -492,7 +491,6 @@
                     $(".dataContainer").removeClass("row");
                     $(".products-block").addClass("layout-5");
                     $(".dataContainer").html("<div class=\"product-item\"> <div class=\"row\">" + data + "</div> </div>");
-
                 }
 
                 $.getScript("/js/main.js", function () { }); //Template CSS
