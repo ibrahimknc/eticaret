@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
+using System; 
 using System.Linq;
 using System.Reflection;
 
@@ -17,7 +17,7 @@ namespace eticaret.Web.Controllers.api
 		{
 			try
 			{
-				using (eticaretContext ec = new eticaretContext())
+				using (dbeticaretContext ec = new dbeticaretContext())
 				{
 					var clUsers = ec.users;
 					try
@@ -32,9 +32,14 @@ namespace eticaret.Web.Controllers.api
 						}
 						if (!veriyoneticisi.passwordChecker(password))
 						{
-							return Ok(new { type = "error", message = "Şifre en az bir büyük harf, bir küçük harf ve rakam içermelidir." }); ;
+							return Ok(new { type = "error", message = "Şifrenin en az 8 karakter uzunluğunda olması, en az bir büyük harf, en az bir küçük harf ve en az bir rakam içermesi gerekmektedir." }); ;
 						}
-						user u = new user()
+						if (!veriyoneticisi.emailChecker(email))
+						{
+							return Ok(new { message = "Lütfen geçerli bir Mail adresi giriniz.", type = "error" });
+						}
+
+							user u = new user()
 						{
 							firstName = firstName,
 							lastName = lastName,
@@ -60,51 +65,59 @@ namespace eticaret.Web.Controllers.api
 		public IActionResult login([FromForm] string email, [FromForm] string password)
 		{
 
-			if (HttpContext.Session.GetString("login") == "true")
+			 if (HttpContext.Session.GetString("login") == "true")
 			{
 				return Ok(new { message = "", type = "success" });
 			}
 			else if (!string.IsNullOrEmpty(email) && !string.IsNullOrEmpty(password))
 			{
-				using (eticaretContext ec = new eticaretContext())
+				if(veriyoneticisi.emailChecker(email))
 				{
-					var clUser = ec.users;
-					var selUser = clUser.AsQueryable().FirstOrDefault(x => x.email == email && x.password == veriyoneticisi.MD5Hash(password));
-
-					if (selUser != null)
+					using (dbeticaretContext ec = new dbeticaretContext())
 					{
-						if (selUser.isActive == true)
+						var clUser = ec.users; 
+						var selUser = clUser.AsQueryable().FirstOrDefault(x => x.email == email && x.password == veriyoneticisi.MD5Hash(password));
+
+						if (selUser != null)
 						{
-							operations.log(HttpContext, selUser.id, 1, "Kullanıcı Giriş Yaptı.");
-							ec.Database.ExecuteSqlRaw("Update users set lastLoginDate={1} where id={0}", selUser.id, DateTime.Now);
-							
-							HttpContext.Session.SetString("id", selUser.id.ToString());
-							HttpContext.Session.SetString("login", "true");
-							var setData = refreshAndGetLogin(HttpContext);
-							if (setData != null)
+							if (selUser.isActive == true)
 							{
-								return Ok(new { message = "İşlem başarılı! Hoşgeldiniz.", type = "success" });
+								operations.log(HttpContext, selUser.id, 1, "Kullanıcı Giriş Yaptı.");
+								ec.Database.ExecuteSqlRaw("Update users set lastLoginDate={1} where id={0}", selUser.id, DateTime.Now);
+
+								HttpContext.Session.SetString("id", selUser.id.ToString());
+								HttpContext.Session.SetString("login", "true");
+								var setData = refreshAndGetLogin(HttpContext);
+								if (setData != null)
+								{
+									return Ok(new { message = "İşlem başarılı! Hoşgeldiniz.", type = "success" });
+								}
+								else
+								{
+									return Ok(new { message = "İşlem Başarısız", type = "error" });
+								}
+
 							}
 							else
 							{
-								return Ok(new { message = "İşlem Başarısız", type = "error" });
+								return Ok(new { message = "Üzgünüz Banlandınız.", type = "error" });
 							}
-
 						}
 						else
 						{
-							return Ok(new { message = "Üzgünüz Banlandınız", type = "error" });
+							return Ok(new { message = "Yanlış kullanıcı adı şifre.", type = "error" });
 						}
 					}
-					else
-					{
-						return Ok(new { message = "Yanlış kullanıcı adı şifre", type = "error" });
-					}
 				}
+				else
+				{
+					return Ok(new { message = "Lütfen geçerli bir Mail adresi giriniz.", type = "error" });
+				}
+
 			}
 			else
 			{
-				return Ok(new { message = "Lütfen Boş Bırakmayınız", type = "error" });
+				return Ok(new { message = "Lütfen Boş Bırakmayınız.", type = "error" });
 			}
 		}
 
@@ -113,7 +126,7 @@ namespace eticaret.Web.Controllers.api
 			if (!string.IsNullOrEmpty(context.Session.GetString("login")))
 			{
 				int aid = int.Parse(context.Session.GetString("id"));
-				using (eticaretContext ec = new eticaretContext())
+				using (dbeticaretContext ec = new dbeticaretContext())
 				{
 					var clAccounts = ec.users;
 					var response = clAccounts.AsQueryable().Where(x => x.id == aid).Take(1).ToList();
@@ -158,7 +171,7 @@ namespace eticaret.Web.Controllers.api
 					return Ok(new { type = "success", message = "Çıkış işlemi başarılı." });
 				}
 			}
-			catch { }
+			catch { } 
 			return Ok(new { type = "error", message = "" });
 		}
 	}

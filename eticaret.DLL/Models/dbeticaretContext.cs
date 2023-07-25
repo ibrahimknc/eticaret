@@ -6,13 +6,13 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace eticaret.DLL.Models
 {
-    public partial class eticaretContext : DbContext
+    public partial class dbeticaretContext : DbContext
     {
-        public eticaretContext()
+        public dbeticaretContext()
         {
         }
 
-        public eticaretContext(DbContextOptions<eticaretContext> options)
+        public dbeticaretContext(DbContextOptions<dbeticaretContext> options)
             : base(options)
         {
         }
@@ -35,59 +35,67 @@ namespace eticaret.DLL.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=eticaret;Integrated Security=True");
+                optionsBuilder.UseNpgsql("Server=localhost;Port=5432;Database=dbeticaret;User Id=postgres;Password=Vffkvs621;");
             }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
+            modelBuilder.HasAnnotation("Relational:Collation", "Turkish_Turkey.1252");
 
             modelBuilder.Entity<bulletin>(entity =>
             {
                 entity.ToTable("bulletin");
 
-                entity.Property(e => e.creatingDate).HasColumnType("smalldatetime");
+                entity.Property(e => e.creatingDate).HasColumnType("date");
 
-                entity.Property(e => e.email).HasMaxLength(50);
+                entity.Property(e => e.email)
+                    .IsRequired()
+                    .HasMaxLength(50);
             });
 
             modelBuilder.Entity<category>(entity =>
             {
-                entity.Property(e => e.name).HasMaxLength(50);
+                entity.Property(e => e.name)
+                    .IsRequired()
+                    .HasMaxLength(50);
             });
 
             modelBuilder.Entity<log>(entity =>
             {
                 entity.ToTable("log");
 
-                entity.Property(e => e.date).HasColumnType("smalldatetime");
+                entity.Property(e => e.date).HasColumnType("date");
 
-                entity.Property(e => e.ip).HasMaxLength(50);
+                entity.Property(e => e.ip)
+                    .IsRequired()
+                    .HasMaxLength(50);
             });
 
             modelBuilder.Entity<logType>(entity =>
             {
                 entity.ToTable("logType");
 
-                entity.Property(e => e.id).ValueGeneratedNever();
+                entity.Property(e => e.id).HasDefaultValueSql("nextval('logtype_id_seq'::regclass)");
 
                 entity.Property(e => e.note).HasMaxLength(50);
             });
 
             modelBuilder.Entity<product>(entity =>
             {
-                entity.Property(e => e.basePrice).HasColumnType("decimal(18, 2)");
+                entity.Property(e => e.basePrice).HasPrecision(18, 2);
 
-                entity.Property(e => e.creatingDate).HasColumnType("smalldatetime");
+                entity.Property(e => e.creatingDate).HasColumnType("date");
 
-                entity.Property(e => e.image).HasMaxLength(500);
+                entity.Property(e => e.image).HasMaxLength(50);
 
-                entity.Property(e => e.name).HasMaxLength(50);
+                entity.Property(e => e.name)
+                    .IsRequired()
+                    .HasMaxLength(50);
 
-                entity.Property(e => e.salePrice).HasColumnType("decimal(18, 2)");
+                entity.Property(e => e.salePrice).HasPrecision(18, 2);
 
-                entity.Property(e => e.stock).HasColumnType("decimal(18, 2)");
+                entity.Property(e => e.stock).HasPrecision(18, 2);
 
                 entity.Property(e => e.tags).HasMaxLength(50);
             });
@@ -96,58 +104,72 @@ namespace eticaret.DLL.Models
             {
                 entity.ToTable("productsIMG");
 
-                entity.Property(e => e.url).HasMaxLength(500);
+                entity.Property(e => e.id).HasDefaultValueSql("nextval('productsimg_id_seq'::regclass)");
+
+                entity.Property(e => e.url)
+                    .IsRequired()
+                    .HasMaxLength(500);
             });
 
             modelBuilder.Entity<setting>(entity =>
             {
                 entity.Property(e => e.address).HasMaxLength(250);
 
-                entity.Property(e => e.description).HasMaxLength(4000);
-
                 entity.Property(e => e.email).HasMaxLength(50);
 
                 entity.Property(e => e.keywords).HasMaxLength(500);
 
-                entity.Property(e => e.phone)
-                    .HasMaxLength(13)
-                    .IsFixedLength(true);
+                entity.Property(e => e.phone).HasMaxLength(13);
 
-                entity.Property(e => e.title).HasMaxLength(250);
+                entity.Property(e => e.title)
+                    .IsRequired()
+                    .HasMaxLength(250);
             });
 
             modelBuilder.Entity<slider>(entity =>
             {
-                entity.Property(e => e.image).HasMaxLength(500);
+                entity.Property(e => e.image)
+                    .IsRequired()
+                    .HasMaxLength(500);
 
-                entity.Property(e => e.title).HasMaxLength(50);
+                entity.Property(e => e.title)
+                    .IsRequired()
+                    .HasMaxLength(50);
             });
 
             modelBuilder.Entity<user>(entity =>
             {
-                entity.Property(e => e.creatingDate).HasColumnType("smalldatetime");
+                entity.Property(e => e.creatingDate).HasColumnType("date");
 
-                entity.Property(e => e.email).HasMaxLength(50);
+                entity.Property(e => e.email)
+                    .IsRequired()
+                    .HasMaxLength(50);
 
-                entity.Property(e => e.firstName).HasMaxLength(50);
+                entity.Property(e => e.firstName)
+                    .IsRequired()
+                    .HasMaxLength(50);
 
-                entity.Property(e => e.lastLoginDate).HasColumnType("smalldatetime");
+                entity.Property(e => e.lastLoginDate).HasColumnType("date");
 
-                entity.Property(e => e.lastName).HasMaxLength(50);
+                entity.Property(e => e.lastName)
+                    .IsRequired()
+                    .HasMaxLength(50);
 
-                entity.Property(e => e.password).HasMaxLength(32);
+                entity.Property(e => e.password)
+                    .IsRequired()
+                    .HasMaxLength(32);
             });
 
             modelBuilder.Entity<userFavorite>(entity =>
             {
-                entity.Property(e => e.creatingDate).HasColumnType("smalldatetime");
+                entity.Property(e => e.id).HasDefaultValueSql("nextval('userfavorites_id_seq'::regclass)");
+
+                entity.Property(e => e.creatingDate).HasColumnType("date");
             });
 
             modelBuilder.Entity<viewsCategory>(entity =>
             {
                 entity.HasNoKey();
-
-                entity.ToView("viewsCategories");
 
                 entity.Property(e => e.name).HasMaxLength(50);
             });
@@ -156,21 +178,21 @@ namespace eticaret.DLL.Models
             {
                 entity.HasNoKey();
 
-                entity.ToView("viewsFavorite");
+                entity.ToTable("viewsFavorite");
 
-                entity.Property(e => e.basePrice).HasColumnType("decimal(18, 2)");
+                entity.Property(e => e.basePrice).HasPrecision(18, 2);
 
-                entity.Property(e => e.categoriName).HasMaxLength(50);
+                entity.Property(e => e.categoryName).HasMaxLength(50);
 
-                entity.Property(e => e.creatingDate).HasColumnType("smalldatetime");
+                entity.Property(e => e.creatingDate).HasColumnType("date");
 
-                entity.Property(e => e.image).HasMaxLength(500);
+                entity.Property(e => e.image).HasMaxLength(50);
 
                 entity.Property(e => e.name).HasMaxLength(50);
 
-                entity.Property(e => e.salePrice).HasColumnType("decimal(18, 2)");
+                entity.Property(e => e.salePrice).HasPrecision(18, 2);
 
-                entity.Property(e => e.stock).HasColumnType("decimal(18, 2)");
+                entity.Property(e => e.stock).HasPrecision(18, 2);
 
                 entity.Property(e => e.tags).HasMaxLength(50);
             });

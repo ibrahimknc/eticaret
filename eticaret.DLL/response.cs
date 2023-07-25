@@ -9,7 +9,7 @@ public class response
     public static List<viewsFavorite> productFavorites(string whichDay)
     {
         List<viewsFavorite> response = new List<viewsFavorite> { };
-        using (eticaretContext ec = new eticaretContext())
+        using (dbeticaretContext ec = new dbeticaretContext())
         {
             // Burada whichDay gelen değere göre bugünün mü en çok favoriye eklenen 5 ürünleri listeleme işlemi
             // Dünün mü en çok favoriye eklenen 5 ürünleri listeleme işlemi
@@ -30,7 +30,7 @@ public class response
     public static List<slider> getSliders()
     {
         List<slider> response = new List<slider> { };
-        using (eticaretContext ec = new eticaretContext())
+        using (dbeticaretContext ec = new dbeticaretContext())
         {
             // Burada aktif olan tüm slider görsellerini getiren ve rank isteğe göre listeleyen komut.
             response = ec.sliders.AsQueryable().Where(x => x.isActive == true).OrderBy(x => x.rank).ToList();
@@ -41,7 +41,7 @@ public class response
     public static List<viewsCategory> geCategories()
     {
         List<viewsCategory> response = new List<viewsCategory> { };
-        using (eticaretContext ec = new eticaretContext())
+        using (dbeticaretContext ec = new dbeticaretContext())
         {
             // Burada aktif olan tüm kategorileri ve her kategoriden kaç tane ürün olduğunu getirir(db de views yazıldı)
             response = ec.viewsCategories.AsQueryable().ToList();

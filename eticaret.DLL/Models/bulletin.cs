@@ -9,6 +9,6 @@ namespace eticaret.DLL.Models
     {
         public int id { get; set; }
         public string email { get; set; }
-        public DateTime? creatingDate { get; set; }
+        public DateTime creatingDate { get; set; }
     }
 }

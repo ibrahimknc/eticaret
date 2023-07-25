@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 
 public class veriyoneticisi
 {
@@ -64,9 +65,12 @@ public class veriyoneticisi
     }
     public static bool passwordChecker(string passwrd)
     {
-        return passwrd.Any(char.IsUpper) && passwrd.Any(char.IsLower) && passwrd.Any(char.IsDigit);
+		Regex regex = new Regex(@"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,}$");
+        return regex.IsMatch(passwrd);
+		//return passwrd.Any(char.IsUpper) && passwrd.Any(char.IsLower) && passwrd.Any(char.IsDigit);
     }
-    public static string MD5Hash(string text)
+	 
+	public static string MD5Hash(string text)
     {
         MD5 md5 = new MD5CryptoServiceProvider();
         md5.ComputeHash(ASCIIEncoding.ASCII.GetBytes(text));

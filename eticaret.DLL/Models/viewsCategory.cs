@@ -7,8 +7,8 @@ namespace eticaret.DLL.Models
 {
     public partial class viewsCategory
     {
-        public int? productCount { get; set; }
-        public int id { get; set; }
+        public long? productCount { get; set; }
+        public int? id { get; set; }
         public string name { get; set; }
     }
 }

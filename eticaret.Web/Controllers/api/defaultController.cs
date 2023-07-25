@@ -16,7 +16,7 @@ namespace eticaret.Web.Controllers.api
             try
             {
                 List<viewsFavorite> response = new List<viewsFavorite> { };
-                using (eticaretContext ec = new eticaretContext())
+                using (dbeticaretContext ec = new dbeticaretContext())
                 {
                     // Burada whichDay gelen değere göre bugünün mü en çok favoriye eklenen 5 ürünleri listeleme işlemi
                     // Dünün mü en çok favoriye eklenen 5 ürünleri listeleme işlemi
@@ -43,16 +43,16 @@ namespace eticaret.Web.Controllers.api
         {
             try
             {
-				List<slider> response = new List<slider> { };
-				using (eticaretContext ec = new eticaretContext())
-				{
-					// Burada aktif olan tüm slider görsellerini getiren ve rank isteğe göre listeleyen komut.
-					response = ec.sliders.AsQueryable().Where(x => x.isActive == true).OrderBy(x => x.rank).ToList();
-				}
-				return Ok(new { type = "success", message = "", data = response });
-			}
+                List<slider> response = new List<slider> { };
+                using (dbeticaretContext ec = new dbeticaretContext())
+                {
+                    // Burada aktif olan tüm slider görsellerini getiren ve rank isteğe göre listeleyen komut.
+                    response = ec.sliders.AsQueryable().Where(x => x.isActive == true).OrderBy(x => x.rank).ToList();
+                }
+                return Ok(new { type = "success", message = "", data = response });
+            }
             catch { }
-			return Ok(new { type = "error", message = "" });
-		}
+            return Ok(new { type = "error", message = "" });
+        }
     }
 }

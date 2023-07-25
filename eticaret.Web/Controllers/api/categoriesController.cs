@@ -1,4 +1,4 @@
-﻿using eticaret.DLL.Models;
+﻿using eticaret.DLL.Models; 
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
@@ -12,9 +12,9 @@ namespace eticaret.Web.Controllers.api
 		[Route("[action]"), HttpPost]
 		public IActionResult getCategoriList([FromForm] int id, [FromForm] int page, [FromForm] int itemsPerPage, [FromForm] string search, [FromForm] string price, [FromForm] int listSorting)
 		{
-			try
+			 try
 			{
-				using (eticaretContext ec = new eticaretContext())
+				using (dbeticaretContext ec = new dbeticaretContext())
 				{
 					int startingPrice = 0;
 					int endPrice = 0;
@@ -64,7 +64,7 @@ namespace eticaret.Web.Controllers.api
 					return Ok(new { type = "success", message = "", data = response, c = count, name = categoryName, tags = tags });
 				}
 			}
-			catch { }
+			catch { }  
 			return Ok(new { type = "error", message = "" });
 		}
 	}

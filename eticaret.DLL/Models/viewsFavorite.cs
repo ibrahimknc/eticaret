@@ -7,8 +7,8 @@ namespace eticaret.DLL.Models
 {
     public partial class viewsFavorite
     {
-        public int? favCount { get; set; }
-        public int productID { get; set; }
+        public long? favCount { get; set; }
+        public int? productID { get; set; }
         public string name { get; set; }
         public DateTime? creatingDate { get; set; }
         public string tags { get; set; }
@@ -17,7 +17,7 @@ namespace eticaret.DLL.Models
         public decimal? basePrice { get; set; }
         public decimal? salePrice { get; set; }
         public int? categoriID { get; set; }
-        public string categoriName { get; set; }
+        public string categoryName { get; set; }
         public string image { get; set; }
     }
 }

@@ -8,7 +8,7 @@ namespace eticaret.DLL.Models
     public partial class product
     {
         public int id { get; set; }
-        public int? categoriID { get; set; }
+        public int categoriID { get; set; }
         public string name { get; set; }
         public string image { get; set; }
         public decimal? salePrice { get; set; }
@@ -18,6 +18,6 @@ namespace eticaret.DLL.Models
         public DateTime? creatingDate { get; set; }
         public string tags { get; set; }
         public int? popularity { get; set; }
-        public bool? isActive { get; set; }
+        public bool isActive { get; set; }
     }
 }

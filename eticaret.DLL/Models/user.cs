@@ -12,8 +12,8 @@ namespace eticaret.DLL.Models
         public string lastName { get; set; }
         public string email { get; set; }
         public string password { get; set; }
-        public bool? isActive { get; set; }
-        public DateTime? creatingDate { get; set; }
+        public DateTime creatingDate { get; set; }
         public DateTime? lastLoginDate { get; set; }
+        public bool isActive { get; set; }
     }
 }

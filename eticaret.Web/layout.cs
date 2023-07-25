@@ -5,7 +5,7 @@ public class layout
 {
 	public static string settings(string data)
 	{
-		using (eticaretContext ec = new eticaretContext())
+		using (dbeticaretContext ec = new dbeticaretContext())
 		{
 			var setting = ec.settings.AsQueryable().FirstOrDefault(x => x.id == 1);
 			string reqest = "";

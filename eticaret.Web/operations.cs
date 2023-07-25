@@ -6,7 +6,7 @@ public class operations
 {
 	public static bool log(HttpContext context,int id, byte type, string note)
 	{
-		using (eticaretContext ec = new eticaretContext())
+		using (dbeticaretContext ec = new dbeticaretContext())
 		{
 			string userip = "";
 			try

@@ -11,6 +11,6 @@ namespace eticaret.DLL.Models
         public string title { get; set; }
         public string image { get; set; }
         public int? rank { get; set; }
-        public bool? isActive { get; set; }
+        public bool isActive { get; set; }
     }
 }
