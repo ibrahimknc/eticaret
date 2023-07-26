@@ -47,7 +47,7 @@ namespace eticaret.DLL.Models
             {
                 entity.ToTable("bulletin");
 
-                entity.Property(e => e.creatingDate).HasColumnType("date");
+                entity.Property(e => e.creatingDate).HasColumnType("timestamp with time zone");
 
                 entity.Property(e => e.email)
                     .IsRequired()
@@ -65,7 +65,7 @@ namespace eticaret.DLL.Models
             {
                 entity.ToTable("log");
 
-                entity.Property(e => e.date).HasColumnType("date");
+                entity.Property(e => e.date).HasColumnType("timestamp with time zone");
 
                 entity.Property(e => e.ip)
                     .IsRequired()
@@ -85,9 +85,11 @@ namespace eticaret.DLL.Models
             {
                 entity.Property(e => e.basePrice).HasPrecision(18, 2);
 
-                entity.Property(e => e.creatingDate).HasColumnType("date");
+                entity.Property(e => e.creatingDate).HasColumnType("timestamp with time zone");
 
-                entity.Property(e => e.image).HasMaxLength(50);
+                entity.Property(e => e.image)
+                    .IsRequired()
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.name)
                     .IsRequired()
@@ -139,7 +141,7 @@ namespace eticaret.DLL.Models
 
             modelBuilder.Entity<user>(entity =>
             {
-                entity.Property(e => e.creatingDate).HasColumnType("date");
+                entity.Property(e => e.creatingDate).HasColumnType("timestamp with time zone");
 
                 entity.Property(e => e.email)
                     .IsRequired()
@@ -149,7 +151,7 @@ namespace eticaret.DLL.Models
                     .IsRequired()
                     .HasMaxLength(50);
 
-                entity.Property(e => e.lastLoginDate).HasColumnType("date");
+                entity.Property(e => e.lastLoginDate).HasColumnType("timestamp with time zone");
 
                 entity.Property(e => e.lastName)
                     .IsRequired()
@@ -164,7 +166,7 @@ namespace eticaret.DLL.Models
             {
                 entity.Property(e => e.id).HasDefaultValueSql("nextval('userfavorites_id_seq'::regclass)");
 
-                entity.Property(e => e.creatingDate).HasColumnType("date");
+                entity.Property(e => e.creatingDate).HasColumnType("timestamp with time zone");
             });
 
             modelBuilder.Entity<viewsCategory>(entity =>
@@ -184,7 +186,7 @@ namespace eticaret.DLL.Models
 
                 entity.Property(e => e.categoryName).HasMaxLength(50);
 
-                entity.Property(e => e.creatingDate).HasColumnType("date");
+                entity.Property(e => e.creatingDate).HasColumnType("timestamp with time zone");
 
                 entity.Property(e => e.image).HasMaxLength(50);
 

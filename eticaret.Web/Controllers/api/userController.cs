@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System; 
+using System;
 using System.Linq;
 using System.Reflection;
 
@@ -39,7 +39,7 @@ namespace eticaret.Web.Controllers.api
 							return Ok(new { message = "Lütfen geçerli bir Mail adresi giriniz.", type = "error" });
 						}
 
-							user u = new user()
+						user u = new user()
 						{
 							firstName = firstName,
 							lastName = lastName,
@@ -65,36 +65,44 @@ namespace eticaret.Web.Controllers.api
 		public IActionResult login([FromForm] string email, [FromForm] string password)
 		{
 
-			 if (HttpContext.Session.GetString("login") == "true")
+			if (HttpContext.Session.GetString("login") == "true")
 			{
 				return Ok(new { message = "", type = "success" });
 			}
 			else if (!string.IsNullOrEmpty(email) && !string.IsNullOrEmpty(password))
 			{
-				if(veriyoneticisi.emailChecker(email))
+				if (veriyoneticisi.emailChecker(email))
 				{
 					using (dbeticaretContext ec = new dbeticaretContext())
 					{
-						var clUser = ec.users; 
+						var clUser = ec.users;
 						var selUser = clUser.AsQueryable().FirstOrDefault(x => x.email == email && x.password == veriyoneticisi.MD5Hash(password));
 
 						if (selUser != null)
 						{
 							if (selUser.isActive == true)
 							{
-								operations.log(HttpContext, selUser.id, 1, "Kullanıcı Giriş Yaptı.");
-								ec.Database.ExecuteSqlRaw("Update users set lastLoginDate={1} where id={0}", selUser.id, DateTime.Now);
-
-								HttpContext.Session.SetString("id", selUser.id.ToString());
-								HttpContext.Session.SetString("login", "true");
-								var setData = refreshAndGetLogin(HttpContext);
-								if (setData != null)
+								var userLastLoginDate = ec.users.FirstOrDefault(x => x.id == selUser.id);
+								if (userLastLoginDate != null)
 								{
-									return Ok(new { message = "İşlem başarılı! Hoşgeldiniz.", type = "success" });
+									userLastLoginDate.lastLoginDate = DateTime.UtcNow;
+								  
+									operations.log(HttpContext, selUser.id, 1, "Kullanıcı Giriş Yaptı.");
+									HttpContext.Session.SetString("id", selUser.id.ToString());
+									HttpContext.Session.SetString("login", "true");
+									var setData = refreshAndGetLogin(HttpContext);
+									if (setData != null)
+									{
+										return Ok(new { message = "İşlem başarılı! Hoşgeldiniz.", type = "success" });
+									}
+									else
+									{
+										return Ok(new { message = "İşlem Başarısız", type = "error" });
+									}
 								}
 								else
 								{
-									return Ok(new { message = "İşlem Başarısız", type = "error" });
+									return Ok(new { message = "Kullanıcı Bulunamadı.", type = "error" });
 								}
 
 							}
@@ -171,7 +179,7 @@ namespace eticaret.Web.Controllers.api
 					return Ok(new { type = "success", message = "Çıkış işlemi başarılı." });
 				}
 			}
-			catch { } 
+			catch { }
 			return Ok(new { type = "error", message = "" });
 		}
 	}
