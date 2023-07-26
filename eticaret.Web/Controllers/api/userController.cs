@@ -86,6 +86,8 @@ namespace eticaret.Web.Controllers.api
 								if (userLastLoginDate != null)
 								{
 									userLastLoginDate.lastLoginDate = DateTime.UtcNow;
+									ec.SaveChanges();
+									ec.Dispose();
 								  
 									operations.log(HttpContext, selUser.id, 1, "Kullanıcı Giriş Yaptı.");
 									HttpContext.Session.SetString("id", selUser.id.ToString());
