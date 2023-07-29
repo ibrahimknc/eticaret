@@ -9,7 +9,7 @@ namespace eticaret.Web.Controllers
 		[Route("[action]")]
 		public IActionResult list()
 		{
-			if (Convert.ToBoolean(layout.settings("isActive")) == true)
+			if (veriyoneticisi.isActive == true)
 			{
 				if (!Request.Path.Value.Contains("/ajax/"))
 					return View();

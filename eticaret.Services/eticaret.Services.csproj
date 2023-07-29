@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\eticaret.Data\eticaret.Data.csproj" />
+    <ProjectReference Include="..\eticaret.DLL\eticaret.DLL.csproj" />
+    <ProjectReference Include="..\eticaret.Domain\eticaret.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

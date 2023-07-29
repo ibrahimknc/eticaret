@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Collections.Generic; 
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -10,7 +9,8 @@ public class veriyoneticisi
     public static Dictionary<short, string> yetkiler = new Dictionary<short, string> { { 0, "Supervisor" }, { 1, "Personel" } };
     public readonly static short siteId = 1; // 1-Site, 2-Site 
     public static bool isDevelopment = false;
-    public static Dictionary<string, string> projectSettings
+	public static bool isActive = true;
+	public static Dictionary<string, string> projectSettings
     {
         get
         {

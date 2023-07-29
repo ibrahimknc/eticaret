@@ -3,9 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33815.320
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eticaret.Web", "eticaret.Web\eticaret.Web.csproj", "{A837097A-8AE5-47F3-B8CD-C2C35EE7EED1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eticaret.Web", "eticaret.Web\eticaret.Web.csproj", "{A837097A-8AE5-47F3-B8CD-C2C35EE7EED1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eticaret.DLL", "eticaret.DLL\eticaret.DLL.csproj", "{0186B1E6-4178-40A3-963A-1405492F1B2D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eticaret.DLL", "eticaret.DLL\eticaret.DLL.csproj", "{0186B1E6-4178-40A3-963A-1405492F1B2D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eticaret.Data", "eticaret.Data\eticaret.Data.csproj", "{4716D42E-1B27-4DD7-8A3A-145821FD29FC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eticaret.Domain", "eticaret.Domain\eticaret.Domain.csproj", "{FCD99D8A-D7C4-4C1F-9AB5-A07F2C85FD38}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eticaret.Services", "eticaret.Services\eticaret.Services.csproj", "{0947262F-0666-4930-9595-9A3243FED3CA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +27,18 @@ Global
 		{0186B1E6-4178-40A3-963A-1405492F1B2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0186B1E6-4178-40A3-963A-1405492F1B2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0186B1E6-4178-40A3-963A-1405492F1B2D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4716D42E-1B27-4DD7-8A3A-145821FD29FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4716D42E-1B27-4DD7-8A3A-145821FD29FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4716D42E-1B27-4DD7-8A3A-145821FD29FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4716D42E-1B27-4DD7-8A3A-145821FD29FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FCD99D8A-D7C4-4C1F-9AB5-A07F2C85FD38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FCD99D8A-D7C4-4C1F-9AB5-A07F2C85FD38}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FCD99D8A-D7C4-4C1F-9AB5-A07F2C85FD38}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FCD99D8A-D7C4-4C1F-9AB5-A07F2C85FD38}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0947262F-0666-4930-9595-9A3243FED3CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0947262F-0666-4930-9595-9A3243FED3CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0947262F-0666-4930-9595-9A3243FED3CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0947262F-0666-4930-9595-9A3243FED3CA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -3,10 +3,10 @@
     <div class="container">
         <div class="tiva-slideshow-wrapper">
             <div id="tiva-slideshow" class="nivoSlider">
-                @foreach (var item in (List<slider>)response.getSliders())
+               @* @foreach (var item in (List<Slider>)response.getSliders())
                 {
                     <a href="#"> <img class="img-responsive" src="/uploads/sliders/@item.image" alt="@item.title"></a>
-                }
+                }*@
             </div>
         </div>
     </div>
@@ -55,13 +55,13 @@
 
                     <div class="block-content"> 
 
-                        @foreach (var item in (List<viewsCategory>)response.geCategories())
+                       @* @foreach (var item in (List<ViewsCategory>)response.geCategories())
                         { 
                             <div class="item">
                                 <span class="arrow categoriesCountBox">@item.productCount</span>
                                 <a class="category-title" href="/categories/list?id=@item.id">@item.name</a>
                             </div> 
-                        } 
+                        } *@
                       
                     </div>
                 </div>
@@ -258,9 +258,9 @@
                         <div class="tab-content" id="productFavorite">
 
                             <!-- New Arrivals -->
-                            <div role="tabpanel" class="tab-pane fade in active" id="new-arrivals">
+                         @*   <div role="tabpanel" class="tab-pane fade in active" id="new-arrivals">
                                 <div class="products owl-theme owl-carousel">
-                                    @foreach (var item in (List<viewsFavorite>)response.productFavorites("Today"))
+                                    @foreach (var item in (List<ViewsFavorite>)response.productFavorites("Today"))
                                     {
                                         <div class="product-item">
                                             <div class="product-image">
@@ -309,7 +309,7 @@
                             <!-- Best Seller -->
                             <div role="tabpanel" class="tab-pane fade" id="best-seller">
                                 <div class="products owl-theme owl-carousel">
-                                    @foreach (var item in (List<viewsFavorite>)response.productFavorites("Yesterday"))
+                                    @foreach (var item in (List<ViewsFavorite>)response.productFavorites("Yesterday"))
                                     {
                                         <div class="product-item">
                                             <div class="product-image">
@@ -358,7 +358,7 @@
                             <!-- On Sale -->
                             <div role="tabpanel" class="tab-pane fade" id="on-sale">
                                 <div class="products owl-theme owl-carousel">
-                                    @foreach (var item in (List<viewsFavorite>)response.productFavorites("General"))
+                                    @foreach (var item in (List<ViewsFavorite>)response.productFavorites("General"))
                                     {
                                         <div class="product-item">
                                             <div class="product-image">
@@ -402,7 +402,7 @@
                                         </div>
                                     }
                                 </div>
-                            </div>
+                            </div>*@
                         </div>
                     </div>
                 </div>
@@ -413,7 +413,7 @@
                     <h2 class="block-title">BÜLTEN</h2>
 
                     <div class="block-content">
-                        <p class="description">@layout.settings("title") ürünleri hakkında özel teklifler ve özel haberler almak için bültene kaydolun</p>
+                        <p class="description"><span id="titlebody"></span> ürünleri hakkında özel teklifler ve özel haberler almak için bültene kaydolun</p>
                         <form action="#" method="post">
                             <input type="text" placeholder="E-postanızı Giriniz">
                             <button type="submit" class="btn btn-primary">Abone Ol</button>

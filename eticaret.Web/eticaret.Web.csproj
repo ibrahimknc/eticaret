@@ -9,11 +9,31 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.17" />
+    <None Include="Views\categories\list.cshtml" />
+    <None Include="Views\Default\contact.cshtml" />
+    <None Include="Views\Default\Index.cshtml" />
+    <None Include="Views\Default\underConstruction.cshtml" />
+    <None Include="Views\Shared\_layout.cshtml" />
+    <None Include="Views\User\login.cshtml" />
+    <None Include="Views\User\register.cshtml" />
+    <None Include="Views\_ViewImports.cshtml" />
+    <None Include="Views\_ViewStart.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.17" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.17" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.17">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="5.0.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\eticaret.Data\eticaret.Data.csproj" />
     <ProjectReference Include="..\eticaret.DLL\eticaret.DLL.csproj" />
+    <ProjectReference Include="..\eticaret.Services\eticaret.Services.csproj" />
   </ItemGroup>
 
 </Project>

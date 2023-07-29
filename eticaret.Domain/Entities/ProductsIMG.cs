@@ -1,13 +1,13 @@
-﻿using System;
+﻿ 
+using System;
 using System.Collections.Generic;
 
 #nullable disable
 
-namespace eticaret.DLL.Models
+namespace eticaret.Domain.Entities
 {
-    public partial class productsIMG
-    {
-        public int id { get; set; }
+    public partial class ProductIMG : BaseEntitiy
+	{ 
         public int productID { get; set; }
         public string url { get; set; }
     }

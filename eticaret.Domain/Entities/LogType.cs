@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 #nullable disable
 
-namespace eticaret.DLL.Models
+namespace eticaret.Domain.Entities
 {
-    public partial class logType
+    public partial class LogType
     {
         public int id { get; set; }
         public string note { get; set; }

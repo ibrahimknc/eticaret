@@ -1,4 +1,5 @@
-﻿using eticaret.DLL.Models; 
+﻿
+using eticaret.Data;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
@@ -9,13 +10,18 @@ namespace eticaret.Web.Controllers.api
 	[ApiController]
 	public class categoriesController : ControllerBase
 	{
+		readonly dbeticaretContext _dbeticaretContext;
+		public categoriesController(dbeticaretContext dbeticaretContext)
+		{
+			_dbeticaretContext = dbeticaretContext; 
+		}
+
 		[Route("[action]"), HttpPost]
 		public IActionResult getCategoriList([FromForm] int id, [FromForm] int page, [FromForm] int itemsPerPage, [FromForm] string search, [FromForm] string price, [FromForm] int listSorting)
 		{
-			 try
+			/* try
 			{
-				using (dbeticaretContext ec = new dbeticaretContext())
-				{
+				 
 					int startingPrice = 0;
 					int endPrice = 0;
 					bool filterPrice = false;
@@ -26,7 +32,7 @@ namespace eticaret.Web.Controllers.api
 						endPrice = Convert.ToInt32(price.Split(";")[1]);
 					}
 
-					var query = ec.products.Where(x =>
+					var query = _dbeticaretContext.products.Where(x =>
 					(listSorting <=4 | (listSorting == 5 && x.stock > 0)) &
 					(filterPrice == false | (filterPrice == true & x.salePrice >= startingPrice & x.salePrice <= endPrice)) &
 					x.isActive == true &
@@ -58,13 +64,13 @@ namespace eticaret.Web.Controllers.api
 
 					var count = query.Count();
 					var response = query.Skip((page - 1) * itemsPerPage).Take(itemsPerPage).ToList();
-					var categoryName = ec.categories.FirstOrDefault(x => x.id == id)?.name ?? "";
-					var tags = ec.products.Where(x => x.isActive == true && x.categoriID == id).Select(x => x.tags).ToList();
+					var categoryName = _dbeticaretContext.categories.FirstOrDefault(x => x.id == id)?.name ?? "";
+					var tags = _dbeticaretContext.products.Where(x => x.isActive == true && x.categoriID == id).Select(x => x.tags).ToList();
 
 					return Ok(new { type = "success", message = "", data = response, c = count, name = categoryName, tags = tags });
-				}
+		 
 			}
-			catch { }  
+			catch { }  */
 			return Ok(new { type = "error", message = "" });
 		}
 	}
