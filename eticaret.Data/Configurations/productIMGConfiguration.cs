@@ -9,7 +9,10 @@ namespace eticaret.Data.Configurations
 	{
 		public void Configure(EntityTypeBuilder<ProductIMG> builder)
 		{
-			builder.ToTable("ProductIMG");  
+			builder.ToTable("ProductIMG");
+            builder.Property(c => c.id)
+           .HasDefaultValueSql("uuid_generate_v4()")
+           .IsRequired();
             builder.Property(e => e.url)
 				.IsRequired()
 				.HasMaxLength(500);

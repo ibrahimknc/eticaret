@@ -14,6 +14,18 @@ public class veriyoneticisi
     {
         get
         {
+            if(isDevelopment)
+            {
+                return new Dictionary<string, string> {
+                    { "projectName", "eticaret"},
+                    { "author", "ibrahim KONÇ"},
+                    { "logo", "/uploads/logo/logo.png"},
+                    { "favicon", "/uploads/logo/favicon.png"},
+                    { "siteUrl", "https://localhost:5001" },
+                    { "adminUrl", "https://localhost:5001" },
+                    { "BotApi", "5517710931:AAHpUPbMVcdbmozyjVcfFTEhE2nrw76-6bk"},
+                };
+            }
             if (siteId == 2)
             {
                 return new Dictionary<string, string> {

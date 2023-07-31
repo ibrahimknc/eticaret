@@ -9,7 +9,10 @@ namespace eticaret.Data.Configurations
 		public void Configure(EntityTypeBuilder<Bulletin> builder)
 		{
 			builder.ToTable("Bulletin"); 
-            builder.Property(e => e.email)
+			builder.Property(c => c.id)
+		   .HasDefaultValueSql("uuid_generate_v4()")
+		   .IsRequired();
+			builder.Property(e => e.email)
 				.IsRequired()
 				.HasMaxLength(50);
 			builder.Property(e => e.updatedTime).HasColumnType("timestamp with time zone");

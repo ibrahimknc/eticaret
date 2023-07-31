@@ -9,7 +9,10 @@ namespace eticaret.Data.Configurations
 	{
 		public void Configure(EntityTypeBuilder<Slider> builder)
 		{
-            builder.ToTable("Sliders"); 
+            builder.ToTable("Sliders");
+            builder.Property(c => c.id)
+           .HasDefaultValueSql("uuid_generate_v4()")
+           .IsRequired();
 
             builder.Property(e => e.image)
 				   .IsRequired()

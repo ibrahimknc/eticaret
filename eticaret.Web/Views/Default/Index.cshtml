@@ -258,20 +258,20 @@
                         <div class="tab-content" id="productFavorite">
 
                             <!-- New Arrivals -->
-                         @*   <div role="tabpanel" class="tab-pane fade in active" id="new-arrivals">
+                            <div role="tabpanel" class="tab-pane fade in active" id="new-arrivals">
                                 <div class="products owl-theme owl-carousel">
-                                    @foreach (var item in (List<ViewsFavorite>)response.productFavorites("Today"))
+                                    @foreach (var item in (List<viewsFavoriteDto>)await response.productFavoritesAsync("Today"))
                                     {
                                         <div class="product-item">
                                             <div class="product-image">
                                                 <a href="/detail">
-                                                    <img src="/uploads/products/@item.image" alt="Product Image">
+                                                    <img src="/uploads/products/@item.Image" alt="Product Image">
                                                 </a>
                                             </div>
 
                                             <div class="product-title">
                                                 <a href="/detail">
-                                                    @item.name
+                                                    @item.Name
                                                 </a>
                                             </div>
 
@@ -284,8 +284,8 @@
                                             </div>
 
                                             <div class="product-price">
-                                                <span class="sale-price">@item.salePrice</span>
-                                                <span class="base-price">@item.basePrice</span>
+                                                <span class="sale-price">@item.SalePrice</span>
+                                                <span class="base-price">@item.BasePrice</span>
                                             </div>
 
                                             <div class="product-buttons">
@@ -305,22 +305,22 @@
                                     }
                                 </div>
                             </div>
-
+                            
                             <!-- Best Seller -->
                             <div role="tabpanel" class="tab-pane fade" id="best-seller">
                                 <div class="products owl-theme owl-carousel">
-                                    @foreach (var item in (List<ViewsFavorite>)response.productFavorites("Yesterday"))
+                                    @foreach (var item in (List<viewsFavoriteDto>)await response.productFavoritesAsync("Yesterday"))
                                     {
                                         <div class="product-item">
                                             <div class="product-image">
                                                 <a href="/detail">
-                                                    <img src="/uploads/products/@item.image" alt="Product Image">
+                                                    <img src="/uploads/products/@item.Image" alt="Product Image">
                                                 </a>
                                             </div>
 
                                             <div class="product-title">
                                                 <a href="/detail">
-                                                    @item.name
+                                                    @item.Name
                                                 </a>
                                             </div>
 
@@ -333,8 +333,8 @@
                                             </div>
 
                                             <div class="product-price">
-                                                <span class="sale-price">@item.salePrice</span>
-                                                <span class="base-price">@item.basePrice</span>
+                                                <span class="sale-price">@item.SalePrice</span>
+                                                <span class="base-price">@item.BasePrice</span>
                                             </div>
 
                                             <div class="product-buttons">
@@ -358,18 +358,18 @@
                             <!-- On Sale -->
                             <div role="tabpanel" class="tab-pane fade" id="on-sale">
                                 <div class="products owl-theme owl-carousel">
-                                    @foreach (var item in (List<ViewsFavorite>)response.productFavorites("General"))
+                                    @foreach (var item in (List<viewsFavoriteDto>)await response.productFavoritesAsync("General"))
                                     {
                                         <div class="product-item">
                                             <div class="product-image">
                                                 <a href="/detail">
-                                                    <img src="/uploads/products/@item.image" alt="Product Image">
+                                                    <img src="/uploads/products/@item.Image" alt="Product Image">
                                                 </a>
                                             </div>
 
                                             <div class="product-title">
                                                 <a href="/detail">
-                                                    @item.name
+                                                    @item.Name
                                                 </a>
                                             </div>
 
@@ -382,8 +382,8 @@
                                             </div>
 
                                             <div class="product-price">
-                                                <span class="sale-price">@item.salePrice</span>
-                                                <span class="base-price">@item.basePrice</span>
+                                                <span class="sale-price">@item.SalePrice</span>
+                                                <span class="base-price">@item.BasePrice</span>
                                             </div>
 
                                             <div class="product-buttons">
@@ -402,7 +402,7 @@
                                         </div>
                                     }
                                 </div>
-                            </div>*@
+                            </div> 
                         </div>
                     </div>
                 </div>

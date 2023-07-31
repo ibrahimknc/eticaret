@@ -9,7 +9,10 @@ namespace eticaret.Data.Configurations
 	{
 		public void Configure(EntityTypeBuilder<Product> builder)
 		{
-            builder.ToTable("Products"); 
+            builder.ToTable("Products");
+            builder.Property(c => c.id)
+           .HasDefaultValueSql("uuid_generate_v4()")
+           .IsRequired();
 
             builder.Property(e => e.basePrice).HasPrecision(18, 2);
 

@@ -9,7 +9,10 @@ namespace eticaret.Data.Configurations
 	{
 		public void Configure(EntityTypeBuilder<Setting> builder)
 		{
-            builder.ToTable("Settings"); 
+            builder.ToTable("Settings");
+            builder.Property(c => c.id)
+           .HasDefaultValueSql("uuid_generate_v4()")
+           .IsRequired();
 
             builder.Property(e => e.address).HasMaxLength(250);
 

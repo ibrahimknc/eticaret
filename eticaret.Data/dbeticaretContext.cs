@@ -26,10 +26,10 @@ namespace eticaret.Data
             modelBuilder.ApplyConfiguration(new userFavoriteConfiguration());
 
             #region id Otomatik atanan olarak ayarlandı
-            modelBuilder.Entity<BaseEntitiy>()
-           .Property(c => c.id)
-           .HasDefaultValueSql("uuid_generate_v4()")
-           .IsRequired();
+           // modelBuilder.Entity<BaseEntitiy>()
+           //.Property(c => c.id)
+           //.HasDefaultValueSql("uuid_generate_v4()")
+           //.IsRequired();
             #endregion
 
             #region Log ForeignKey

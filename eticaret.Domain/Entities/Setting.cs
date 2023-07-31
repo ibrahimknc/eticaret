@@ -1,7 +1,4 @@
 ﻿ 
-using System;
-using System.Collections.Generic;
-
 #nullable disable
 
 namespace eticaret.Domain.Entities
