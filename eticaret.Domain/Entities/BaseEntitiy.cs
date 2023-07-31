@@ -8,8 +8,8 @@ namespace eticaret.Domain.Entities
 	{
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		[Key]
-		[Column(Order = 1)]
-		public Guid id { get; set; } = Guid.NewGuid();
+		[Column(Order = 1)] 
+        public Guid id { get; set; } = Guid.NewGuid();
 		public bool isActive { get; set; }
 		public DateTime creatingTime { get; set; } = DateTime.UtcNow;
 		public DateTime? updatedTime { get; set; }

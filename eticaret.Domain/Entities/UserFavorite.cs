@@ -1,14 +1,13 @@
-﻿ 
-using System;
-using System.Collections.Generic;
-
-#nullable disable
+﻿using System;
 
 namespace eticaret.Domain.Entities
 {
     public partial class UserFavorite : BaseEntitiy
 	{ 
-        public int userID { get; set; }
-        public int productID { get; set; } 
+        public Guid userID { get; set; }
+        public Guid productID { get; set; }
+
+        public User User { get; set; }
+        public Product Product { get; set; }
     }
 }

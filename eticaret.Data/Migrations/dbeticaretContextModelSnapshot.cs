@@ -24,7 +24,8 @@ namespace eticaret.Data.Migrations
                 {
                     b.Property<Guid>("id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("uuid_generate_v4()");
 
                     b.Property<DateTime>("creatingTime")
                         .HasColumnType("timestamp with time zone");
@@ -49,7 +50,8 @@ namespace eticaret.Data.Migrations
                 {
                     b.Property<Guid>("id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("uuid_generate_v4()");
 
                     b.Property<DateTime>("creatingTime")
                         .HasColumnType("timestamp with time zone");
@@ -67,14 +69,15 @@ namespace eticaret.Data.Migrations
 
                     b.HasKey("id");
 
-                    b.ToTable("categories");
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("eticaret.Domain.Entities.Log", b =>
                 {
                     b.Property<Guid>("id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("uuid_generate_v4()");
 
                     b.Property<DateTime>("creatingTime")
                         .HasColumnType("timestamp with time zone");
@@ -101,6 +104,8 @@ namespace eticaret.Data.Migrations
 
                     b.HasKey("id");
 
+                    b.HasIndex("type");
+
                     b.ToTable("Log");
                 });
 
@@ -124,14 +129,15 @@ namespace eticaret.Data.Migrations
                 {
                     b.Property<Guid>("id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("uuid_generate_v4()");
 
                     b.Property<decimal?>("basePrice")
                         .HasPrecision(18, 2)
                         .HasColumnType("numeric(18,2)");
 
-                    b.Property<int>("categoriID")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("categoriID")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("creatingTime")
                         .HasColumnType("timestamp with time zone");
@@ -172,14 +178,17 @@ namespace eticaret.Data.Migrations
 
                     b.HasKey("id");
 
-                    b.ToTable("products");
+                    b.HasIndex("categoriID");
+
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("eticaret.Domain.Entities.ProductIMG", b =>
                 {
                     b.Property<Guid>("id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("uuid_generate_v4()");
 
                     b.Property<DateTime>("creatingTime")
                         .HasColumnType("timestamp with time zone");
@@ -187,8 +196,8 @@ namespace eticaret.Data.Migrations
                     b.Property<bool>("isActive")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("productID")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("productID")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime?>("updatedTime")
                         .HasColumnType("timestamp with time zone");
@@ -200,6 +209,8 @@ namespace eticaret.Data.Migrations
 
                     b.HasKey("id");
 
+                    b.HasIndex("productID");
+
                     b.ToTable("ProductIMG");
                 });
 
@@ -207,7 +218,8 @@ namespace eticaret.Data.Migrations
                 {
                     b.Property<Guid>("id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("uuid_generate_v4()");
 
                     b.Property<string>("address")
                         .HasMaxLength(250)
@@ -244,14 +256,15 @@ namespace eticaret.Data.Migrations
 
                     b.HasKey("id");
 
-                    b.ToTable("settings");
+                    b.ToTable("Settings");
                 });
 
             modelBuilder.Entity("eticaret.Domain.Entities.Slider", b =>
                 {
                     b.Property<Guid>("id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("uuid_generate_v4()");
 
                     b.Property<DateTime>("creatingTime")
                         .HasColumnType("timestamp with time zone");
@@ -277,14 +290,15 @@ namespace eticaret.Data.Migrations
 
                     b.HasKey("id");
 
-                    b.ToTable("sliders");
+                    b.ToTable("Sliders");
                 });
 
             modelBuilder.Entity("eticaret.Domain.Entities.User", b =>
                 {
                     b.Property<Guid>("id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("uuid_generate_v4()");
 
                     b.Property<DateTime>("creatingTime")
                         .HasColumnType("timestamp with time zone");
@@ -320,14 +334,15 @@ namespace eticaret.Data.Migrations
 
                     b.HasKey("id");
 
-                    b.ToTable("users");
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("eticaret.Domain.Entities.UserFavorite", b =>
                 {
                     b.Property<Guid>("id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("uuid_generate_v4()");
 
                     b.Property<DateTime>("creatingTime")
                         .HasColumnType("timestamp with time zone");
@@ -335,18 +350,74 @@ namespace eticaret.Data.Migrations
                     b.Property<bool>("isActive")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("productID")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("productID")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime?>("updatedTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("userID")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("userID")
+                        .HasColumnType("uuid");
 
                     b.HasKey("id");
 
-                    b.ToTable("userFavorites");
+                    b.HasIndex("productID");
+
+                    b.HasIndex("userID");
+
+                    b.ToTable("UserFavorites");
+                });
+
+            modelBuilder.Entity("eticaret.Domain.Entities.Log", b =>
+                {
+                    b.HasOne("eticaret.Domain.Entities.LogType", "LogType")
+                        .WithMany()
+                        .HasForeignKey("type")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("LogType");
+                });
+
+            modelBuilder.Entity("eticaret.Domain.Entities.Product", b =>
+                {
+                    b.HasOne("eticaret.Domain.Entities.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("categoriID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("eticaret.Domain.Entities.ProductIMG", b =>
+                {
+                    b.HasOne("eticaret.Domain.Entities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("productID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("eticaret.Domain.Entities.UserFavorite", b =>
+                {
+                    b.HasOne("eticaret.Domain.Entities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("productID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("eticaret.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("userID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }

@@ -9,7 +9,9 @@ namespace eticaret.Data.Configurations
 	{
 		public void Configure(EntityTypeBuilder<Setting> builder)
 		{
-			builder.Property(e => e.address).HasMaxLength(250);
+            builder.ToTable("Settings"); 
+
+            builder.Property(e => e.address).HasMaxLength(250);
 
 			builder.Property(e => e.email).HasMaxLength(50);
 

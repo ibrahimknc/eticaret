@@ -9,9 +9,8 @@ namespace eticaret.Data.Configurations
 	{
 		public void Configure(EntityTypeBuilder<Log> builder)
 		{
-			builder.ToTable("Log");
-
-			builder.Property(e => e.updatedTime).HasColumnType("timestamp with time zone");
+			builder.ToTable("Log"); 
+            builder.Property(e => e.updatedTime).HasColumnType("timestamp with time zone");
 			builder.Property(e => e.creatingTime).HasColumnType("timestamp with time zone");
 
 			builder.Property(e => e.ip)

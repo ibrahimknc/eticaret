@@ -9,7 +9,8 @@ namespace eticaret.Data.Configurations
 	{
 		public void Configure(EntityTypeBuilder<Category> builder)
 		{
-			builder.Property(e => e.name)
+            builder.ToTable("Categories"); 
+            builder.Property(e => e.name)
 				   .IsRequired()
 				   .HasMaxLength(50);
 			builder.Property(e => e.updatedTime).HasColumnType("timestamp with time zone");

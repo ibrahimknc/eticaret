@@ -8,7 +8,7 @@ namespace eticaret.Domain.Entities
 {
     public partial class Product : BaseEntitiy
 	{ 
-        public int categoriID { get; set; }
+        public Guid categoriID { get; set; }
         public string name { get; set; }
         public string image { get; set; }
         public decimal salePrice { get; set; }
@@ -16,6 +16,9 @@ namespace eticaret.Domain.Entities
         public string details { get; set; }
         public decimal? stock { get; set; } 
         public string tags { get; set; }
-        public int? popularity { get; set; } 
+        public int? popularity { get; set; }
+
+        public Category Category { get; set; }
+
     }
 }

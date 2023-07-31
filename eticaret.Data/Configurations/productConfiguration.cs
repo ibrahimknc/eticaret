@@ -9,7 +9,9 @@ namespace eticaret.Data.Configurations
 	{
 		public void Configure(EntityTypeBuilder<Product> builder)
 		{
-			builder.Property(e => e.basePrice).HasPrecision(18, 2);
+            builder.ToTable("Products"); 
+
+            builder.Property(e => e.basePrice).HasPrecision(18, 2);
 
 			builder.Property(e => e.updatedTime).HasColumnType("timestamp with time zone");
 			builder.Property(e => e.creatingTime).HasColumnType("timestamp with time zone");

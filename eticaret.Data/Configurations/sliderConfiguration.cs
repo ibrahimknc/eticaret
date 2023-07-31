@@ -9,7 +9,9 @@ namespace eticaret.Data.Configurations
 	{
 		public void Configure(EntityTypeBuilder<Slider> builder)
 		{
-			builder.Property(e => e.image)
+            builder.ToTable("Sliders"); 
+
+            builder.Property(e => e.image)
 				   .IsRequired()
 				   .HasMaxLength(500);
 

@@ -9,9 +9,8 @@ namespace eticaret.Data.Configurations
 	{
 		public void Configure(EntityTypeBuilder<ProductIMG> builder)
 		{
-			builder.ToTable("ProductIMG"); 
-
-			builder.Property(e => e.url)
+			builder.ToTable("ProductIMG");  
+            builder.Property(e => e.url)
 				.IsRequired()
 				.HasMaxLength(500);
 

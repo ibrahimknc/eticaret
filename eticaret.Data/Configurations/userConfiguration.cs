@@ -9,7 +9,9 @@ namespace eticaret.Data.Configurations
 	{
 		public void Configure(EntityTypeBuilder<User> builder)
 		{
-			builder.Property(e => e.updatedTime).HasColumnType("timestamp with time zone");
+            builder.ToTable("Users"); 
+
+            builder.Property(e => e.updatedTime).HasColumnType("timestamp with time zone");
 			builder.Property(e => e.creatingTime).HasColumnType("timestamp with time zone");
 
 			builder.Property(e => e.email)

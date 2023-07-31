@@ -8,8 +8,10 @@ namespace eticaret.Data.Configurations
 	public class userFavoriteConfiguration : IEntityTypeConfiguration<UserFavorite>
 	{
 		public void Configure(EntityTypeBuilder<UserFavorite> builder)
-		{  
-			builder.Property(e => e.updatedTime).HasColumnType("timestamp with time zone");
+		{
+            builder.ToTable("UserFavorites"); 
+
+            builder.Property(e => e.updatedTime).HasColumnType("timestamp with time zone");
 			builder.Property(e => e.creatingTime).HasColumnType("timestamp with time zone");
 
 		}

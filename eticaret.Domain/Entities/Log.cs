@@ -1,6 +1,5 @@
 ﻿ 
-using System;
-using System.Collections.Generic;
+using System; 
 
 #nullable disable
 
@@ -12,5 +11,7 @@ namespace eticaret.Domain.Entities
         public int type { get; set; } 
         public string ip { get; set; }
         public string note { get; set; }
+
+        public LogType LogType { get; set; }
     }
 }
