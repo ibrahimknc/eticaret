@@ -20,8 +20,7 @@ namespace eticaret.Services.userServices
 			{
 				{ "type", "" }, // success-error
 				{ "message", "" },
-				{ "data", "" }
-
+				{ "data", "" } 
 			};
 
 

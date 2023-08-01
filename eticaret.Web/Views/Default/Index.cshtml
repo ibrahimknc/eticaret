@@ -51,22 +51,18 @@
                 <div class="section product-categories">
                     <div class="block-title">
                         <h2 class="title">Kategoriler</h2>
-                    </div>
-
+                    </div> 
                     <div class="block-content">
-
-                        @* @foreach (var item in (List<ViewsCategory>)response.geCategories())
+                        @foreach (var item in (List<viewCategoryDto>)await response.geCategoriesAsync())
                         {
                         <div class="item">
                         <span class="arrow categoriesCountBox">@item.productCount</span>
-                        <a class="category-title" href="/categories/list?id=@item.id">@item.name</a>
+                        <a class="category-title" href="/categories/@item.id">@item.name</a>
                         </div>
-                        } *@
-
+                        }   
                     </div>
                 </div>
-
-
+                 
                 <!-- Product - Flash Deals -->
                 <div class="section products-block nav-color flash-deals layout-4">
                     <div class="block-title">

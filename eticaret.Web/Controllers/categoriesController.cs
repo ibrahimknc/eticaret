@@ -1,13 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
+﻿using Microsoft.AspNetCore.Mvc; 
 
 namespace eticaret.Web.Controllers
 {
 	[Route("[controller]"), Route("ajax/[controller]")]
 	public class categoriesController : Controller
 	{
-		[Route("[action]")]
-		public IActionResult list()
+
+        [HttpGet("{id}")]
+        public IActionResult Index()
 		{
 			if (veriyoneticisi.isActive == true)
 			{

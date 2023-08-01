@@ -5,7 +5,8 @@
     settings: {
 
         serverDate: new Date(),
-        title: ""
+        title: "",
+        staticID: ""
     },
     loading: true,
     root: {
@@ -111,7 +112,7 @@
                     document.getElementById("addressemail").innerText = Data.email;
                     document.getElementById("addressemail").setAttribute("href", "mailto:" + Data.email);
 
-                    vba.settings.title = Data.title; 
+                    vba.settings.title = Data.title;
                     var titlebody = document.getElementById("titlebody");
                     if (titlebody) {
                         titlebody.innerText = vba.settings.title;
@@ -137,14 +138,14 @@
 
         setInterval(function () {
             vba.settings.serverDate.setMilliseconds(vba.settings.serverDate.getMilliseconds() + 1000);
-        }, 1000); 
+        }, 1000);
     },
     ready: function () {
         vba.route.load();
     },
     compile: function (tpl) {
         return vba.compileTemp(tpl, [{}]);
-    }, 
+    },
     modal: {
         close: function () {
             $('#myModal').modal('hide');
@@ -174,6 +175,11 @@
     },
     route: {
         getPath: function (pathName) {
+            //Path id query gizleme --------
+            if (pathName.includes("categories")) { 
+                vba.settings.staticID = pathName.split("categories/")[1];
+                pathName = "/categories";
+            }
             if (pathName.indexOf('?') > -1) {
                 pathName = pathName.substr(0, pathName.indexOf('?'));
             }
@@ -218,6 +224,7 @@
             for (var key in vba.route.ccnt.funcs) {
                 delete vba.route.ccnt.funcs[key];
             }
+
             vba.route.ccnt.name = controller;
 
             $("#pages_placeholder").load("/ajax" + window.location.pathname + window.location.search, function (responseTxt, statusTxt, xhr) {
@@ -320,7 +327,7 @@
                     vba.root.changeLoading(false);
                 }, 500);  
                 */
-             
+
                 $.getScript("/js/main.js", function () { }); //Template CSS  
                 var titlebody = document.getElementById("titlebody");
                 if (titlebody) {
@@ -381,7 +388,7 @@
         "/register": {
             load: function () {
                 vba.route.ccnt.funcs.updateItem = function (form) {
-                   
+
                     $.post("/api/user/register", $(form).serialize()
                     ).done(function (res) {
                         if (res.type == "error") {
@@ -407,15 +414,15 @@
                 vba.root.changeLoading(false);
             }
         },
-        "/categories/list": {
-            load: function () {
-                vba.route.ccnt.items.filterForm = {};
+        "/categories": {
+            load: function () { 
+                vba.route.ccnt.items.filterForm = {}; 
+                vba.route.ccnt.items.filterForm.id = vba.settings.staticID;
                 vba.route.ccnt.items.filterForm.page = 1;
                 vba.route.ccnt.items.filterForm.itemsPerPage = 5;
                 vba.route.ccnt.items.filterForm.totalItems = 0;
                 vba.route.ccnt.items.filterForm.price = "";
                 vba.route.ccnt.items.filterForm.listSorting = 0;
-                vba.route.ccnt.items.filterForm.id = 0;
                 vba.route.ccnt.items.filterForm.defaultProductsGrid = "";
 
                 vba.route.ccnt.funcs.getItems = function () {
@@ -423,9 +430,9 @@
                     $("#pages_placeholder .dataContainer").html("");
                     vba.route.ccnt.items.dataLoading = true;
 
-                    var url = new URLSearchParams(window.location.search);
-                    var cid = url.get("id");
-                    vba.route.ccnt.items.filterForm.id = cid;
+                    //var url = new URLSearchParams(window.location.search);
+                    //var cid = url.get("id");
+                    //vba.route.ccnt.items.filterForm.id = cid;
 
                     var post = {
                         price: vba.route.ccnt.items.filterForm.price,
@@ -452,7 +459,7 @@
 
                                 $.each(res.tags, function (index, item) {
                                     $("#tagsContainer").append("<li><a href=\"#\" title=\"" + item.split(",")[0] + "\">" + item.split(",")[0] + "</a></li> ")
-                                }); 
+                                });
 
                             } else {
                                 $("#pages_placeholder .dataContainer").html(" <div class='col-lg-12 mb-3'> <div class='row g-0 bg-light py-4'><div class='col-md-12 d-flex align-items-center justify-content-center'> 😔 Üzgünüm, talebinizle eşleşen birşey bulamadık 😔</div></div></div>").hide();
@@ -505,10 +512,8 @@
 
                 $.getScript("/js/main.js", function () { }); //Template CSS
                 vba.root.changeLoading(false);
-
             }
         },
-
     },
     alert: function (obj) {
         if (obj.classes == "alert-success") {

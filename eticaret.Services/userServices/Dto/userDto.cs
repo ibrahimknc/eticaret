@@ -10,6 +10,8 @@ namespace eticaret.Services.userServices.Dto
 		public string email { get; set; }
 		public string password { get; set; }
 		public bool isActive { get; set; }
-		public DateTime creatingTime { get; set; } = DateTime.UtcNow;
-	}
+        public DateTime? lastLoginDate { get; set; }
+        public DateTime creatingTime { get; set; }
+        public DateTime? updatedTime { get; set; }
+    }
 }

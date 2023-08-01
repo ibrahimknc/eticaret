@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using eticaret.Data;
+using eticaret.Services.categoriesServices;
 using eticaret.Services.logServices;
 using eticaret.Services.Maping;
 using eticaret.Services.settingsServices;
 using eticaret.Services.sliderServices;
 using eticaret.Services.userServices;
+using eticaret.Services.viewCategoryServices;
 using eticaret.Services.viewsFavoriteServices;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,6 +24,8 @@ namespace eticaret.Web
             services.AddScoped<IlogService, logService>();
             services.AddScoped<IviewsFavoriteService, viewsFavoriteService>();
             services.AddScoped<IsliderService, sliderService>();
+            services.AddScoped<IviewCategoryService, viewCategoryService>();
+            services.AddScoped<IcategoriesService, categoriesService>();
 
             services.AddAutoMapper(typeof(Startup));
             var mapperConfig = new MapperConfiguration(mc =>

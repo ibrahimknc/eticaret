@@ -1,4 +1,5 @@
 ﻿using eticaret.Services.sliderServices.Dto;
+using eticaret.Services.viewCategoryServices.Dto;
 using eticaret.Services.viewsFavoriteServices.Dto;
 using Newtonsoft.Json;
 using System.Collections.Generic;
@@ -17,7 +18,7 @@ public class response
             var formValues = new Dictionary<string, string>
                 {
                     { "whichDay", whichDay }
-                }; 
+                };
             var formContent = new FormUrlEncodedContent(formValues);
             HttpResponseMessage response = await client.PostAsync(apiUrl, formContent);
             string responseContent = await response.Content.ReadAsStringAsync();
@@ -45,15 +46,20 @@ public class response
 
     }
 
-    //public static List<ViewsCategory> geCategories()
-    //{
-    //    List<ViewsCategory> response = new List<ViewsCategory> { };
-    //    using (dbeticaretContext ec = new dbeticaretContext())
-    //    {
-    //        // Burada aktif olan tüm kategorileri ve her kategoriden kaç tane ürün olduğunu getirir(db de views yazıldı)
-    //        response = ec.viewsCategories.AsQueryable().ToList();
-    //    }
-    //    return response;
-    //}
+    public static async Task<List<viewCategoryDto>> geCategoriesAsync()
+    {
+        string apiUrl = veriyoneticisi.projectSettings["siteUrl"] + "/api/default/getCategories";
+
+        using (HttpClient client = new HttpClient())
+        {
+            var formValues = new Dictionary<string, string> { { "", "" } };
+            var formContent = new FormUrlEncodedContent(formValues);
+            HttpResponseMessage response = await client.PostAsync(apiUrl, formContent);
+            string responseContent = await response.Content.ReadAsStringAsync();
+            dynamic responseObject = JsonConvert.DeserializeObject(responseContent);
+            List<viewCategoryDto> list = responseObject.data.ToObject<List<viewCategoryDto>>();
+            return list;
+        }
+    }
 }
 

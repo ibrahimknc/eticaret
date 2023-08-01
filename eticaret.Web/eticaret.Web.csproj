@@ -9,7 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Views\categories\list.cshtml" />
+    <None Include="Views\categories\Index.cshtml" />
     <None Include="Views\Default\contact.cshtml" />
     <None Include="Views\Default\Index.cshtml" />
     <None Include="Views\Default\underConstruction.cshtml" />
