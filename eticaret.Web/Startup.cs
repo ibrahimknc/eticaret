@@ -1,14 +1,4 @@
-﻿using AutoMapper;
-using eticaret.Data;
-using eticaret.Domain.Entities;
-using eticaret.Services.logServices;
-using eticaret.Services.Maping;
-using eticaret.Services.settingsServices;
-using eticaret.Services.settingsServices.Dto;
-using eticaret.Services.sliderServices;
-using eticaret.Services.sliderServices.Dto;
-using eticaret.Services.userServices;
-using eticaret.Services.viewsFavoriteServices;
+﻿using eticaret.Data;  
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -16,8 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.Hosting;
-using System;
+using Microsoft.Extensions.Hosting; 
 using System.IO;
 
 namespace eticaret.Web
@@ -35,24 +24,9 @@ namespace eticaret.Web
 			services.AddDbContext<dbeticaretContext>(
 			options => options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"), 
 			b => b.MigrationsAssembly("eticaret.Data")));
-			services.AddScoped<DbContext>(provider => provider.GetService<dbeticaretContext>());
-
-			services.AddScoped<IsettingsService, settingsService>();
-			services.AddScoped<IuserService, userService>();
-			services.AddScoped<IlogService, logService>();
-			services.AddScoped<IviewsFavoriteService, viewsFavoriteService>(); 
-			services.AddScoped<IsliderService, sliderService>();
 			 
-
-            services.AddAutoMapper(typeof(Startup)); 
-            var mapperConfig = new MapperConfiguration(mc =>
-            {
-                mc.AddProfile(new MappingProfile());
-            });
-            IMapper mapper = mapperConfig.CreateMapper();
-            services.AddSingleton(mapper);
-
-
+            services.AddCustomServices();
+			 
             services.AddSession();
 			services.AddControllersWithViews().AddRazorRuntimeCompilation();
 			services.AddSignalR(); 
