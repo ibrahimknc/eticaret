@@ -1,6 +1,12 @@
-﻿using eticaret.Data;
+﻿using AutoMapper;
+using eticaret.Data;
+using eticaret.Domain.Entities;
 using eticaret.Services.logServices;
+using eticaret.Services.Maping;
 using eticaret.Services.settingsServices;
+using eticaret.Services.settingsServices.Dto;
+using eticaret.Services.sliderServices;
+using eticaret.Services.sliderServices.Dto;
 using eticaret.Services.userServices;
 using eticaret.Services.viewsFavoriteServices;
 using Microsoft.AspNetCore.Builder;
@@ -35,6 +41,17 @@ namespace eticaret.Web
 			services.AddScoped<IuserService, userService>();
 			services.AddScoped<IlogService, logService>();
 			services.AddScoped<IviewsFavoriteService, viewsFavoriteService>(); 
+			services.AddScoped<IsliderService, sliderService>();
+			 
+
+            services.AddAutoMapper(typeof(Startup)); 
+            var mapperConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new MappingProfile());
+            });
+            IMapper mapper = mapperConfig.CreateMapper();
+            services.AddSingleton(mapper);
+
 
             services.AddSession();
 			services.AddControllersWithViews().AddRazorRuntimeCompilation();

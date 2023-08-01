@@ -3,10 +3,10 @@
     <div class="container">
         <div class="tiva-slideshow-wrapper">
             <div id="tiva-slideshow" class="nivoSlider">
-               @* @foreach (var item in (List<Slider>)response.getSliders())
+                @foreach (var item in (List<sliderDto>)await response.getSlidersAsync())
                 {
                     <a href="#"> <img class="img-responsive" src="/uploads/sliders/@item.image" alt="@item.title"></a>
-                }*@
+                }
             </div>
         </div>
     </div>
@@ -53,16 +53,16 @@
                         <h2 class="title">Kategoriler</h2>
                     </div>
 
-                    <div class="block-content"> 
+                    <div class="block-content">
 
-                       @* @foreach (var item in (List<ViewsCategory>)response.geCategories())
-                        { 
-                            <div class="item">
-                                <span class="arrow categoriesCountBox">@item.productCount</span>
-                                <a class="category-title" href="/categories/list?id=@item.id">@item.name</a>
-                            </div> 
+                        @* @foreach (var item in (List<ViewsCategory>)response.geCategories())
+                        {
+                        <div class="item">
+                        <span class="arrow categoriesCountBox">@item.productCount</span>
+                        <a class="category-title" href="/categories/list?id=@item.id">@item.name</a>
+                        </div>
                         } *@
-                      
+
                     </div>
                 </div>
 
@@ -179,7 +179,7 @@
                             <img class="img-responsive" src="img/home2-payment-2.png" alt="Payment Intro">
                             <h3 class="title">
                                 GÜVENLİ ÖDEME
-                           </h3>
+                            </h3>
                             <div class="content">Güvenli ödeme ile güvendesiniz.</div>
                         </div>
                         <div class="item">
@@ -305,7 +305,7 @@
                                     }
                                 </div>
                             </div>
-                            
+
                             <!-- Best Seller -->
                             <div role="tabpanel" class="tab-pane fade" id="best-seller">
                                 <div class="products owl-theme owl-carousel">
@@ -354,7 +354,7 @@
                                     }
                                 </div>
                             </div>
-                             
+
                             <!-- On Sale -->
                             <div role="tabpanel" class="tab-pane fade" id="on-sale">
                                 <div class="products owl-theme owl-carousel">
@@ -402,7 +402,7 @@
                                         </div>
                                     }
                                 </div>
-                            </div> 
+                            </div>
                         </div>
                     </div>
                 </div>
