@@ -3,7 +3,7 @@ using eticaret.Domain.Entities;
 using eticaret.Services.settingsServices.Dto;
 using eticaret.Services.sliderServices.Dto;
 
-namespace eticaret.Services.Maping
+namespace eticaret.Services.Mapping
 {
     public class MappingProfile : Profile
     {

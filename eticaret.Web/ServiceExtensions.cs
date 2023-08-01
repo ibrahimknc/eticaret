@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using eticaret.Data;
 using eticaret.Services.categoriesServices;
-using eticaret.Services.logServices;
-using eticaret.Services.Maping;
+using eticaret.Services.logServices; 
+using eticaret.Services.Mapping;
 using eticaret.Services.settingsServices;
 using eticaret.Services.sliderServices;
 using eticaret.Services.userServices;
