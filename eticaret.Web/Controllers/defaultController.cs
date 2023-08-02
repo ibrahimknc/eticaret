@@ -46,5 +46,21 @@ namespace eticaret.Web.Controllers
 				return Redirect("/underConstruction");
 			}
 		}
-	}
+
+        [Route("[action]"), Route("ajax/[action]")]
+        public IActionResult aboutus()
+        {
+            if (veriyoneticisi.isActive == true)
+            {
+                if (!Request.Path.Value.Contains("/ajax/"))
+                    return View();
+                else
+                    return PartialView();
+            }
+            else
+            {
+                return Redirect("/underConstruction");
+            }
+        }
+    }
 }

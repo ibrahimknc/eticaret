@@ -341,6 +341,15 @@
                 vba.root.changeLoading(false);
             }
         },
+        "/aboutus": {
+            load: function () {
+                var titlebody = document.getElementById("titlebody");
+                if (titlebody) {
+                    titlebody.innerText = vba.settings.title;
+                }
+                vba.root.changeLoading(false);
+            }
+        },
         "/login": {
             load: function () {
                 vba.route.ccnt.funcs.updateItem = function (form) {
@@ -466,8 +475,8 @@
                                 $("#pages_placeholder .dataContainer").fadeIn(500);
                             }
                             $(".activePageName").text(res.name);
-                            $(".total-products").html("Toplam " + res.c + " Ürün Var");
-                            $(".showingTotalProducts").html("Toplam " + res.c + " Üründen " + res.data.length + " Adet Gösteriliyor");
+                            $(".total-products").html("Toplam <b><u>" + res.c + "</u></b> Ürün Var");
+                            $(".showingTotalProducts").html("Toplam <b><u>" + res.c + "</u></b> Üründen <b><u>" + res.data.length + "</u></b> Adet Gösteriliyor");
                             vba.route.ccnt.items.filterForm.totalItems = res.c;
                             vba.pagination();
                         }
