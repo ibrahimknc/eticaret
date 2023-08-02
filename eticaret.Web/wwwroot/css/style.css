@@ -13167,6 +13167,7 @@ input {
 
 [class~=product-detail] [class~=product-tab] [class~=tab-nav] ul li[class~=active] a {
     color: #78b144;
+    text-decoration: underline;
 }
 
 .product-quantity .qty .input-group .adjust-qty .adjust-btn {

@@ -80,6 +80,10 @@
             return false;
         },
         search: function () {
+            if (!window.location.pathname.includes("categories")) {
+                vba.route.getController("/categories", "/");
+            } 
+               
             if (vba.route.ccnt.items.hasOwnProperty("filterForm") && vba.route.ccnt.funcs.hasOwnProperty("getItems")) {
                 vba.route.ccnt.items.filterForm.page = 1;
                 vba.route.ccnt.items.filterForm.type = -1;
@@ -180,6 +184,10 @@
                 vba.settings.staticID = pathName.split("categories/")[1];
                 pathName = "/categories";
             }
+            if (pathName.includes("products")) {
+                vba.settings.staticID = pathName.split("products/")[1];
+                pathName = "/products";
+            } 
             if (pathName.indexOf('?') > -1) {
                 pathName = pathName.substr(0, pathName.indexOf('?'));
             }
@@ -523,6 +531,14 @@
                 vba.root.changeLoading(false);
             }
         },
+        "/products": {
+            load: function () {
+                //console.log(vba.settings.staticID);
+                  
+                $.getScript("/js/main.js", function () { }); //Template CSS  
+                vba.root.changeLoading(false);
+            }
+        }
     },
     alert: function (obj) {
         if (obj.classes == "alert-success") {

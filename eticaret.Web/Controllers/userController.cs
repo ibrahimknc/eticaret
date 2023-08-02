@@ -2,7 +2,8 @@
 
 namespace eticaret.Web.Controllers
 {
-	public class userController : Controller
+    [Route("[controller]"), Route("ajax/[controller]")]
+    public class userController : Controller
 	{
 		[Route("[action]"), Route("ajax/[action]")]
 		public IActionResult register()
