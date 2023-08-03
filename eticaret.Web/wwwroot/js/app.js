@@ -591,10 +591,10 @@
                 vba.route.ccnt.funcs.getItems = function () {
                     vba.root.changeLoading(true);
                     $("#pages_placeholder .dataContainer").html("");
-                    vba.route.ccnt.items.dataLoading = true; 
+                    vba.route.ccnt.items.dataLoading = true;
                     var post = {
                         id: vba.route.ccnt.items.filterForm.id
-                    }; 
+                    };
                     $.post("/api/products/getProduct", post).done(function (res) {
                         if (res.type == "error") {
                             vba.alert({
@@ -623,30 +623,27 @@
                                 $(".commetsCount").text("Toplam Yorum (" + res.comments.length + ")");
                                 $(".productTags").text("#" + res.data.tags.replace(/,/g, ", #"));
 
+                                if (res.comments.length > 0) {
+                                    $.each(res.comments, function (index, item) {
 
-                                getComments();
-                                function getComments() {
-                                    if (res.comments.length > 0) {
-                                        $.each(res.comments, function (index, item) {
-
-                                            var raiting = "";
-                                            for (var i = 0; i < 5; i++) {
-                                                if (item.rating > i) {
-                                                    raiting += '<div class="star on"></div>';
-                                                }
-                                                else {
-                                                    raiting += '<div class="star off"></div>';
-                                                }
-
+                                        var ratingHtml = "";
+                                        for (var i = 0; i < 5; i++) {
+                                            if (item.rating > i) {
+                                                ratingHtml += '<div class="star on"></div>';
+                                            }
+                                            else {
+                                                ratingHtml += '<div class="star off"></div>';
                                             }
 
-                                            $(".comments-list").append(`<div class="item col-md-12">
+                                        }
+
+                                        $(".comments-list").append(`<div class="item col-md-12">
                                                                 <div class="comment-left pull-left">
                                                                     <div class="avatar">
                                                                         <img src="/img/avatar.jpg" alt="" width="70" height="70">
                                                                     </div>
                                                                     <div class="product-rating">
-                                                                        ${raiting}
+                                                                        ${ratingHtml}
                                                                     </div>
                                                                 </div>
                                                                 <div class="comment-body">
@@ -656,31 +653,83 @@
                                                                     <div class="comment-content">${item.detail}</div>
                                                                 </div>
                                                             </div>`);
-                                        });
-                                    }
-                                    else {
-                                        $(".comments-list").append(`<div class="item  col-md-12">
+                                    });
+                                }
+                                else {
+                                    $(".comments-list").append(`<div class="item  col-md-12">
                                                                 <div class="comment-left pull-left">
                                                                 <div class='col-md-12 d-flex align-items-center justify-content-center'>
                                                                     😔 Üzgünüm,Yorum Yapılmamıştır.
                                                                 </div>
                                                                 </div>
                                                             </div>`);
-                                    }
                                 }
 
-                                //res.productImageList
-                                getProductImageList();
-                                function getProductImageList() {
-                                    if (res.productImageList.length > 0) {
-                                        var responseHTML = `<div class="thumb-images owl-theme owl-carousel">`;
-                                        $.each(res.productImageList, function (index, item) {
-                                            responseHTML += `<img class="img-responsive" src="/uploads/products/${item.url}" alt="${item.product.name} Image"> `;
-                                        });
-                                        responseHTML += `</div>`;
-                                        $("#productImageList").append(responseHTML);
-                                    }
+                                if (res.productImageList.length > 0) {
+                                    var responseHTML = `<div class="thumb-images owl-theme owl-carousel">`;
+                                    $.each(res.productImageList, function (index, item) {
+                                        responseHTML += `<img class="img-responsive" src="/uploads/products/${item.url}" alt="${item.product.name} Image"> `;
+                                    });
+                                    responseHTML += `</div>`;
+                                    $("#productImageList").append(responseHTML);
                                 }
+
+                                if (res.relatedProducts.length > 0) {
+                                    var responseHTML = `<div class="products owl-theme owl-carousel"> `;
+                                    $.each(res.relatedProducts, function (index, item) {
+
+                                        var ratingHtml = "";
+                                        for (var i = 0; i < 5; i++) {
+                                            if (item.rating > i) {
+                                                ratingHtml += '<div class="star on"></div>';
+                                            }
+                                            else {
+                                                ratingHtml += '<div class="star off"></div>';
+                                            }
+
+                                        }
+
+                                        responseHTML += `<div class="product-item">
+                                                            <div class="product-image">
+                                                                <a href="/products/${item.id}">
+                                                                    <img src="/uploads/products/${item.image}" alt="${item.name}">
+                                                                </a>
+                                                            </div>
+
+                                                            <div class="product-title">
+                                                                <a href="/products/${item.id}">
+                                                                    ${item.name}
+                                                                </a>
+                                                            </div>
+
+                                                            <div class="product-rating">
+                                                                ${ratingHtml}
+                                                            </div>
+
+                                                            <div class="product-price">
+                                                                <span class="sale-price">${item.salePrice}</span>
+                                                                <span class="base-price">${item.basePrice}</span>
+                                                            </div>
+
+                                                            <div class="product-buttons">
+                                                                <a class="add-to-cart" href="#">
+                                                                    <i class="fa fa-shopping-basket" aria-hidden="true"></i>
+                                                                </a>
+
+                                                                <a class="add-wishlist" href="#">
+                                                                    <i class="fa fa-heart" aria-hidden="true"></i>
+                                                                </a>
+
+                                                                <a class="quickview" href="/products/${item.id}">
+                                                                    <i class="fa fa-eye" aria-hidden="true"></i>
+                                                                </a>
+                                                            </div>
+                                                        </div>`;
+                                    });
+                                    responseHTML += `</div>`;
+                                    $(".relatedProducts").append(responseHTML);
+                                }
+
                             } else {
                                 $("#pages_placeholder ").html(" <div class='col-lg-12 mb-3'> <div class='row g-0 bg-light py-4'><div class='col-md-12 d-flex align-items-center justify-content-center'> 😔 Üzgünüm, talebinizle eşleşen birşey bulamadık 😔</div></div></div>").hide();
                                 $("#pages_placeholder ").fadeIn(500);

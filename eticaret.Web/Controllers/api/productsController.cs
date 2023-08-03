@@ -19,13 +19,14 @@ namespace eticaret.Web.Controllers.api
             var response = _IproductsService.getProduct(id);
             var data = response["data"];
             var responsePIL = response["productImageList"];
+            var relatedProducts = response["relatedProducts"];
             var comments = response["comments"];
             var categoryName = response["categoryName"];
             var categoryID = response["categoryID"];
             var title = response["title"];
             var type = response["type"];
             var message = response["message"];
-            return Ok(new { type = type, message = message, data = data, categoryName = categoryName, categoryID = categoryID, title = title, comments = comments, productImageList = responsePIL });
+            return Ok(new { type = type, message = message, data = data, categoryName = categoryName, categoryID = categoryID, title = title, comments = comments, productImageList = responsePIL, relatedProducts = relatedProducts });
 
         }
     }

@@ -19,6 +19,7 @@ namespace eticaret.Services.productsServices
 				{ "message",null },
                 { "data", null},
                 { "productImageList", null},
+                { "relatedProducts", null}, //ilgili ürünler
                 { "comments", null},
                 { "categoryName", null },
                 { "categoryID", null },
@@ -29,20 +30,21 @@ namespace eticaret.Services.productsServices
         {
             try
             {
-                var responseProduct = _dbeticaretContext.products.AsQueryable().FirstOrDefault(x => x.id == id);
-                var responseCategory = _dbeticaretContext.categories.AsQueryable().FirstOrDefault(x => x.id == responseProduct.categoriID);
+                var responseProduct = _dbeticaretContext.products.Include(c => c.Category).AsQueryable().FirstOrDefault(x => x.id == id); 
                 var responseComments = _dbeticaretContext.comments.Include(c => c.User).AsQueryable().Where(x => x.productID == id & x.isActive == true).ToList();
                 var responsePIL = _dbeticaretContext.productsIMGs.AsQueryable().Where(x => x.productID == id & x.isActive == true).ToList();
+                var relatedProducts = _dbeticaretContext.products.AsQueryable().Where(x => x.id != id & x.isActive == true & x.categoriID == responseProduct.categoriID).OrderByDescending(x => x.creatingTime).Take(5).ToList();
 
                 if (responseProduct.isActive == true)
                 {  
                     response["type"] = "success"; 
                     response["data"] = responseProduct; 
                     response["productImageList"] = responsePIL; 
+                    response["relatedProducts"] = relatedProducts;
                     response["comments"] = responseComments;
-                    response["categoryName"] = responseCategory.name; 
+                    response["categoryName"] = responseProduct.Category.name; 
                     response["title"] = responseProduct.name; 
-                    response["categoryID"] = responseCategory.id;
+                    response["categoryID"] = responseProduct.categoriID;
                 }
                 else
                 {
