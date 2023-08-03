@@ -3,6 +3,7 @@ using eticaret.Data;
 using eticaret.Services.categoriesServices;
 using eticaret.Services.logServices; 
 using eticaret.Services.Mapping;
+using eticaret.Services.productsServices;
 using eticaret.Services.settingsServices;
 using eticaret.Services.sliderServices;
 using eticaret.Services.userServices;
@@ -26,6 +27,7 @@ namespace eticaret.Web
             services.AddScoped<IsliderService, sliderService>();
             services.AddScoped<IviewCategoryService, viewCategoryService>();
             services.AddScoped<IcategoriesService, categoriesService>();
+            services.AddScoped<IproductsService, productsService>();
 
             services.AddAutoMapper(typeof(Startup));
             var mapperConfig = new MapperConfiguration(mc =>

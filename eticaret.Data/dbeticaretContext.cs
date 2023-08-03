@@ -24,13 +24,8 @@ namespace eticaret.Data
             modelBuilder.ApplyConfiguration(new sliderConfiguration());
             modelBuilder.ApplyConfiguration(new userConfiguration());
             modelBuilder.ApplyConfiguration(new userFavoriteConfiguration());
+            modelBuilder.ApplyConfiguration(new commentConfiguration());
 
-            #region id Otomatik atanan olarak ayarlandı
-           // modelBuilder.Entity<BaseEntitiy>()
-           //.Property(c => c.id)
-           //.HasDefaultValueSql("uuid_generate_v4()")
-           //.IsRequired();
-            #endregion
 
             #region Log ForeignKey
             modelBuilder.Entity<Log>()
@@ -64,6 +59,18 @@ namespace eticaret.Data
           .WithMany()
           .HasForeignKey(l => l.categoriID);
             #endregion
+
+            #region Comments ForeignKey
+            modelBuilder.Entity<Comment>()
+        .HasOne(l => l.User)
+        .WithMany()
+        .HasForeignKey(l => l.userID);
+
+            modelBuilder.Entity<Comment>()
+          .HasOne(l => l.Product)
+          .WithMany()
+          .HasForeignKey(l => l.productID); 
+            #endregion
         }
 
 
@@ -77,6 +84,7 @@ namespace eticaret.Data
         public DbSet<Slider> sliders { get; set; }
         public DbSet<User> users { get; set; }
         public DbSet<UserFavorite> userFavorites { get; set; }
+        public DbSet<Comment> comments { get; set; }
 
     }
 }

@@ -1,0 +1,28 @@
+﻿<div class="modal-header bg-success">
+    <div class="d-flex align-items-center" style="justify-content: space-between;">
+        <h5 class="modal-title text-white float-left">&#128722; <b>@ViewBag.title</b> Ürünü Paylaş</h5>
+        <button type="button" class="close text-white float-right" aria-label="Close" onclick="vba.modal.close()">
+            <span aria-hidden="true">×</span>
+        </button>
+    </div>
+</div>
+<div class="modal-body text-center">
+    <a href="https://www.facebook.com/sharer/sharer.php?u=@ViewBag.url" class="btn-outline-primary btn-lg btn-block mb-3 bg-primary bg-gradient">
+        <i class="fa fa-facebook-f mr-2"></i> Facebook
+    </a>
+    <a href="https://twitter.com/intent/tweet?text=@ViewBag.url" class="btn-outline-info btn-lg btn-block mb-3 bg-info">
+        <i class="fa fa-twitter mr-2"></i>  Twitter
+    </a>
+    <a href="https://plus.google.com/share?url=@ViewBag.url" class="btn-outline-danger btn-lg btn-block mb-3 bg-danger">
+        <i class="fa fa-google-plus-square"></i> Google+
+    </a>
+    <a href="https://www.linkedin.com/shareArticle?mini=true&url=@ViewBag.url" class="btn-outline-info btn-lg btn-block mb-3 bg-info">
+        <i class="fa fa-linkedin-square"></i> Linkedin
+    </a>
+    <a href="https://wa.me/?text=@ViewBag.url" class="btn-outline-success btn-lg btn-block mb-3 bg-success">
+        <i class="fa fa-whatsapp"></i> Whatsapp
+    </a>
+</div>
+<div class="modal-footer d-flex justify-content-center">
+    <button type="button" onclick="vba.route.ccnt.funcs.clipboardCopy();" class="btn btn-secondary">&#128279; Bağlantıyı Kopyala &#128279;</button>
+</div>

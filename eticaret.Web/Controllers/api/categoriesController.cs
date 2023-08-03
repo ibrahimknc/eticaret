@@ -1,10 +1,6 @@
-﻿using eticaret.Services.categoriesServices;
-using eticaret.Services.categoriesServices.Dto;
-using eticaret.Services.userServices.Dto;
-using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using System;
-using System.Xml.Linq;
+﻿using eticaret.Services.categoriesServices; 
+using Microsoft.AspNetCore.Mvc; 
+using System; 
 
 namespace eticaret.Web.Controllers.api
 {

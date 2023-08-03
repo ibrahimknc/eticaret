@@ -82,8 +82,8 @@
         search: function () {
             if (!window.location.pathname.includes("categories")) {
                 vba.route.getController("/categories", "/");
-            } 
-               
+            }
+
             if (vba.route.ccnt.items.hasOwnProperty("filterForm") && vba.route.ccnt.funcs.hasOwnProperty("getItems")) {
                 vba.route.ccnt.items.filterForm.page = 1;
                 vba.route.ccnt.items.filterForm.type = -1;
@@ -180,14 +180,14 @@
     route: {
         getPath: function (pathName) {
             //Path id query gizleme --------
-            if (pathName.includes("categories")) { 
+            if (pathName.includes("categories")) {
                 vba.settings.staticID = pathName.split("categories/")[1];
                 pathName = "/categories";
             }
             if (pathName.includes("products")) {
                 vba.settings.staticID = pathName.split("products/")[1];
                 pathName = "/products";
-            } 
+            }
             if (pathName.indexOf('?') > -1) {
                 pathName = pathName.substr(0, pathName.indexOf('?'));
             }
@@ -358,13 +358,12 @@
                 vba.root.changeLoading(false);
             }
         },
-        "/login": {
+        "/user/login": {
             load: function () {
                 vba.route.ccnt.funcs.updateItem = function (form) {
                     if (vba.root.user == null) {
                         vba.root.changeLoading(true);
                         var elem = vba.serializeForm(form);
-                        console.log(elem);
                         $.post("/api/user/login", {
                             email: elem.email,
                             password: elem.password
@@ -402,7 +401,7 @@
                 vba.root.changeLoading(false);
             }
         },
-        "/register": {
+        "/user/register": {
             load: function () {
                 vba.route.ccnt.funcs.updateItem = function (form) {
 
@@ -432,8 +431,8 @@
             }
         },
         "/categories": {
-            load: function () { 
-                vba.route.ccnt.items.filterForm = {}; 
+            load: function () {
+                vba.route.ccnt.items.filterForm = {};
                 vba.route.ccnt.items.filterForm.id = vba.settings.staticID;
                 vba.route.ccnt.items.filterForm.page = 1;
                 vba.route.ccnt.items.filterForm.itemsPerPage = 5;
@@ -499,7 +498,6 @@
                 vba.route.ccnt.funcs.getItems();
 
                 vba.route.ccnt.funcs.filterOperations = function () {
-
                     vba.route.ccnt.items.filterForm.price = $("#price-filter").val();
                     vba.route.ccnt.funcs.getItems();
                 }
@@ -533,8 +531,187 @@
         },
         "/products": {
             load: function () {
-                //console.log(vba.settings.staticID);
-                  
+                vba.route.ccnt.items.filterForm = {};
+                vba.route.ccnt.items.filterForm.id = vba.settings.staticID;
+                vba.route.ccnt.funcs.shareProduct = function (elem) {
+                    vba.modal.init();
+                    if (vba.modal.name != "recommendsInfo") {
+                        vba.modal.resetFuncs();
+                        vba.modal.funcs.load = function () {
+                            var html = vba.compileTemp(vba.modal.html, [{}]);
+                            vba.modal.bind(html);
+                        };
+
+                        var url = window.location.href;;
+                        var productName = $("h2.productTitle").text();
+                        var productPrice = $(".productSalePrice").text();
+                        $.get("/modals/share?title=" + productName + "&url=" + productName + " " + productPrice + " " + url).done(function (res) {
+                            vba.modal.html = res;
+                            vba.modal.funcs.load();
+                        });
+                    }
+
+                }
+                vba.route.ccnt.funcs.clipboardCopy = function () {
+                    var url = window.location.href;
+                    navigator.clipboard.writeText(url);
+                    alert("Bağlantı panoya kopyalandı!");
+                }
+                vba.route.ccnt.funcs.windowPrint = function () {
+                    window.print();
+                }
+                vba.route.ccnt.funcs.sendToMail = function () {
+                    var emailSubject = "Bu sayfaya gözat";
+                    var emailBody = "Bu sayfaya gözat: " + window.location.href;
+                    var emailTo = prompt("Alıcı: ", "");
+                    var emailCC = ""; // Opsiyonel, CC alanı için e-posta adresi
+                    var emailBCC = ""; // Opsiyonel, BCC alanı için e-posta adresi
+
+                    var mailtoLink = "mailto:" + emailTo + "?subject=" + encodeURIComponent(emailSubject) + "&body=" + encodeURIComponent(emailBody);
+
+                    // CC ve BCC alanlarını eklemek için aşağıdaki gibidir.
+                    // var mailtoLink = "mailto:" + emailTo + "?cc=" + emailCC + "&bcc=" + emailBCC + "&subject=" + encodeURIComponent(emailSubject) + "&body=" + encodeURIComponent(emailBody);
+
+                    window.location.href = mailtoLink;
+
+                }
+                vba.route.ccnt.funcs.scrollToSection = function (resp) {
+                    $("a.nav-link[data-toggle='tab'][href='#review']").click();
+                    setTimeout(function () {
+                        const element = document.querySelector(resp);
+                        if (element) {
+                            element.scrollIntoView({
+                                behavior: "smooth",
+                                block: "start"
+                            });
+                        }
+                    }, 300);
+
+                }
+                vba.route.ccnt.funcs.getItems = function () {
+                    vba.root.changeLoading(true);
+                    $("#pages_placeholder .dataContainer").html("");
+                    vba.route.ccnt.items.dataLoading = true; 
+                    var post = {
+                        id: vba.route.ccnt.items.filterForm.id
+                    }; 
+                    $.post("/api/products/getProduct", post).done(function (res) {
+                        if (res.type == "error") {
+                            vba.alert({
+                                message: res.message == '' ? "İşlem başarısız" : res.message,
+                                classes: 'alert-danger',
+                                duration: 5000
+                            });
+                            vba.root.checkLogin();
+                        }
+                        else if (res.type == "inActive") {
+                            vba.route.getController("/", "/");
+                        }
+                        else {
+                            if (res.data.id !== null) {
+                                $(".productTitle").text(res.title);
+                                $(".categoryName").html(res.categoryName);
+                                $(".categoryName").attr("title", res.categoryName);
+                                $(".categoryName").attr("href", "/categories/" + res.categoryID);
+                                $(".productSalePrice").text(res.data.salePrice + " ₺");
+                                $(".productBasePrice").text(res.data.basePrice + " ₺");
+                                $(".productStock").html(res.data.stock > 0 ? " <span class=\"availability\">Stok Durumu :</span> <i class=\"fa fa-check-square-o\" aria-hidden=\"true\"></i>Stokta var" : "<span class=\"availability\">Stok Durumu :</span><font color=\"red\" class=\"beniGoster-text\"> <i class=\"fa fa-times-circle-o\" aria-hidden=\"true\"></i>Stokta Yok<font>");
+                                $(".productMainImage").html("<img class=\"img-responsive\" src=\"/uploads/products/" + res.data.image + "\" alt=\"Product Image\">");
+                                $(".product-short-description").text((res.data.details.split(" ").slice(0, 20).join(" ")) + "...");
+                                $("#descriptionDetails").text(res.data.details);
+                                $("#additional-information").text(res.data.details);
+                                $(".commetsCount").text("Toplam Yorum (" + res.comments.length + ")");
+                                $(".productTags").text("#" + res.data.tags.replace(/,/g, ", #"));
+
+
+                                getComments();
+                                function getComments() {
+                                    if (res.comments.length > 0) {
+                                        $.each(res.comments, function (index, item) {
+
+                                            var raiting = "";
+                                            for (var i = 0; i < 5; i++) {
+                                                if (item.rating > i) {
+                                                    raiting += '<div class="star on"></div>';
+                                                }
+                                                else {
+                                                    raiting += '<div class="star off"></div>';
+                                                }
+
+                                            }
+
+                                            $(".comments-list").append(`<div class="item col-md-12">
+                                                                <div class="comment-left pull-left">
+                                                                    <div class="avatar">
+                                                                        <img src="/img/avatar.jpg" alt="" width="70" height="70">
+                                                                    </div>
+                                                                    <div class="product-rating">
+                                                                        ${raiting}
+                                                                    </div>
+                                                                </div>
+                                                                <div class="comment-body">
+                                                                    <div class="comment-meta">
+                                                                        <span class="author">${item.user.firstName + " " + item.user.lastName}</span> - <span class="time">${item.creatingTime}</span>
+                                                                    </div>
+                                                                    <div class="comment-content">${item.detail}</div>
+                                                                </div>
+                                                            </div>`);
+                                        });
+                                    }
+                                    else {
+                                        $(".comments-list").append(`<div class="item  col-md-12">
+                                                                <div class="comment-left pull-left">
+                                                                <div class='col-md-12 d-flex align-items-center justify-content-center'>
+                                                                    😔 Üzgünüm,Yorum Yapılmamıştır.
+                                                                </div>
+                                                                </div>
+                                                            </div>`);
+                                    }
+                                }
+
+                                //res.productImageList
+                                getProductImageList();
+                                function getProductImageList() {
+                                    if (res.productImageList.length > 0) {
+                                        var responseHTML = `<div class="thumb-images owl-theme owl-carousel">`;
+                                        $.each(res.productImageList, function (index, item) {
+                                            responseHTML += `<img class="img-responsive" src="/uploads/products/${item.url}" alt="${item.product.name} Image"> `;
+                                        });
+                                        responseHTML += `</div>`;
+                                        $("#productImageList").append(responseHTML);
+                                    }
+                                }
+                            } else {
+                                $("#pages_placeholder ").html(" <div class='col-lg-12 mb-3'> <div class='row g-0 bg-light py-4'><div class='col-md-12 d-flex align-items-center justify-content-center'> 😔 Üzgünüm, talebinizle eşleşen birşey bulamadık 😔</div></div></div>").hide();
+                                $("#pages_placeholder ").fadeIn(500);
+                                vba.route.getController("/", "/"); s
+                            }
+                        }
+                        vba.route.ccnt.items.dataLoading = false;
+                        vba.root.changeLoading(false);
+                    }).fail(function () {
+                        vba.route.ccnt.items.dataLoading = false;
+                        $("#pages_placeholder .dataContainer").html(" <div class='col-lg-12 mb-3'> <div class='row g-0 bg-light py-4'><div class='col-md-12 d-flex align-items-center justify-content-center'> 😔 Üzgünüm, talebinizle eşleşen birşey bulamadık 😔</div></div></div>");
+                    });
+                    vba.root.changeLoading(false);
+                }
+                vba.route.ccnt.funcs.getItems();
+                vba.route.ccnt.funcs.updateComment = function (form) {
+                    vba.root.changeLoading(true);
+                    var elem = vba.serializeForm(form);
+                    if (elem.rating != null) {
+                        console.log(elem);
+                    }
+                    else {
+                        vba.alert({
+                            message: "Lütfen Değerlendirme Seçiniz.",
+                            classes: 'alert-danger',
+                            duration: 5000
+                        });
+                    }
+
+                    vba.root.changeLoading(false);
+                }
                 $.getScript("/js/main.js", function () { }); //Template CSS  
                 vba.root.changeLoading(false);
             }
