@@ -91,7 +91,7 @@
             }
             return false;
         }
-    },
+    }, 
     load: function () {
         document.addEventListener("DOMContentLoaded", function () {
             var Data = {};
