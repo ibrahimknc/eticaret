@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using eticaret.Data;
@@ -9,9 +10,10 @@ using eticaret.Data;
 namespace eticaret.Data.Migrations
 {
     [DbContext(typeof(dbeticaretContext))]
-    partial class dbeticaretContextModelSnapshot : ModelSnapshot
+    [Migration("20230804133326_UpdateUserDomainTwo")]
+    partial class UpdateUserDomainTwo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -339,8 +341,8 @@ namespace eticaret.Data.Migrations
                         .HasDefaultValueSql("uuid_generate_v4()");
 
                     b.Property<string>("address")
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)");
 
                     b.Property<DateTime>("creatingTime")
                         .HasColumnType("timestamp with time zone");

@@ -1,0 +1,133 @@
+﻿<div class="container">
+    <div class="main-body">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="main-breadcrumb">
+            <ol class="breadcrumb mb-0 d-flex justify-content-center">
+                <li class="breadcrumb-item profileTitle" aria-current="page"><h3><i class="fa fa-cog"></i> Kullanıcı Profili <i class="fa fa-cog"></i></h3></li>
+            </ol>
+        </nav>
+        <!-- /Breadcrumb -->
+        <div class="card mt-5">
+            <div class="card-body">
+                <div class="d-flex flex-column align-items-center text-center">
+                    <img src="/img/profil_avatar.png" alt="Admin" class="rounded-circle profileAvatar">
+                    <div class="profileUserName">
+                        <h4 class="mb-4 profile-firstName-lastName">ibrahimkonc</h4>
+                        <p class="text-secondary mb-1 profileMail">ibrahim konç</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr class="borderStyle" />
+        <div class="row">
+            <div class="col-md-6">
+                <form id="profileForm" method="post" onsubmit="vba.route.ccnt.funcs.updateItemProfile(this);return false">
+                    <div class="d-flex justify-content-center">
+                        <h4>| Genel Bilgiler |</h4>
+                    </div>
+                    <div class="card mt-3">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <label class="mb-0">Adın:</label>
+                                    </div>
+                                    <div class="col-md-10">
+                                        <input type="text" class="form-control" name="firstName" placeholder="Adınız">
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <label class="mb-0">Soyadın:</label>
+                                    </div>
+                                    <div class="col-md-10">
+                                        <input type="text" class="form-control" name="lastName" placeholder="Soyadınız">
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <label class="mb-0">Email:</label>
+                                    </div>
+                                    <div class="col-md-10">
+                                        <input type="email" class="form-control" name="email" placeholder="Email Adresiniz" readonly>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <label class="mb-0">Telefon:</label>
+                                    </div>
+                                    <div class="col-md-10">
+                                        <input type="text" class="form-control" name="phone" placeholder="Telefon Numaranız">
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <label class="mb-0">Adres:</label>
+                                    </div>
+                                    <div class="col-md-10">
+                                        <textarea class="form-control textareaResize-vertical" name="address" rows="4" placeholder="Adresiniz"></textarea>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-center align-items-center flex-wrap">
+                                <input type="submit" class="btn btn-primary" value="Kaydet">
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-6">
+                <form id="profilePassForm" method="post" onsubmit="vba.route.ccnt.funcs.updateItemProfilePass(this);return false">
+                    <div class="d-flex justify-content-center">
+                        <h4>| Şifre Değişikliği |</h4>
+                    </div>
+                    <div class="card mt-3">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <label class="mb-0"><sup class="required">*</sup> Şifreniz :</label>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <input type="password" class="form-control" name="password" placeholder="Şifreniz">
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <label class="mb-0"><sup class="required">*</sup> Yeni Şifre :</label>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <input type="password" class="form-control" name="newPassword" placeholder="Yeni Şifre">
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <label class="mb-0"><sup class="required">*</sup> Şifre Tekrarı :</label>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <input type="password" class="form-control" name="newPasswordRepeat" placeholder="Şifre Tekrarı">
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-center align-items-center flex-wrap">
+                                <input type="submit" class="btn btn-primary" value="Kaydet">
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -93,7 +93,7 @@
         }
     },
     load: function () {
-        window.onload = function () {
+        document.addEventListener("DOMContentLoaded", function () {
             var Data = {};
             fetch("/api/default/getSettings", {
                 method: "POST",
@@ -124,7 +124,7 @@
                 })
                 .catch(error => console.error(error));
 
-        };
+        });
         $("#pages_placeholder [data-repeat]").each(function () {
             var verName = $(this).attr("data-repeat");
             $(this).removeAttr("data-repeat");
@@ -179,7 +179,11 @@
     },
     route: {
         getPath: function (pathName) {
-            //Path id query gizleme --------
+            //Path id query gizleme -------- 
+            if (pathName.includes("profile")) {
+                vba.settings.staticID = pathName.split("profile/")[1];
+                pathName = "/user/profile";
+            }
             if (pathName.includes("categories")) {
                 vba.settings.staticID = pathName.split("categories/")[1];
                 pathName = "/categories";
@@ -358,6 +362,116 @@
                 vba.root.changeLoading(false);
             }
         },
+        "/user/profile": {
+            load: function () {
+                vba.route.ccnt.funcs.updateItemProfile = function (form) {
+                    $.post("/api/user/updateUser", $(form).serialize()
+                    ).done(function (res) {
+                        if (res.type == "error") {
+                            vba.alert({
+                                message: res.message == '' ? "İşlem Başarısız" : res.message,
+                                classes: 'alert-danger'
+                            });
+                            vba.root.changeLoading(false);
+                        } else {
+                            vba.alert({
+                                message: res.message == '' ? "İşlem Başarılı" : res.message,
+                                classes: "alert-success"
+                            });
+                            vba.route.ccnt.funcs.getItems();
+                        }
+                    }).fail(function () {
+                        vba.alert({
+                            message: "İşlem başarısız",
+                            classes: 'alert-danger'
+                        });
+                    });
+                }
+                vba.route.ccnt.funcs.updateItemProfilePass = function (form) {
+                    var objForm = $(form).serializeArray();
+                    var formObject = {};
+                    objForm.forEach(function (item) {
+                        formObject[item.name] = item.value;
+                    });
+
+                    if (formObject.password != null && formObject.newPassword != null && formObject.newPasswordRepeat != null) {
+                        if (objForm.newPassword == objForm.newPasswordRepeat) {
+                            $.post("/api/user/updateUserPassword", objForm
+                            ).done(function (res) {
+                                if (res.type == "error") {
+                                    vba.alert({
+                                        message: res.message == '' ? "İşlem Başarısız" : res.message,
+                                        classes: 'alert-danger'
+                                    });
+                                    vba.root.changeLoading(false);
+                                } else {
+                                    vba.alert({
+                                        message: res.message == '' ? "İşlem Başarılı" : res.message,
+                                        classes: "alert-success"
+                                    });
+                                    $(form).trigger("reset");
+                                    vba.route.ccnt.funcs.getItems();
+                                }
+                            }).fail(function () {
+                                vba.alert({
+                                    message: "İşlem başarısız",
+                                    classes: 'alert-danger'
+                                });
+                            });
+                        }
+                        else {
+                            vba.alert({
+                                message: "Lütfen yeni şifreleri aynı giriniz.",
+                                classes: 'alert-danger'
+                            });
+                        }
+                    }
+                    else {
+                        vba.alert({
+                            message: "Lütfen hiç boş bırakmayınız.",
+                            classes: 'alert-danger'
+                        });
+                    } 
+                }
+                vba.route.ccnt.funcs.getItems = function () {
+                    vba.root.changeLoading(true);  
+                    $.post("/api/user/getUserProfile", {}).done(function (res) {
+                        if (res.type == "error") {
+                            vba.alert({
+                                message: res.message == '' ? "İşlem başarısız" : res.message,
+                                classes: 'alert-danger',
+                                duration: 5000
+                            });
+                            vba.root.checkLogin();
+                        }
+                        else if (res.type == "inActive") {
+                            vba.route.getController("/", "/");
+                        }
+                        else {
+                            if (res.data.id !== null) { 
+                                $(".profile-firstName-lastName").text(res.data.firstName + " " + res.data.lastName);
+                                $(".profileMail").html(res.data.email);  
+                                $('#profileForm input[name="firstName"]').val(res.data.firstName);
+                                $('#profileForm input[name="lastName"]').val(res.data.lastName);
+                                $('#profileForm input[name="email"]').val(res.data.email);
+                                $('#profileForm input[name="phone"]').val(res.data.phone);
+                                $('#profileForm textarea[name="address"]').val(res.data.address);
+
+                            } else {
+                                $("#pages_placeholder ").html(" <div class='col-lg-12 mb-3'> <div class='row g-0 bg-light py-4'><div class='col-md-12 d-flex align-items-center justify-content-center'> 😔 Üzgünüm, talebinizle eşleşen birşey bulamadık 😔</div></div></div>").hide();
+                                $("#pages_placeholder ").fadeIn(500);
+                                vba.route.getController("/", "/");  
+                            }
+                        }  
+                    }).fail(function () {
+                        vba.route.ccnt.items.dataLoading = false;
+                        $("#pages_placeholder .dataContainer").html(" <div class='col-lg-12 mb-3'> <div class='row g-0 bg-light py-4'><div class='col-md-12 d-flex align-items-center justify-content-center'> 😔 Üzgünüm, talebinizle eşleşen birşey bulamadık 😔</div></div></div>");
+                    }); 
+                    vba.root.changeLoading(false);
+                }
+                vba.route.ccnt.funcs.getItems();  
+            }
+        },
         "/user/login": {
             load: function () {
                 vba.route.ccnt.funcs.updateItem = function (form) {
@@ -403,8 +517,7 @@
         },
         "/user/register": {
             load: function () {
-                vba.route.ccnt.funcs.updateItem = function (form) {
-
+                vba.route.ccnt.funcs.updateItem = function (form) { 
                     $.post("/api/user/register", $(form).serialize()
                     ).done(function (res) {
                         if (res.type == "error") {
@@ -590,8 +703,7 @@
                 }
                 vba.route.ccnt.funcs.getItems = function () {
                     vba.root.changeLoading(true);
-                    $("#pages_placeholder .dataContainer").html("");
-                    vba.route.ccnt.items.dataLoading = true;
+                    $("#pages_placeholder .dataContainer").html(""); 
                     var post = {
                         id: vba.route.ccnt.items.filterForm.id
                     };
@@ -641,9 +753,9 @@
                                         $(".comments-list").append(`<div class="item col-md-12">
                                                                 <div class="comment-left pull-left">
                                                                     <div class="avatar">
-                                                                        <img src="/img/avatar.jpg" alt="" width="70" height="70">
+                                                                        <img src="/img/profil_avatar.png" alt="" class="imgBoxShadow" width="70" height="70">
                                                                     </div>
-                                                                    <div class="product-rating">
+                                                                    <div class="product-rating ml-5">
                                                                         ${ratingHtml}
                                                                     </div>
                                                                 </div>
@@ -734,29 +846,27 @@
                             } else {
                                 $("#pages_placeholder ").html(" <div class='col-lg-12 mb-3'> <div class='row g-0 bg-light py-4'><div class='col-md-12 d-flex align-items-center justify-content-center'> 😔 Üzgünüm, talebinizle eşleşen birşey bulamadık 😔</div></div></div>").hide();
                                 $("#pages_placeholder ").fadeIn(500);
-                                vba.route.getController("/", "/"); s
+                                vba.route.getController("/", "/"); 
                             }
-                        }
-                        vba.route.ccnt.items.dataLoading = false;
+                        } 
                         vba.root.changeLoading(false);
-                    }).fail(function () {
-                        vba.route.ccnt.items.dataLoading = false;
+                    }).fail(function () { 
                         $("#pages_placeholder .dataContainer").html(" <div class='col-lg-12 mb-3'> <div class='row g-0 bg-light py-4'><div class='col-md-12 d-flex align-items-center justify-content-center'> 😔 Üzgünüm, talebinizle eşleşen birşey bulamadık 😔</div></div></div>");
                     });
                     $.getScript("/js/main.js", function () { }); //Template CSS   
-                    vba.root.changeLoading(false); 
+                    vba.root.changeLoading(false);
                 }
                 vba.route.ccnt.funcs.getItems();
-                vba.route.ccnt.funcs.updateComment = function (form) { 
+                vba.route.ccnt.funcs.updateComment = function (form) {
                     vba.root.changeLoading(true);
 
-                    var elem = vba.serializeForm(form); 
+                    var elem = vba.serializeForm(form);
                     var post = {
                         productID: vba.route.ccnt.items.filterForm.id,
                         rating: elem.rating,
                         detail: elem.detail
                     };
-                     
+
                     if (elem.rating != null) {
                         $.post("/api/products/updateComment", post).done(function (res) {
                             if (res.type == "error") {
@@ -769,7 +879,7 @@
                                 vba.alert({
                                     message: res.message == '' ? "İşlem Başarılı" : res.message,
                                     classes: "alert-success"
-                                }); 
+                                });
                                 $(form).trigger("reset");
                                 vba.route.ccnt.funcs.getItems();
                                 vba.route.ccnt.funcs.scrollToSection('#review');
@@ -788,8 +898,8 @@
                             duration: 5000
                         });
                     }
-                     
-                } 
+
+                }
             }
         }
     },

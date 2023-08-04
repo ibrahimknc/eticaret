@@ -1,6 +1,6 @@
 ﻿using eticaret.Data;
 using eticaret.Domain.Entities;
-using eticaret.Services.userServices.Dto;
+using eticaret.Services.userServices.Dto; 
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -8,124 +8,231 @@ using System.Linq;
 
 namespace eticaret.Services.userServices
 {
-	public class userService : IuserService
-	{
-		readonly dbeticaretContext _dbeticaretContext;
-		public userService(dbeticaretContext dbeticaretContext)
-		{
-			_dbeticaretContext = dbeticaretContext;
-		}
+    public class userService : IuserService
+    {
+        readonly dbeticaretContext _dbeticaretContext;
+        public userService(dbeticaretContext dbeticaretContext)
+        {
+            _dbeticaretContext = dbeticaretContext;
+        }
+        Dictionary<string, object> response = new Dictionary<string, object>
+            {
+                { "type", null }, // success-error
+				{ "message",null },
+                { "data", null}
+            };
+        public Dictionary<string, object> getUserProfile(Guid id)
+        {
+            try
+            {
+                var responseUser = _dbeticaretContext.users.AsQueryable().FirstOrDefault(x => x.id == id);
+                if (responseUser.isActive == true)
+                {
+                    response["type"] = "success";
+                    response["data"] = responseUser;
+                }
+                else
+                {
+                    response["type"] = "inActive"; response["message"] = "";
+                }
+            }
+            catch
+            {
+                response["type"] = "error"; response["message"] = "";
+            }
 
-		Dictionary<string, string> response = new Dictionary<string, string>
-			{
-				{ "type", "" }, // success-error
+            return response;
+        }
+
+        public Dictionary<string, string> login(userDto user)
+        {
+            Dictionary<string, string> response = new Dictionary<string, string>
+            {
+                { "type", "" }, // success-error
 				{ "message", "" },
-				{ "data", "" } 
-			};
+                { "data", "" }
+            };
+            try
+            {
+                if (!string.IsNullOrEmpty(user.email) && !string.IsNullOrEmpty(user.password))
+                {
+                    if (veriyoneticisi.emailChecker(user.email))
+                    {
 
+                        var clUser = _dbeticaretContext.users;
+                        var selUser = clUser.AsQueryable().FirstOrDefault(x => x.email == user.email && x.password == veriyoneticisi.MD5Hash(user.password));
+                        var selUser2 = clUser.AsQueryable().Where(x => x.email == user.email && x.password == veriyoneticisi.MD5Hash(user.password));
 
-		public Dictionary<string, string> login(userDto user)
-		{
-			try
-			{
-				if (!string.IsNullOrEmpty(user.email) && !string.IsNullOrEmpty(user.password))
-				{
-					if (veriyoneticisi.emailChecker(user.email))
-					{
+                        if (selUser != null)
+                        {
+                            if (selUser.isActive == true)
+                            {
+                                var userLastLoginDate = _dbeticaretContext.users.FirstOrDefault(x => x.id == selUser.id);
+                                if (userLastLoginDate != null)
+                                {
+                                    userLastLoginDate.lastLoginDate = DateTime.UtcNow;
+                                    _dbeticaretContext.SaveChanges();
 
-						var clUser = _dbeticaretContext.users;
-						var selUser = clUser.AsQueryable().FirstOrDefault(x => x.email == user.email && x.password == veriyoneticisi.MD5Hash(user.password));
-						var selUser2 = clUser.AsQueryable().Where(x => x.email == user.email && x.password == veriyoneticisi.MD5Hash(user.password));
+                                    response["type"] = "success"; response["data"] = JsonConvert.SerializeObject(userLastLoginDate);
+                                }
+                                else
+                                {
+                                    response["type"] = "error"; response["message"] = "Kullanıcı Bulunamadı.";
+                                }
 
-						if (selUser != null)
-						{
-							if (selUser.isActive == true)
-							{
-								var userLastLoginDate = _dbeticaretContext.users.FirstOrDefault(x => x.id == selUser.id);
-								if (userLastLoginDate != null)
-								{
-									userLastLoginDate.lastLoginDate = DateTime.UtcNow;
-									_dbeticaretContext.SaveChanges(); 
+                            }
+                            else
+                            {
+                                response["type"] = "error"; response["message"] = "Üzgünüz Banlandınız.";
+                            }
+                        }
+                        else
+                        {
+                            response["type"] = "error"; response["message"] = "Yanlış kullanıcı adı şifre.";
+                        }
 
-									response["type"] = "success"; response["data"] = JsonConvert.SerializeObject(userLastLoginDate);
-								}
-								else
-								{ 
-									response["type"] = "error"; response["message"] = "Kullanıcı Bulunamadı.";
-								}
+                    }
+                    else
+                    {
+                        response["type"] = "error"; response["message"] = "Lütfen geçerli bir Mail adresi giriniz.";
+                    }
+                }
+                else
+                {
+                    response["type"] = "error"; response["message"] = "Lütfen Boş Bırakmayınız.";
+                }
+            }
+            catch { response["type"] = "error"; response["message"] = ""; }
 
-							}
-							else
-							{ 
-								response["type"] = "error"; response["message"] = "Üzgünüz Banlandınız.";
-							}
-						}
-						else
-						{
-							response["type"] = "error"; response["message"] = "Yanlış kullanıcı adı şifre.";
-						}
+            return response;
+        }
 
-					}
-					else
-					{
-						response["type"] = "error"; response["message"] = "Lütfen geçerli bir Mail adresi giriniz.";
-					}
-				}
-				else
-				{
-					response["type"] = "error"; response["message"] = "Lütfen Boş Bırakmayınız.";
-				}
-			}
-			catch { response["type"] = "error"; response["message"] = ""; }
+        public Dictionary<string, string> register(userDto user)
+        {
+            Dictionary<string, string> response = new Dictionary<string, string>
+            {
+                { "type", "" }, // success-error
+				{ "message", "" },
+                { "data", "" }
+            };
+            try
+            {
+                var clUsers = _dbeticaretContext.users;
+                try
+                {
+                    if (string.IsNullOrEmpty(user.firstName) | string.IsNullOrEmpty(user.lastName) | string.IsNullOrEmpty(user.email) | string.IsNullOrEmpty(user.password))
+                    {
+                        response["type"] = "error"; response["message"] = "Lütfen Tüm Kutucukları Doldurunuz.";
+                    }
+                    else if (clUsers.AsQueryable().Any(x => x.email == user.email))
+                    {
+                        response["type"] = "error"; response["message"] = "Bu Mail Adresi Daha Önce Kayıt Olmuştur.";
+                    }
+                    else if (!veriyoneticisi.passwordChecker(user.password))
+                    {
+                        response["type"] = "error"; response["message"] = "Şifrenin en az 8 karakter uzunluğunda olması, en az bir büyük harf, en az bir küçük harf ve en az bir rakam içermesi gerekmektedir.";
+                    }
+                    else if (!veriyoneticisi.emailChecker(user.email))
+                    {
+                        response["type"] = "error"; response["message"] = "Lütfen geçerli bir Mail adresi giriniz.";
+                    }
+                    else
+                    {
+                        User u = new User()
+                        {
+                            firstName = user.firstName,
+                            lastName = user.lastName,
+                            email = user.email,
+                            password = veriyoneticisi.MD5Hash(user.password),
+                            isActive = true,
+                            creatingTime = DateTime.UtcNow
+                        };
+                        clUsers.Add(u);
+                        _dbeticaretContext.SaveChanges();
+                        response["type"] = "success"; response["message"] = "✔ Kayıt Başarılı. Lütfen Giriş Yapınız.";
+                    }
+                }
+                catch { response["type"] = "error"; response["message"] = ""; }
+            }
+            catch { response["type"] = "error"; response["message"] = ""; }
 
-			return response;
-		}
+            return response;
+        }
 
+        public Dictionary<string, object> updateUser(userDto user)
+        {
+            try
+            {
+                var clUsers = _dbeticaretContext.users.AsQueryable().FirstOrDefault(x => x.id == user.id);
+                try
+                {
+                    if (string.IsNullOrEmpty(user.firstName) | string.IsNullOrEmpty(user.lastName))
+                    {
+                        response["type"] = "error"; response["message"] = "Lütfen Tüm Kutucukları Doldurunuz.";
+                    }  
+                    else if (clUsers == null)
+                    {
+                        response["type"] = "error"; response["message"] = "Üzgünüm Böyle Bir Kullanıcı Bulunamadı.";
+                    }
+                    else
+                    { 
+                        clUsers.firstName = user.firstName;
+                        clUsers.lastName = user.lastName;
+                        clUsers.phone = user.phone;
+                        clUsers.address = user.address;
+                        clUsers.updatedTime = DateTime.UtcNow; 
 
-		public Dictionary<string, string> register(userDto user)
-		{
-			try
-			{
-				var clUsers = _dbeticaretContext.users;
-				try
-				{
-					if (string.IsNullOrEmpty(user.firstName) | string.IsNullOrEmpty(user.lastName) | string.IsNullOrEmpty(user.email) | string.IsNullOrEmpty(user.password))
-					{
-						response["type"] = "error"; response["message"] = "Lütfen Tüm Kutucukları Doldurunuz.";
-					}
-					else if (clUsers.AsQueryable().Any(x => x.email == user.email))
-					{
-						response["type"] = "error"; response["message"] = "Bu Mail Adresi Daha Önce Kayıt Olmuştur.";
-					}
-					else if (!veriyoneticisi.passwordChecker(user.password))
-					{
-						response["type"] = "error"; response["message"] = "Şifrenin en az 8 karakter uzunluğunda olması, en az bir büyük harf, en az bir küçük harf ve en az bir rakam içermesi gerekmektedir.";
-					}
-					else if (!veriyoneticisi.emailChecker(user.email))
-					{
-						response["type"] = "error"; response["message"] = "Lütfen geçerli bir Mail adresi giriniz.";
-					}
-					else
-					{
-						User u = new User()
-						{
-							firstName = user.firstName,
-							lastName = user.lastName,
-							email = user.email,
-							password = veriyoneticisi.MD5Hash(user.password),
-							isActive = true,
-							creatingTime = DateTime.UtcNow
-						};
-						clUsers.Add(u);
-						_dbeticaretContext.SaveChanges();
-						response["type"] = "success"; response["message"] = "✔ Kayıt Başarılı. Lütfen Giriş Yapınız.";
-					}
-				}
-				catch { response["type"] = "error"; response["message"] = ""; }
-			}
-			catch { response["type"] = "error"; response["message"] = ""; }
+                        _dbeticaretContext.SaveChanges();
+                        response["type"] = "success"; response["message"] = "✔ Profil Güncelleme Başarılı.";
+                    }
+                }
+                catch { response["type"] = "error"; response["message"] = ""; }
+            }
+            catch { response["type"] = "error"; response["message"] = ""; }
 
-			return response;
-		}
-	}
+            return response;
+        }
+
+        public Dictionary<string, object> updateUserPassword(userDto user, string newPassword)
+        { 
+            try
+            {
+                var clUsers = _dbeticaretContext.users.AsQueryable().FirstOrDefault(x => x.id == user.id);
+                try
+                {
+                    if (string.IsNullOrEmpty(user.password) | string.IsNullOrEmpty(newPassword))
+                    {
+                        response["type"] = "error"; response["message"] = "Lütfen Tüm Kutucukları Doldurunuz.";
+                    }
+                    else if (!veriyoneticisi.passwordChecker(newPassword))
+                    {
+                        response["type"] = "error"; response["message"] = "Yeni Şifrenin en az 8 karakter uzunluğunda olması, en az bir büyük harf, en az bir küçük harf ve en az bir rakam içermesi gerekmektedir.";
+                    }
+                    else if (clUsers.password == veriyoneticisi.MD5Hash(newPassword))
+                    {
+                        response["type"] = "error"; response["message"] = "Yeni Şifreniz ile eski şifreniz aynıdır.";
+                    }
+                    else if (clUsers == null)
+                    {
+                        response["type"] = "error"; response["message"] = "Üzgünüm Böyle Bir Kullanıcı Bulunamadı.";
+                    }
+                    else if (clUsers.password != veriyoneticisi.MD5Hash(user.password))
+                    {
+                        response["type"] = "error"; response["message"] = "Lütfen Mevcut Şifrenizi Doğru Giriniz.";
+                    }
+                    else
+                    {
+                        clUsers.password = veriyoneticisi.MD5Hash(newPassword); 
+                        clUsers.updatedTime = DateTime.UtcNow; 
+                        _dbeticaretContext.SaveChanges();
+                        response["type"] = "success"; response["message"] = "✔ Şifre Güncelleme Başarılı.";
+                    }
+                }
+                catch { response["type"] = "error"; response["message"] = ""; }
+            }
+            catch { response["type"] = "error"; response["message"] = ""; }
+
+            return response;
+        }
+    }
 }

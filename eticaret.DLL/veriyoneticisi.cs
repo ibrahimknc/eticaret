@@ -10,6 +10,7 @@ public class veriyoneticisi
     public readonly static short siteId = 1; // 1-Site, 2-Site 
     public static bool isDevelopment = false;
 	public static bool isActive = true;
+    public static Dictionary<string, object> Settings = new Dictionary<string, object>();
 	public static Dictionary<string, string> projectSettings
     {
         get

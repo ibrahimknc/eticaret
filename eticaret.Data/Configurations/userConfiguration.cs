@@ -34,6 +34,14 @@ namespace eticaret.Data.Configurations
 			builder.Property(e => e.password)
 				.IsRequired()
 				.HasMaxLength(32);
-		}
+
+            builder.Property(e => e.phone)
+                .IsRequired(false)
+                .HasMaxLength(12);
+
+            builder.Property(e => e.address)
+                .IsRequired(false)
+                .HasMaxLength(500);
+        }
 	}
 }
