@@ -183,7 +183,7 @@
                         <div role="tabpanel" class="tab-pane fade" id="review">
                             <div class="reviews">
 
-                                <div class="comments-list row">  </div>
+                                <div class="comments-list">  </div>
 
                                 <div id="commentFormBody">
                                     @if (!string.IsNullOrEmpty(Context.Session.GetString("id")) && (Context.Session.GetString("login") == "true"))
@@ -212,7 +212,7 @@
 
                                                 <div class="form-group">
                                                     <div class="text">Açıklama</div>
-                                                    <textarea rows="3" aria-required="true" overflow="hidden" resize="none"></textarea>
+                                                    <textarea rows="5" aria-required="true" name="detail" overflow="hidden" resize="none"></textarea>
                                                 </div>
 
                                                 <div class="form-group">

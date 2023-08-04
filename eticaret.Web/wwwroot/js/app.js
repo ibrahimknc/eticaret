@@ -624,6 +624,7 @@
                                 $(".productTags").text("#" + res.data.tags.replace(/,/g, ", #"));
 
                                 if (res.comments.length > 0) {
+                                    $(".comments-list").empty();
                                     $.each(res.comments, function (index, item) {
 
                                         var ratingHtml = "";
@@ -742,14 +743,43 @@
                         vba.route.ccnt.items.dataLoading = false;
                         $("#pages_placeholder .dataContainer").html(" <div class='col-lg-12 mb-3'> <div class='row g-0 bg-light py-4'><div class='col-md-12 d-flex align-items-center justify-content-center'> 😔 Üzgünüm, talebinizle eşleşen birşey bulamadık 😔</div></div></div>");
                     });
-                    vba.root.changeLoading(false);
+                    $.getScript("/js/main.js", function () { }); //Template CSS   
+                    vba.root.changeLoading(false); 
                 }
                 vba.route.ccnt.funcs.getItems();
-                vba.route.ccnt.funcs.updateComment = function (form) {
+                vba.route.ccnt.funcs.updateComment = function (form) { 
                     vba.root.changeLoading(true);
-                    var elem = vba.serializeForm(form);
+
+                    var elem = vba.serializeForm(form); 
+                    var post = {
+                        productID: vba.route.ccnt.items.filterForm.id,
+                        rating: elem.rating,
+                        detail: elem.detail
+                    };
+                     
                     if (elem.rating != null) {
-                        console.log(elem);
+                        $.post("/api/products/updateComment", post).done(function (res) {
+                            if (res.type == "error") {
+                                vba.alert({
+                                    message: res.message == '' ? "İşlem Başarısız" : res.message,
+                                    classes: 'alert-danger'
+                                });
+                                vba.root.changeLoading(false);
+                            } else {
+                                vba.alert({
+                                    message: res.message == '' ? "İşlem Başarılı" : res.message,
+                                    classes: "alert-success"
+                                }); 
+                                $(form).trigger("reset");
+                                vba.route.ccnt.funcs.getItems();
+                                vba.route.ccnt.funcs.scrollToSection('#review');
+                            }
+                        }).fail(function () {
+                            vba.alert({
+                                message: "İşlem başarısız",
+                                classes: 'alert-danger'
+                            });
+                        });
                     }
                     else {
                         vba.alert({
@@ -758,11 +788,8 @@
                             duration: 5000
                         });
                     }
-
-                    vba.root.changeLoading(false);
-                }
-                $.getScript("/js/main.js", function () { }); //Template CSS  
-                vba.root.changeLoading(false);
+                     
+                } 
             }
         }
     },

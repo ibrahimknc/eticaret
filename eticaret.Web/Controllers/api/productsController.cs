@@ -1,4 +1,5 @@
 ﻿using eticaret.Services.productsServices;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 
@@ -27,7 +28,23 @@ namespace eticaret.Web.Controllers.api
             var type = response["type"];
             var message = response["message"];
             return Ok(new { type = type, message = message, data = data, categoryName = categoryName, categoryID = categoryID, title = title, comments = comments, productImageList = responsePIL, relatedProducts = relatedProducts });
+        }
 
+        [Route("[action]"), HttpPost]
+        public IActionResult updateComment([FromForm] Guid productID, [FromForm] int rating, [FromForm] string detail)
+        {
+            if (HttpContext.Session.GetString("login") == "true" && !string.IsNullOrEmpty(HttpContext.Session.GetString("id")))
+            {
+                Guid userID = Guid.Parse(HttpContext.Session.GetString("id"));
+                var response = _IproductsService.updateComment(userID, productID, rating, detail);
+                var type = response["type"];
+                var message = response["message"];
+                return Ok(new { type = type, message = message });
+            }
+            else
+            {
+                return Ok(new { type = "error", message = "Yetkisiz işlem" });
+            }
         }
     }
 }

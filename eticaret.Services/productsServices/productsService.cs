@@ -1,4 +1,6 @@
 ﻿using eticaret.Data;
+using eticaret.Domain.Entities;
+using eticaret.Services.productsServices.Dto;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -30,20 +32,20 @@ namespace eticaret.Services.productsServices
         {
             try
             {
-                var responseProduct = _dbeticaretContext.products.Include(c => c.Category).AsQueryable().FirstOrDefault(x => x.id == id); 
+                var responseProduct = _dbeticaretContext.products.Include(c => c.Category).AsQueryable().FirstOrDefault(x => x.id == id);
                 var responseComments = _dbeticaretContext.comments.Include(c => c.User).AsQueryable().Where(x => x.productID == id & x.isActive == true).ToList();
                 var responsePIL = _dbeticaretContext.productsIMGs.AsQueryable().Where(x => x.productID == id & x.isActive == true).ToList();
                 var relatedProducts = _dbeticaretContext.products.AsQueryable().Where(x => x.id != id & x.isActive == true & x.categoriID == responseProduct.categoriID).OrderByDescending(x => x.creatingTime).Take(5).ToList();
 
                 if (responseProduct.isActive == true)
-                {  
-                    response["type"] = "success"; 
-                    response["data"] = responseProduct; 
-                    response["productImageList"] = responsePIL; 
+                {
+                    response["type"] = "success";
+                    response["data"] = responseProduct;
+                    response["productImageList"] = responsePIL;
                     response["relatedProducts"] = relatedProducts;
                     response["comments"] = responseComments;
-                    response["categoryName"] = responseProduct.Category.name; 
-                    response["title"] = responseProduct.name; 
+                    response["categoryName"] = responseProduct.Category.name;
+                    response["title"] = responseProduct.name;
                     response["categoryID"] = responseProduct.categoriID;
                 }
                 else
@@ -51,6 +53,40 @@ namespace eticaret.Services.productsServices
                     response["type"] = "inActive"; response["message"] = "";
                 }
 
+            }
+            catch
+            {
+                response["type"] = "error"; response["message"] = "";
+            }
+
+            return response;
+        }
+
+        public Dictionary<string, object> updateComment(Guid userID, Guid productID, int rating, string detail)
+        {
+            try
+            {
+                Comment comment = new Comment()
+                {
+                    userID = userID,
+                    productID = productID,
+                    rating = rating,
+                    detail = detail,
+                    isActive = true,
+                    creatingTime = DateTime.UtcNow,
+                    updatedTime = DateTime.UtcNow
+                };
+                _dbeticaretContext.comments.Add(comment);
+                var isCompleted = _dbeticaretContext.SaveChanges();
+
+                if (isCompleted > 0)
+                {
+                    response["type"] = "succcess"; response["message"] = "Yorum Başarıyla Eklendi.";
+                }
+                else
+                {
+                    response["type"] = "error"; response["message"] = "";
+                }
             }
             catch
             {
