@@ -4,9 +4,9 @@
     <!-- Basic Page Needs -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title id="title"></title>
-    <meta name="keywords" id="keywords" content="">
-    <meta name="description" id="description" content="">
+    <title>@await layout.settingsAsync("title")</title>
+    <meta name="keywords" content="@await layout.settingsAsync("keywords")">
+    <meta name="description" content="@await layout.settingsAsync("description")">
     <meta name="author" content="@veriyoneticisi.projectSettings["author"]">
 
     <!-- Favicon -->
@@ -51,10 +51,10 @@
                         <div class="col-md-7 col-sm-7 col-xs-12">
                             <div class="topbar-left d-flex">
                                 <div class="email">
-                                    <i class="fa fa-envelope" aria-hidden="true"></i>Email: <a href="" id="email"> </a>
+                                    <i class="fa fa-envelope" aria-hidden="true"></i>Email: <a href="mailto:@await layout.settingsAsync("email")">@await layout.settingsAsync("email") </a>
                                 </div>
                                 <div class="phone">
-                                    <i class="fa fa-phone-square" aria-hidden="true"></i>phone:  <a href="" id="phone"> </a>
+                                    <i class="fa fa-phone-square" aria-hidden="true"></i>phone:  <a href="tel:@await layout.settingsAsync("phone")">@await layout.settingsAsync("phone") </a>
                                 </div>
                             </div>
                         </div>
@@ -363,7 +363,7 @@
                                                 <i class="zmdi zmdi-home"></i>
                                             </div>
                                             <div>
-                                                <span id="address"></span>
+                                                <span>@await layout.settingsAsync("address")</span>
                                             </div>
                                         </div>
                                         <div class="item d-flex align-items-center">
@@ -371,7 +371,7 @@
                                                 <i class="zmdi zmdi-phone-in-talk"></i>
                                             </div>
                                             <div>
-                                                <span><a href="" id="addressphone"> </a> </span>
+                                                <span><a href="tel:@await layout.settingsAsync("phone")">@await layout.settingsAsync("phone") </a> </span>
                                             </div>
                                         </div>
                                         <div class="item d-flex align-items-center">
@@ -379,7 +379,7 @@
                                                 <i class="zmdi zmdi-email"></i>
                                             </div>
                                             <div>
-                                                <span><a href="" id="addressemail"> </a></span>
+                                                <span><a href="mailto:@await layout.settingsAsync("email")"> @await layout.settingsAsync("email") </a></span>
                                             </div>
                                         </div>
                                     </div>

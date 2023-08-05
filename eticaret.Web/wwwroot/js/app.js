@@ -92,39 +92,7 @@
             return false;
         }
     }, 
-    load: function () {
-        document.addEventListener("DOMContentLoaded", function () {
-            var Data = {};
-            fetch("/api/default/getSettings", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({})
-            })
-                .then(res => res.json())
-                .then(res => {
-                    Data = res.data[0];
-                    document.getElementById("title").innerText = Data.title;
-                    document.getElementById("keywords").setAttribute("content", Data.keywords);
-                    document.getElementById("description").setAttribute("content", Data.description);
-                    document.getElementById("email").innerText = Data.email;
-                    document.getElementById("email").setAttribute("href", "mailto:" + Data.email);
-                    document.getElementById("phone").innerText = Data.phone;
-                    document.getElementById("phone").setAttribute("href", "tel:" + Data.phone);
-                    document.getElementById("address").innerText = Data.address;
-                    document.getElementById("addressphone").innerText = Data.phone;
-                    document.getElementById("addressphone").setAttribute("href", "tel:" + Data.phone);
-                    document.getElementById("addressemail").innerText = Data.email;
-                    document.getElementById("addressemail").setAttribute("href", "mailto:" + Data.email);
-
-                    vba.settings.title = Data.title;
-                    var titlebody = document.getElementById("titlebody");
-                    if (titlebody) {
-                        titlebody.innerText = vba.settings.title;
-                    }
-                })
-                .catch(error => console.error(error));
-
-        });
+    load: function () { 
         $("#pages_placeholder [data-repeat]").each(function () {
             var verName = $(this).attr("data-repeat");
             $(this).removeAttr("data-repeat");
