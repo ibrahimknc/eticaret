@@ -25,6 +25,7 @@ namespace eticaret.Data
             modelBuilder.ApplyConfiguration(new userConfiguration());
             modelBuilder.ApplyConfiguration(new userFavoriteConfiguration());
             modelBuilder.ApplyConfiguration(new commentConfiguration());
+            modelBuilder.ApplyConfiguration(new productViewsConfiguration());
 
 
             #region Log ForeignKey
@@ -36,6 +37,13 @@ namespace eticaret.Data
 
             #region ProductIMG ForeignKey
             modelBuilder.Entity<ProductIMG>()
+          .HasOne(l => l.Product)
+          .WithMany()
+          .HasForeignKey(l => l.productID);
+            #endregion
+
+            #region ProductViews ForeignKey
+            modelBuilder.Entity<ProductViews>()
           .HasOne(l => l.Product)
           .WithMany()
           .HasForeignKey(l => l.productID);
@@ -85,6 +93,7 @@ namespace eticaret.Data
         public DbSet<User> users { get; set; }
         public DbSet<UserFavorite> userFavorites { get; set; }
         public DbSet<Comment> comments { get; set; }
+        public DbSet<ProductViews> productViews { get; set; }
 
     }
 }

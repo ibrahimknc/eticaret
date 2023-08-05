@@ -17,7 +17,13 @@ namespace eticaret.Web.Controllers.api
         [Route("[action]"), HttpPost]
         public IActionResult getProduct([FromForm] Guid id)
         {
-            var response = _IproductsService.getProduct(id);
+            string userip = "";
+            try
+            {
+                userip = HttpContext.Request.Headers.ContainsKey("CF-CONNECTING-IP") ? HttpContext.Request.Headers["CF-CONNECTING-IP"] : HttpContext.Connection.RemoteIpAddress.ToString();
+            }
+            catch { }
+            var response = _IproductsService.getProduct(id, userip);
             var data = response["data"];
             var responsePIL = response["productImageList"];
             var relatedProducts = response["relatedProducts"];
@@ -27,7 +33,8 @@ namespace eticaret.Web.Controllers.api
             var title = response["title"];
             var type = response["type"];
             var message = response["message"];
-            return Ok(new { type = type, message = message, data = data, categoryName = categoryName, categoryID = categoryID, title = title, comments = comments, productImageList = responsePIL, relatedProducts = relatedProducts });
+            var productView = response["productView"];
+            return Ok(new { type = type, message = message, data = data, categoryName = categoryName, categoryID = categoryID, title = title, comments = comments, productImageList = responsePIL, relatedProducts = relatedProducts, productView = productView });
         }
 
         [Route("[action]"), HttpPost]

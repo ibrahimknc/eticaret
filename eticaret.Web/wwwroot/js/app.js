@@ -252,62 +252,7 @@
     /*-----------------------CONTROLLER İŞLEMLERİ----------------------------*/
     controller: {
         "/": {
-            load: function () {
-                /*
-                vba.route.ccnt.funcs.getProductFavorites = function () {
-                    var favlist = ["Today", "Yesterday", "General"];
-                    var favlistID = ["#new-arrivals", "#best-seller", "#on-sale"];
-                    $.each(favlist, function (index, item) {
-                        $.post("/api/default/getProductFavorites", { whichDay: item }).done(function (res) {
-                            if (res.type == "error") {
-                                vba.alert({
-                                    message: res.message == '' ? "İşlem başarısız" : res.message,
-                                    classes: 'alert-danger',
-                                    duration: 5000
-                                });
-                            }
-                            else {
-                                if (res.data.length > 0) {
-                                    var tmpl = "binditems"; 
-                                    $("#pages_placeholder #productFavorite " + favlistID[index] + " div").append(vba.compileTemp(vba.route.ccnt.items[tmpl], res.data)); 
-
-                                } else { } 
-                            } 
-                        }).fail(function () {
-                            $("#pages_placeholder #productFavorite").html("");
-                        });
-                    }); 
-                }
-                vba.route.ccnt.funcs.getProductFavorites();
-
-                vba.route.ccnt.funcs.getSliders = function () {
-                    $.post("/api/default/getSliders", {}).done(function (resSlide) {
-                        if (resSlide.type == "error") {
-                            vba.alert({
-                                message: resSlide.message == '' ? "İşlem başarısız" : resSlide.message,
-                                classes: 'alert-danger',
-                                duration: 5000
-                            });
-                        }
-                        else {
-                            if (resSlide.data.length > 0) {
-                                var tmpl = "binditems";
-                                $("#pages_placeholder #tiva-slideshow").append(vba.compileTemp(vba.route.ccnt.items[tmpl], resSlide.data));
-
-                            } else { }
-                        }
-                    }).fail(function () {
-                        $("#pages_placeholder #tiva-slideshow").html("");
-                    });
-
-                }
-                vba.route.ccnt.funcs.getSliders();
-                setTimeout(function () {
-                    $.getScript("/js/main2.js", function () { }); //Template CSS  
-                    vba.root.changeLoading(false);
-                }, 500);  
-                */
-
+            load: function () {  
                 $.getScript("/js/main.js", function () { }); //Template CSS  
                 var titlebody = document.getElementById("titlebody");
                 if (titlebody) {
@@ -702,6 +647,8 @@
                                 $("#additional-information").text(res.data.details);
                                 $(".commetsCount").text("Toplam Yorum (" + res.comments.length + ")");
                                 $(".productTags").text("#" + res.data.tags.replace(/,/g, ", #"));
+                                $(".productView").text(res.productView);
+                                 
 
                                 if (res.comments.length > 0) {
                                     $(".comments-list").empty();
@@ -737,7 +684,7 @@
                                     });
                                 }
                                 else {
-                                    $(".comments-list").append(`<div class="item  col-md-12">
+                                    $(".comments-list").append(`<div class="item col-md-12">
                                                                 <div class="comment-left pull-left">
                                                                 <div class='col-md-12 d-flex align-items-center justify-content-center'>
                                                                     😔 Üzgünüm,Yorum Yapılmamıştır.

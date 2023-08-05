@@ -25,20 +25,40 @@ namespace eticaret.Services.productsServices
                 { "comments", null},
                 { "categoryName", null },
                 { "categoryID", null },
-                { "title", null }
+                { "title", null },
+                { "productView", null }
             };
 
-        public Dictionary<string, object> getProduct(Guid id)
+        public Dictionary<string, object> getProduct(Guid id, string ip)
         {
             try
             {
                 var responseProduct = _dbeticaretContext.products.Include(c => c.Category).AsQueryable().FirstOrDefault(x => x.id == id);
-                var responseComments = _dbeticaretContext.comments.Include(c => c.User).AsQueryable().Where(x => x.productID == id & x.isActive == true).ToList();
-                var responsePIL = _dbeticaretContext.productsIMGs.AsQueryable().Where(x => x.productID == id & x.isActive == true).ToList();
-                var relatedProducts = _dbeticaretContext.products.AsQueryable().Where(x => x.id != id & x.isActive == true & x.categoriID == responseProduct.categoriID).OrderByDescending(x => x.creatingTime).Take(5).ToList();
 
                 if (responseProduct.isActive == true)
                 {
+                    var responseComments = _dbeticaretContext.comments.Include(c => c.User).AsQueryable().Where(x => x.productID == id & x.isActive == true).ToList();
+                    var responsePIL = _dbeticaretContext.productsIMGs.AsQueryable().Where(x => x.productID == id & x.isActive == true).ToList();
+                    var relatedProducts = _dbeticaretContext.products.AsQueryable().Where(x => x.id != id & x.isActive == true & x.categoriID == responseProduct.categoriID).OrderByDescending(x => x.creatingTime).Take(5).ToList();
+
+                    #region Add ProductViews 
+                    var isProductView = _dbeticaretContext.productViews.Any(x => x.productID == id && x.ip == ip);
+                    if (!isProductView)
+                    {
+                        ProductViews pv = new ProductViews()
+                        {
+                            ip = ip,
+                            productID = id,
+                            isActive = true,
+                            creatingTime = DateTime.UtcNow,
+                            updatedTime = DateTime.UtcNow
+                        };
+                        _dbeticaretContext.productViews.Add(pv);
+                        _dbeticaretContext.SaveChanges();
+                    }
+                    var countProductView = _dbeticaretContext.productViews.Where(x => x.productID == id).Count();
+                    #endregion
+
                     response["type"] = "success";
                     response["data"] = responseProduct;
                     response["productImageList"] = responsePIL;
@@ -47,6 +67,7 @@ namespace eticaret.Services.productsServices
                     response["categoryName"] = responseProduct.Category.name;
                     response["title"] = responseProduct.name;
                     response["categoryID"] = responseProduct.categoriID;
+                    response["productView"] = countProductView;
                 }
                 else
                 {
