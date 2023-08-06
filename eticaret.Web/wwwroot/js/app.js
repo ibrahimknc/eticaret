@@ -4,8 +4,7 @@
     },
     settings: {
 
-        serverDate: new Date(),
-        title: "",
+        serverDate: new Date(), 
         staticID: ""
     },
     loading: true,
@@ -254,10 +253,6 @@
         "/": {
             load: function () {  
                 $.getScript("/js/main.js", function () { }); //Template CSS  
-                var titlebody = document.getElementById("titlebody");
-                if (titlebody) {
-                    titlebody.innerText = vba.settings.title;
-                }
                 vba.root.changeLoading(false);
             }
         },
@@ -401,6 +396,7 @@
                                         message: res.message == "" ? "İşlem başarısız" : res.message,
                                         classes: 'alert-danger'
                                     });
+                                    vba.root.changeLoading(false);
                                 }
                                 else {
                                     vba.alert({
@@ -409,7 +405,7 @@
                                     });
                                     window.location.href = '/';
                                 }
-                                vba.root.changeLoading(false);
+                               
                             }).fail(function () {
                                 vba.alert({
                                     message: "İşlem başarısız",
@@ -424,7 +420,7 @@
                         });
                         vba.root.changeLoading(false);
                     }
-                }
+                } 
                 vba.root.changeLoading(false);
             }
         },
@@ -451,8 +447,9 @@
                             message: "İşlem başarısız",
                             classes: 'alert-danger'
                         });
+                        vba.root.changeLoading(false);
                     });
-                }
+                } 
                 vba.root.changeLoading(false);
             }
         },
