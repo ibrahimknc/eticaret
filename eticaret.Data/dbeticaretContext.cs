@@ -26,8 +26,7 @@ namespace eticaret.Data
             modelBuilder.ApplyConfiguration(new userFavoriteConfiguration());
             modelBuilder.ApplyConfiguration(new commentConfiguration());
             modelBuilder.ApplyConfiguration(new productViewsConfiguration());
-
-
+             
             #region Log ForeignKey
             modelBuilder.Entity<Log>()
           .HasOne(l => l.LogType)

@@ -116,5 +116,45 @@ namespace eticaret.Services.productsServices
 
             return response;
         }
+
+        public Dictionary<string, object> updateUserFavorite(Guid userID, Guid productID)
+        {
+            try
+            {
+                var isUserFavorite = _dbeticaretContext.userFavorites.Any(x => x.productID == productID && x.userID == userID);
+                if (!isUserFavorite)
+                {
+                    UserFavorite userFavorite = new UserFavorite()
+                    {
+                        userID = userID,
+                        productID = productID,
+                        isActive = true,
+                        creatingTime = DateTime.UtcNow,
+                        updatedTime = DateTime.UtcNow
+                    };
+                    _dbeticaretContext.userFavorites.Add(userFavorite);
+                    var isCompleted = _dbeticaretContext.SaveChanges();
+
+                    if (isCompleted > 0)
+                    {
+                        response["type"] = "succcess"; response["message"] = "Favori Başarıyla Eklendi.";
+                    }
+                    else
+                    {
+                        response["type"] = "error"; response["message"] = "";
+                    }
+                }
+                else
+                {
+                    response["type"] = "error"; response["message"] = "Favori Daha Önce Eklenmiş.";
+                }
+            }
+            catch
+            {
+                response["type"] = "error"; response["message"] = "";
+            }
+
+            return response;
+        }
     }
 }

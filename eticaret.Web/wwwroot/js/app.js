@@ -4,7 +4,7 @@
     },
     settings: {
 
-        serverDate: new Date(), 
+        serverDate: new Date(),
         staticID: ""
     },
     loading: true,
@@ -90,8 +90,8 @@
             }
             return false;
         }
-    }, 
-    load: function () { 
+    },
+    load: function () {
         $("#pages_placeholder [data-repeat]").each(function () {
             var verName = $(this).attr("data-repeat");
             $(this).removeAttr("data-repeat");
@@ -251,8 +251,35 @@
     /*-----------------------CONTROLLER İŞLEMLERİ----------------------------*/
     controller: {
         "/": {
-            load: function () {  
-                $.getScript("/js/main.js", function () { }); //Template CSS  
+            load: function () {
+                $.getScript("/js/main.js", function () { }); //Template CSS
+
+                vba.route.ccnt.funcs.updateUserFavorite = function (elem) {
+                    vba.root.changeLoading(true);
+                    var post = {
+                        productID: elem
+                    };
+                    $.post("/api/products/updateUserFavorite", post).done(function (res) {
+                        if (res.type == "error") {
+                            vba.alert({
+                                message: res.message == '' ? "İşlem Başarısız" : res.message,
+                                classes: 'alert-danger'
+                            });
+                        } else {
+                            vba.alert({
+                                message: res.message == '' ? "İşlem Başarılı" : res.message,
+                                classes: "alert-success"
+                            });
+                        }
+                    }).fail(function () {
+                        vba.alert({
+                            message: "İşlem başarısız",
+                            classes: 'alert-danger'
+                        });
+                    });
+                    vba.root.changeLoading(false);
+                }
+
                 vba.root.changeLoading(false);
             }
         },
@@ -339,10 +366,10 @@
                             message: "Lütfen hiç boş bırakmayınız.",
                             classes: 'alert-danger'
                         });
-                    } 
+                    }
                 }
                 vba.route.ccnt.funcs.getItems = function () {
-                    vba.root.changeLoading(true);  
+                    vba.root.changeLoading(true);
                     $.post("/api/user/getUserProfile", {}).done(function (res) {
                         if (res.type == "error") {
                             vba.alert({
@@ -356,9 +383,9 @@
                             vba.route.getController("/", "/");
                         }
                         else {
-                            if (res.data.id !== null) { 
+                            if (res.data.id !== null) {
                                 $(".profile-firstName-lastName").text(res.data.firstName + " " + res.data.lastName);
-                                $(".profileMail").html(res.data.email);  
+                                $(".profileMail").html(res.data.email);
                                 $('#profileForm input[name="firstName"]').val(res.data.firstName);
                                 $('#profileForm input[name="lastName"]').val(res.data.lastName);
                                 $('#profileForm input[name="email"]').val(res.data.email);
@@ -368,16 +395,16 @@
                             } else {
                                 $("#pages_placeholder ").html(" <div class='col-lg-12 mb-3'> <div class='row g-0 bg-light py-4'><div class='col-md-12 d-flex align-items-center justify-content-center'> 😔 Üzgünüm, talebinizle eşleşen birşey bulamadık 😔</div></div></div>").hide();
                                 $("#pages_placeholder ").fadeIn(500);
-                                vba.route.getController("/", "/");  
+                                vba.route.getController("/", "/");
                             }
-                        }  
+                        }
                     }).fail(function () {
                         vba.route.ccnt.items.dataLoading = false;
                         $("#pages_placeholder .dataContainer").html(" <div class='col-lg-12 mb-3'> <div class='row g-0 bg-light py-4'><div class='col-md-12 d-flex align-items-center justify-content-center'> 😔 Üzgünüm, talebinizle eşleşen birşey bulamadık 😔</div></div></div>");
-                    }); 
+                    });
                     vba.root.changeLoading(false);
                 }
-                vba.route.ccnt.funcs.getItems();  
+                vba.route.ccnt.funcs.getItems();
             }
         },
         "/user/login": {
@@ -405,7 +432,7 @@
                                     });
                                     window.location.href = '/';
                                 }
-                               
+
                             }).fail(function () {
                                 vba.alert({
                                     message: "İşlem başarısız",
@@ -420,13 +447,13 @@
                         });
                         vba.root.changeLoading(false);
                     }
-                } 
+                }
                 vba.root.changeLoading(false);
             }
         },
         "/user/register": {
             load: function () {
-                vba.route.ccnt.funcs.updateItem = function (form) { 
+                vba.route.ccnt.funcs.updateItem = function (form) {
                     $.post("/api/user/register", $(form).serialize()
                     ).done(function (res) {
                         if (res.type == "error") {
@@ -449,7 +476,7 @@
                         });
                         vba.root.changeLoading(false);
                     });
-                } 
+                }
                 vba.root.changeLoading(false);
             }
         },
@@ -518,19 +545,11 @@
                     });
                     vba.root.changeLoading(false);
                 }
-                vba.route.ccnt.funcs.getItems();
-
+                vba.route.ccnt.funcs.getItems(); 
                 vba.route.ccnt.funcs.filterOperations = function () {
                     vba.route.ccnt.items.filterForm.price = $("#price-filter").val();
                     vba.route.ccnt.funcs.getItems();
-                }
-
-                $('#listSorting').change(function () {
-                    vba.route.ccnt.items.filterForm.listSorting = this.value;
-                    vba.route.ccnt.items.filterForm.page = 1;
-                    vba.route.ccnt.funcs.getItems();
-                });
-
+                } 
                 vba.route.ccnt.funcs.getProductsGrid = function () {
                     if (vba.route.ccnt.items.filterForm.defaultProductsGrid != "") {
                         $("#gridProductButton").addClass("active");
@@ -547,7 +566,37 @@
                     $(".products-block").addClass("layout-5");
                     $(".dataContainer").html("<div class=\"product-item\"> <div class=\"row\">" + data + "</div> </div>");
                 }
+                vba.route.ccnt.funcs.updateUserFavorite = function (elem) {
+                    vba.root.changeLoading(true);
+                    var post = {
+                        productID: elem
+                    };
+                    $.post("/api/products/updateUserFavorite", post).done(function (res) {
+                        if (res.type == "error") {
+                            vba.alert({
+                                message: res.message == '' ? "İşlem Başarısız" : res.message,
+                                classes: 'alert-danger'
+                            });
+                        } else {
+                            vba.alert({
+                                message: res.message == '' ? "İşlem Başarılı" : res.message,
+                                classes: "alert-success"
+                            });
+                        }
+                    }).fail(function () {
+                        vba.alert({
+                            message: "İşlem başarısız",
+                            classes: 'alert-danger'
+                        });
+                    });
+                    vba.root.changeLoading(false);
+                }
 
+                $('#listSorting').change(function () {
+                    vba.route.ccnt.items.filterForm.listSorting = this.value;
+                    vba.route.ccnt.items.filterForm.page = 1;
+                    vba.route.ccnt.funcs.getItems();
+                });
                 $.getScript("/js/main.js", function () { }); //Template CSS
                 vba.root.changeLoading(false);
             }
@@ -613,7 +662,7 @@
                 }
                 vba.route.ccnt.funcs.getItems = function () {
                     vba.root.changeLoading(true);
-                    $("#pages_placeholder .dataContainer").html(""); 
+                    $("#pages_placeholder .dataContainer").html("");
                     var post = {
                         id: vba.route.ccnt.items.filterForm.id
                     };
@@ -645,7 +694,7 @@
                                 $(".commetsCount").text("Toplam Yorum (" + res.comments.length + ")");
                                 $(".productTags").text("#" + res.data.tags.replace(/,/g, ", #"));
                                 $(".productView").text(res.productView);
-                                 
+
 
                                 if (res.comments.length > 0) {
                                     $(".comments-list").empty();
@@ -758,11 +807,11 @@
                             } else {
                                 $("#pages_placeholder ").html(" <div class='col-lg-12 mb-3'> <div class='row g-0 bg-light py-4'><div class='col-md-12 d-flex align-items-center justify-content-center'> 😔 Üzgünüm, talebinizle eşleşen birşey bulamadık 😔</div></div></div>").hide();
                                 $("#pages_placeholder ").fadeIn(500);
-                                vba.route.getController("/", "/"); 
+                                vba.route.getController("/", "/");
                             }
-                        } 
+                        }
                         vba.root.changeLoading(false);
-                    }).fail(function () { 
+                    }).fail(function () {
                         $("#pages_placeholder .dataContainer").html(" <div class='col-lg-12 mb-3'> <div class='row g-0 bg-light py-4'><div class='col-md-12 d-flex align-items-center justify-content-center'> 😔 Üzgünüm, talebinizle eşleşen birşey bulamadık 😔</div></div></div>");
                     });
                     $.getScript("/js/main.js", function () { }); //Template CSS   
