@@ -26,7 +26,8 @@ namespace eticaret.Services.productsServices
                 { "categoryName", null },
                 { "categoryID", null },
                 { "title", null },
-                { "productView", null }
+                { "productView", null },
+                { "averageRating", null }
             };
 
         public Dictionary<string, object> getProduct(Guid id, string ip)
@@ -38,8 +39,16 @@ namespace eticaret.Services.productsServices
                 if (responseProduct.isActive == true)
                 {
                     var responseComments = _dbeticaretContext.comments.Include(c => c.User).AsQueryable().Where(x => x.productID == id & x.isActive == true).ToList();
+                    var averageRating = _dbeticaretContext.comments.Where(c => c.productID == id).Average(c => (double?)c.rating) ?? 0;
                     var responsePIL = _dbeticaretContext.productsIMGs.AsQueryable().Where(x => x.productID == id & x.isActive == true).ToList();
-                    var relatedProducts = _dbeticaretContext.products.AsQueryable().Where(x => x.id != id & x.isActive == true & x.categoriID == responseProduct.categoriID).OrderByDescending(x => x.creatingTime).Take(5).ToList();
+                    var relatedProducts = _dbeticaretContext.products.AsQueryable().Where(x => x.id != id & x.isActive == true & x.categoriID == responseProduct.categoriID).OrderByDescending(x => x.creatingTime).Select(x => new
+                    {
+                        Product = x,
+                        commentCount = _dbeticaretContext.comments.Count(c => c.productID == x.id),
+                        averageRating = _dbeticaretContext.comments
+                            .Where(c => c.productID == x.id)
+                            .Average(c => (double?)c.rating) ?? 0
+                    }).Take(5).ToList();
 
                     #region Add ProductViews 
                     var isProductView = _dbeticaretContext.productViews.Any(x => x.productID == id && x.ip == ip);
@@ -68,6 +77,7 @@ namespace eticaret.Services.productsServices
                     response["title"] = responseProduct.name;
                     response["categoryID"] = responseProduct.categoriID;
                     response["productView"] = countProductView;
+                    response["averageRating"] = averageRating;
                 }
                 else
                 {

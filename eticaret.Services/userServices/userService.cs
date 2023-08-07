@@ -1,7 +1,6 @@
 ﻿using eticaret.Data;
 using eticaret.Domain.Entities;
-using eticaret.Services.userServices.Dto;
-using Microsoft.EntityFrameworkCore;
+using eticaret.Services.userServices.Dto; 
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -308,6 +307,9 @@ namespace eticaret.Services.userServices
                        UserFavorite = x.UserFavorite,
                        Product = x.Product,
                        commentCount = _dbeticaretContext.comments.Count(c => c.productID == x.Product.id),
+                       averageRating = _dbeticaretContext.comments
+                            .Where(c => c.productID == x.Product.id)
+                            .Average(c => (double?)c.rating) ?? 0
                    });
 
                 switch (listSorting)
@@ -332,8 +334,7 @@ namespace eticaret.Services.userServices
                 var count = query.Count();
                 var responseList = query.Skip((page - 1) * itemsPerPage).Take(itemsPerPage).ToList();
 
-                response["type"] = "success"; response["data"] = responseList; response["c"] = count;
-
+                response["type"] = "success"; response["data"] = responseList; response["c"] = count; 
             }
             catch
             {

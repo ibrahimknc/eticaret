@@ -271,13 +271,8 @@
                                                 </a>
                                             </div>
 
-                                            <div class="product-rating">
-                                                <div class="star on"></div>
-                                                <div class="star on"></div>
-                                                <div class="star on "></div>
-                                                <div class="star on"></div>
-                                                <div class="star"></div>
-                                            </div>
+                                            <div class="product-rating">@Html.Raw(veriyoneticisi.ratingChange(item.averageRating)) </div>
+                                            <span class="review-count">(@(item.commentCount))</span>
 
                                             <div class="product-price">
                                                 <span class="sale-price">@item.SalePrice</span>

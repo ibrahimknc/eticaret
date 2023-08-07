@@ -16,5 +16,7 @@ namespace eticaret.Services.viewsFavoriteServices.Dto
         public Guid CategoryID { get; set; }
         public string CategoryName { get; set; }
         public string Image { get; set; }
+        public double averageRating { get; set; }
+        public int? commentCount { get; set; }
     }
 }

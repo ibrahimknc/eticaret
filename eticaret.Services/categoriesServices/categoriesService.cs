@@ -1,4 +1,5 @@
-﻿using eticaret.Data; 
+﻿using eticaret.Data;
+using eticaret.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,24 +47,32 @@ namespace eticaret.Services.categoriesServices
                 ((x.name.Contains(search)) |
                 (x.tags.Contains(search)) |
                 (x.details.Contains(search)))
-                )));
+                )))
+                    .Select(x => new
+                    {
+                        Product = x,
+                        commentCount = _dbeticaretContext.comments.Count(c => c.productID == x.id),
+                        averageRating = _dbeticaretContext.comments
+                            .Where(c => c.productID == x.id)
+                            .Average(c => (double?)c.rating) ?? 0
+                    });
 
                 switch (listSorting)
                 {
                     case 1:
-                        query = query.OrderBy(x => x.salePrice);
+                        query = query.OrderBy(x => x.Product.salePrice);
                         break;
                     case 2:
-                        query = query.OrderByDescending(x => x.salePrice);
+                        query = query.OrderByDescending(x => x.Product.salePrice);
                         break;
                     case 3:
-                        query = query.OrderBy(x => x.name);
+                        query = query.OrderBy(x => x.Product.name);
                         break;
                     case 4:
-                        query = query.OrderByDescending(x => x.name);
+                        query = query.OrderByDescending(x => x.Product.name);
                         break;
                     default:
-                        query = query.OrderByDescending(x => x.id);
+                        query = query.OrderByDescending(x => x.Product.id);
                         break;
                 }
 
@@ -74,9 +83,10 @@ namespace eticaret.Services.categoriesServices
 
                 response["type"] = "success"; response["data"] = responseList;
                 response["c"] = count; response["name"] = categoryName; response["tags"] = tags;
- 
+
             }
-            catch {
+            catch
+            {
                 response["type"] = "error"; response["message"] = "";
             }
             return response;

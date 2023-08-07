@@ -225,28 +225,25 @@
 									<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12" data-repeat="items">
 										<div class="product-item">
 											<div class="product-image">
-												<a href="/products/{{item.id}}">
-													<img class="img-responsive" src="/uploads/products/{{item.image}}" alt="Product Image">
+												<a href="/products/{{item.product.id}}">
+													<img class="img-responsive" src="/uploads/products/{{item.product.image}}" alt="Product Image">
 												</a>
 											</div>
 
 											<div class="product-title">
-												<a href="/products/{{item.id}}">
-													{{item.name}}
+												<a href="/products/{{item.product.id}}">
+													{{item.product.name}}
 												</a>
 											</div>
 
 											<div class="product-rating">
-												<div class="star on"></div>
-												<div class="star on"></div>
-												<div class="star on "></div>
-												<div class="star on"></div>
-												<div class="star"></div>
+												{{vba.ratingChange(item.averageRating)}}
 											</div>
+											<span class="review-count">({{item.commentCount}})</span>
 
 											<div class="product-price">
-												<span class="sale-price">{{item.salePrice}} &#x20BA;</span>
-												<span class="base-price">{{item.basePrice}} &#x20BA;</span>
+												<span class="sale-price">{{item.product.salePrice}} &#x20BA;</span>
+												<span class="base-price">{{item.product.basePrice}} &#x20BA;</span>
 											</div>
 
 											<div class="product-buttons">
@@ -254,11 +251,11 @@
 													<i class="fa fa-shopping-basket" aria-hidden="true"></i>
 												</a>
 
-												<a class="add-wishlist" href="javascript:;" onclick="vba.route.ccnt.funcs.updateUserFavorite('{{item.id}}');">
+												<a class="add-wishlist" href="javascript:;" onclick="vba.route.ccnt.funcs.updateUserFavorite('{{item.product.id}}');">
 													<i class="fa fa-heart" aria-hidden="true"></i>
 												</a>
 
-												<a class="quickview" href="/products/{{item.id}}">
+												<a class="quickview" href="/products/{{item.product.id}}">
 													<i class="fa fa-eye" aria-hidden="true"></i>
 												</a>
 											</div>

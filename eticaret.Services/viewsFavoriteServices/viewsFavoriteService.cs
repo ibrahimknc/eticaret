@@ -53,7 +53,11 @@ namespace eticaret.Services.viewsFavoriteServices
              SalePrice = g.Key.salePrice,
              CategoryID = g.Key.categoriID,
              CategoryName = g.Key.CategoryName,
-             Image = g.Key.image
+             Image = g.Key.image,
+             commentCount = _dbeticaretContext.comments.Count(c => c.productID == g.Key.id),
+             averageRating = _dbeticaretContext.comments
+                            .Where(c => c.productID == g.Key.id)
+                            .Average(c => (double?)c.rating) ?? 0
          })
          .ToList();
 

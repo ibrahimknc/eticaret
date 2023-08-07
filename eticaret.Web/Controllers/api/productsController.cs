@@ -34,7 +34,8 @@ namespace eticaret.Web.Controllers.api
             var type = response["type"];
             var message = response["message"];
             var productView = response["productView"];
-            return Ok(new { type = type, message = message, data = data, categoryName = categoryName, categoryID = categoryID, title = title, comments = comments, productImageList = responsePIL, relatedProducts = relatedProducts, productView = productView });
+            var averageRating = response["averageRating"];
+            return Ok(new { type = type, message = message, data = data, categoryName = categoryName, categoryID = categoryID, title = title, comments = comments, productImageList = responsePIL, relatedProducts = relatedProducts, productView = productView, averageRating = averageRating });
         }
 
         [Route("[action]"), HttpPost]

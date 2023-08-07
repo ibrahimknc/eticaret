@@ -773,28 +773,20 @@
                                 $(".productBasePrice").text(res.data.basePrice + " ₺");
                                 $(".productStock").html(res.data.stock > 0 ? " <span class=\"availability\">Stok Durumu :</span> <i class=\"fa fa-check-square-o\" aria-hidden=\"true\"></i>Stokta var" : "<span class=\"availability\">Stok Durumu :</span><font color=\"red\" class=\"beniGoster-text\"> <i class=\"fa fa-times-circle-o\" aria-hidden=\"true\"></i>Stokta Yok</font>");
                                 $(".productMainImage").html("<img class=\"img-responsive\" src=\"/uploads/products/" + res.data.image + "\" alt=\"Product Image\">");
-                                $(".product-short-description").text(vba.toMinString(res.data.details,20));
+                                $(".product-short-description").text(vba.toMinString(res.data.details, 20));
                                 $("#descriptionDetails").text(res.data.details);
                                 $("#additional-information").text(res.data.details);
                                 $(".commetsCount").text("Toplam Yorum (" + res.comments.length + ")");
                                 $(".productTags").text("#" + res.data.tags.replace(/,/g, ", #"));
                                 $(".productView").text(res.productView);
+                                $(".averageRating").html(vba.ratingChange(res.averageRating));
 
 
                                 if (res.comments.length > 0) {
                                     $(".comments-list").empty();
-                                    $.each(res.comments, function (index, item) {
+                                    $.each(res.comments, function (index, item) { 
 
-                                        var ratingHtml = "";
-                                        for (var i = 0; i < 5; i++) {
-                                            if (item.rating > i) {
-                                                ratingHtml += '<div class="star on"></div>';
-                                            }
-                                            else {
-                                                ratingHtml += '<div class="star off"></div>';
-                                            }
-
-                                        }
+                                        var ratingHtml = vba.ratingChange(item.rating);  
 
                                         $(".comments-list").append(`<div class="item col-md-12">
                                                                 <div class="comment-left pull-left">
@@ -832,42 +824,33 @@
                                     responseHTML += `</div>`;
                                     $("#productImageList").append(responseHTML);
                                 }
-
+                                  
                                 if (res.relatedProducts.length > 0) {
                                     var responseHTML = `<div class="products owl-theme owl-carousel"> `;
                                     $.each(res.relatedProducts, function (index, item) {
 
-                                        var ratingHtml = "";
-                                        for (var i = 0; i < 5; i++) {
-                                            if (item.rating > i) {
-                                                ratingHtml += '<div class="star on"></div>';
-                                            }
-                                            else {
-                                                ratingHtml += '<div class="star off"></div>';
-                                            }
-
-                                        }
-
+                                        var ratingHtml = vba.ratingChange(item.averageRating);  
                                         responseHTML += `<div class="product-item">
                                                             <div class="product-image">
-                                                                <a href="/products/${item.id}">
-                                                                    <img src="/uploads/products/${item.image}" alt="${item.name}">
+                                                                <a href="/products/${item.product.id}">
+                                                                    <img src="/uploads/products/${item.product.image}" alt="${item.product.name}">
                                                                 </a>
                                                             </div>
 
                                                             <div class="product-title">
-                                                                <a href="/products/${item.id}">
-                                                                    ${item.name}
+                                                                <a href="/products/${item.product.id}">
+                                                                    ${item.product.name}
                                                                 </a>
                                                             </div>
 
                                                             <div class="product-rating">
                                                                 ${ratingHtml}
                                                             </div>
+                                                            <span class="review-count">(${item.commentCount})</span>
 
                                                             <div class="product-price">
-                                                                <span class="sale-price">${item.salePrice}</span>
-                                                                <span class="base-price">${item.basePrice}</span>
+                                                                <span class="sale-price">${item.product.salePrice}</span>
+                                                                <span class="base-price">${item.product.basePrice}</span>
                                                             </div>
 
                                                             <div class="product-buttons">
@@ -879,7 +862,7 @@
                                                                     <i class="fa fa-heart" aria-hidden="true"></i>
                                                                 </a>
 
-                                                                <a class="quickview" href="/products/${item.id}">
+                                                                <a class="quickview" href="/products/${item.product.id}">
                                                                     <i class="fa fa-eye" aria-hidden="true"></i>
                                                                 </a>
                                                             </div>
@@ -998,6 +981,19 @@
     toMinString: function (str, limit) {
         return (str.split(" ").slice(0, limit).join(" ")) + "...";
     },
+    ratingChange: function (rating) {
+        var ratingHtml = "";
+        for (var i = 0; i < 5; i++) {
+            if (rating > i) {
+                ratingHtml += '<div class="star on"></div>';
+            }
+            else {
+                ratingHtml += '<div class="star off"></div>';
+            } 
+        }
+        return ratingHtml; 
+    },
+
     pagination: function () {
         $("#pages_placeholder .pagination ul").hide();
         $("#pages_placeholder .pagination ul .nav-page").remove();

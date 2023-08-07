@@ -67,16 +67,12 @@
 										<div class="product-info">
 											<div class="product-title">
 												<a href="/products/{{item.product.id}}">
-													{{item.name}}
+													{{item.product.name}}
 												</a>
 											</div>
 
 											<div class="product-rating">
-												<div class="star on"></div>
-												<div class="star on"></div>
-												<div class="star on "></div>
-												<div class="star on"></div>
-												<div class="star"></div> 
+												{{vba.ratingChange(item.averageRating)}}
 											</div>
 											<span class="review-count">({{item.commentCount}})</span>
 

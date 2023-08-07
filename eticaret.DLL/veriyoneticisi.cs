@@ -50,6 +50,22 @@ public class veriyoneticisi
             };
         }
     }
+    public static string ratingChange(double rating)
+    {
+        var ratingHtml = "";
+        for (var i = 0; i < 5; i++)
+        {
+            if (rating > i)
+            {
+                ratingHtml += "<div class=\"star on\"></div>";
+            }
+            else
+            {
+                ratingHtml += "<div class=\"star off\"></div>";
+            }
+        }
+        return ratingHtml;
+    }
     public static string GenerateSharedKey
     {
         get
