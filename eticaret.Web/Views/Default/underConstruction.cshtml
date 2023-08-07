@@ -4,11 +4,10 @@
 	<!-- Basic Page Needs -->
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>FreshMart - Organic, Fresh Food, Farm Store HTML Template</title>
-
-	<meta name="keywords" content="Organic, Fresh Food, Farm Store">
-	<meta name="description" content="FreshMart - Organic, Fresh Food, Farm Store HTML Template">
-	<meta name="author" content="tivatheme">
+	<title>@await layout.settingsAsync("title")</title>
+	<meta name="keywords" content="@await layout.settingsAsync("keywords")">
+	<meta name="description" content="@await layout.settingsAsync("description")">
+	<meta name="author" content="@veriyoneticisi.projectSettings["author"]">
 
 	<!-- Favicon -->
 	<link rel="shortcut icon" href="@veriyoneticisi.projectSettings["favicon"]" type="image/png">
@@ -45,9 +44,9 @@
 						<div class="image">
 							<img class="img-responsive" src="img/underconst.png" alt="Image underconst">
 						</div>
-						<div class="title">Sorry - We are updating the platform to be more useful.</div>
+						<div class="title">Sorry - We are updating the @await layout.settingsAsync("title") to be more useful.</div>
 						<div class="content">
-							Üzgünüz - Platformu daha kullanışlı olması için güncelleme geçiyoruz.
+							Üzgünüz - @await layout.settingsAsync("title") daha kullanışlı olması için güncelleme geçiyoruz.
 					</div>
 					</div>
 

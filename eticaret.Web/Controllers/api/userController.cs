@@ -79,7 +79,6 @@ namespace eticaret.Web.Controllers.api
             }
 
         }
-
         public static dynamic refreshAndGetLogin(HttpContext context, userDto user)
         {
             if (!string.IsNullOrEmpty(context.Session.GetString("login")))
@@ -103,7 +102,6 @@ namespace eticaret.Web.Controllers.api
             }
             return null;
         }
-
         [Route("[action]")]
         public IActionResult logout()
         {
@@ -185,6 +183,39 @@ namespace eticaret.Web.Controllers.api
                 {
                     return Ok(new { message = "Lütfen yeni şifreleri aynı giriniz.", type = "error" });
                 }
+            }
+            else
+            {
+                return Ok(new { message = "Yetkisiz işlem.", type = "error" });
+            }
+        }
+        [Route("[action]"), HttpPost]
+        public IActionResult updateUserFavorite([FromForm] Guid productID)
+        {
+            if (HttpContext.Session.GetString("login") == "true" && !string.IsNullOrEmpty(HttpContext.Session.GetString("id")))
+            {
+                Guid userID = Guid.Parse(HttpContext.Session.GetString("id"));
+                var response = _IuserService.updateUserFavorite(userID, productID);
+                var type = response["type"];
+                var message = response["message"];
+                return Ok(new { type = type, message = message });
+            }
+            else
+            {
+                return Ok(new { type = "error", message = "Lütfen Giriş Yapınız." });
+            }
+        }
+        [HttpPost, Route("[action]")]
+        public IActionResult getUserFavorite([FromForm] Guid userID, [FromForm] int page, [FromForm] int itemsPerPage, [FromForm] string search, [FromForm] int listSorting)
+        {
+            if (HttpContext.Session.GetString("login") == "true" && !string.IsNullOrEmpty(HttpContext.Session.GetString("id")))
+            {
+                var response = _IuserService.getUserFavorites(userID, page, itemsPerPage, search, listSorting);
+                var data = response["data"];
+                var type = response["type"];
+                var message = response["message"];
+                var c = response["c"];
+                return Ok(new { type = type, message = message, data = data, c = c });
             }
             else
             {

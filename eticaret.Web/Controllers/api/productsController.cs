@@ -54,21 +54,6 @@ namespace eticaret.Web.Controllers.api
             }
         }
 
-        [Route("[action]"), HttpPost]
-        public IActionResult updateUserFavorite([FromForm] Guid productID)
-        {
-            if (HttpContext.Session.GetString("login") == "true" && !string.IsNullOrEmpty(HttpContext.Session.GetString("id")))
-            {
-                Guid userID = Guid.Parse(HttpContext.Session.GetString("id"));
-                var response = _IproductsService.updateUserFavorite(userID, productID);
-                var type = response["type"];
-                var message = response["message"];
-                return Ok(new { type = type, message = message });
-            }
-            else
-            {
-                return Ok(new { type = "error", message = "Lütfen Giriş Yapınız." });
-            }
-        }
+        
     }
 }

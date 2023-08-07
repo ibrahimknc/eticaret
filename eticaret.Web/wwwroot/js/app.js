@@ -146,19 +146,12 @@
     },
     route: {
         getPath: function (pathName) {
-            //Path id query gizleme -------- 
-            if (pathName.includes("profile")) {
-                vba.settings.staticID = pathName.split("profile/")[1];
-                pathName = "/user/profile";
-            }
-            if (pathName.includes("categories")) {
-                vba.settings.staticID = pathName.split("categories/")[1];
-                pathName = "/categories";
-            }
-            if (pathName.includes("products")) {
-                vba.settings.staticID = pathName.split("products/")[1];
-                pathName = "/products";
-            }
+            //Path id query gizleme -------- //
+            if (pathName.includes("favorites")) { vba.settings.staticID = pathName.split("favorites/")[1]; pathName = "/user/favorites"; }
+            if (pathName.includes("profile")) { vba.settings.staticID = pathName.split("profile/")[1]; pathName = "/user/profile"; }
+            if (pathName.includes("categories")) { vba.settings.staticID = pathName.split("categories/")[1]; pathName = "/categories"; }
+            if (pathName.includes("products")) { vba.settings.staticID = pathName.split("products/")[1]; pathName = "/products"; }
+
             if (pathName.indexOf('?') > -1) {
                 pathName = pathName.substr(0, pathName.indexOf('?'));
             }
@@ -259,7 +252,7 @@
                     var post = {
                         productID: elem
                     };
-                    $.post("/api/products/updateUserFavorite", post).done(function (res) {
+                    $.post("/api/user/updateUserFavorite", post).done(function (res) {
                         if (res.type == "error") {
                             vba.alert({
                                 message: res.message == '' ? "İşlem Başarısız" : res.message,
@@ -407,6 +400,95 @@
                 vba.route.ccnt.funcs.getItems();
             }
         },
+        "/user/favorites": {
+            load: function () {
+                vba.route.ccnt.items.filterForm = {};
+                vba.route.ccnt.items.filterForm.id = vba.settings.staticID;
+                vba.route.ccnt.items.filterForm.page = 1;
+                vba.route.ccnt.items.filterForm.itemsPerPage = 3;
+                vba.route.ccnt.items.filterForm.totalItems = 0;
+                vba.route.ccnt.items.filterForm.listSorting = 0;
+                vba.route.ccnt.funcs.updateItemFavorite = function (form) {
+                    $.post("/api/user/updateUser", $(form).serialize()
+                    ).done(function (res) {
+                        if (res.type == "error") {
+                            vba.alert({
+                                message: res.message == '' ? "İşlem Başarısız" : res.message,
+                                classes: 'alert-danger'
+                            });
+                            vba.root.changeLoading(false);
+                        } else {
+                            vba.alert({
+                                message: res.message == '' ? "İşlem Başarılı" : res.message,
+                                classes: "alert-success"
+                            });
+                            vba.route.ccnt.funcs.getItems();
+                        }
+                    }).fail(function () {
+                        vba.alert({
+                            message: "İşlem başarısız",
+                            classes: 'alert-danger'
+                        });
+                    });
+                }
+                vba.route.ccnt.funcs.getItems = function () {
+                    vba.root.changeLoading(true);
+                    $("#pages_placeholder .dataContainer").html("");
+                    vba.route.ccnt.items.dataLoading = true;
+
+                    var post = {
+                        listSorting: vba.route.ccnt.items.filterForm.listSorting,
+                        search: $("#searchForm input[type='text']").val(),
+                        page: vba.route.ccnt.items.filterForm.page,
+                        itemsPerPage: vba.route.ccnt.items.filterForm.itemsPerPage,
+                        userID: vba.route.ccnt.items.filterForm.id
+                    };
+
+                    $.post("/api/user/getUserFavorite", post).done(function (res) {
+                        if (res.type == "error") {
+                            vba.alert({
+                                message: res.message == '' ? "İşlem başarısız" : res.message,
+                                classes: 'alert-danger',
+                                duration: 5000
+                            });
+                            vba.root.checkLogin();
+                        }
+                        else {
+                            if (res.data.length > 0) {
+                                var tmpl = "binditems";
+                                $("#pages_placeholder .dataContainer").append(vba.compileTemp(vba.route.ccnt.items[tmpl], res.data));
+
+                            } else {
+                                $("#pages_placeholder .dataContainer").html(" <div class='col-lg-12 mb-3'> <div class='row g-0 bg-light py-4'><div class='col-md-12 d-flex align-items-center justify-content-center'> 😔 Üzgünüm, talebinizle eşleşen birşey bulamadık 😔</div></div></div>").hide();
+                                $("#pages_placeholder .dataContainer").fadeIn(500);
+                            }
+
+                            $(".total-products").html("Toplam <b><u>" + res.c + "</u></b> Ürün Var");
+                            $(".showingTotalProducts").html("Toplam <b><u>" + res.c + "</u></b> Üründen <b><u>" + res.data.length + "</u></b> Adet Gösteriliyor");
+                            vba.route.ccnt.items.filterForm.totalItems = res.c;
+                            vba.pagination();
+                        }
+                        vba.route.ccnt.items.dataLoading = false;
+                        vba.root.changeLoading(false);
+                    }).fail(function () {
+                        vba.route.ccnt.items.dataLoading = false;
+                        $("#pages_placeholder .dataContainer").html("");
+                    });
+                    vba.root.changeLoading(false);
+                }
+                vba.route.ccnt.funcs.getItems();
+
+                //----------------Filter-------------------// 
+                $('#listSorting').change(function () {
+                    vba.route.ccnt.items.filterForm.listSorting = this.value;
+                    vba.route.ccnt.items.filterForm.page = 1;
+                    vba.route.ccnt.funcs.getItems();
+                });
+                //----------------end Filter-------------------//
+
+                vba.root.changeLoading(false);
+            }
+        },
         "/user/login": {
             load: function () {
                 vba.route.ccnt.funcs.updateItem = function (form) {
@@ -545,33 +627,13 @@
                     });
                     vba.root.changeLoading(false);
                 }
-                vba.route.ccnt.funcs.getItems(); 
-                vba.route.ccnt.funcs.filterOperations = function () {
-                    vba.route.ccnt.items.filterForm.price = $("#price-filter").val();
-                    vba.route.ccnt.funcs.getItems();
-                } 
-                vba.route.ccnt.funcs.getProductsGrid = function () {
-                    if (vba.route.ccnt.items.filterForm.defaultProductsGrid != "") {
-                        $("#gridProductButton").addClass("active");
-                        $("#listProductButton").removeClass("active");
-                        $("#products-grid").html(vba.route.ccnt.items.filterForm.defaultProductsGrid);
-                    }
-                }
-                vba.route.ccnt.funcs.getProductsList = function () {
-                    $("#gridProductButton").removeClass("active");
-                    $("#listProductButton").addClass("active");
-                    vba.route.ccnt.items.filterForm.defaultProductsGrid = $("#products-grid").html();
-                    var data = $(".dataContainer").html();
-                    $(".dataContainer").removeClass("row");
-                    $(".products-block").addClass("layout-5");
-                    $(".dataContainer").html("<div class=\"product-item\"> <div class=\"row\">" + data + "</div> </div>");
-                }
+                vba.route.ccnt.funcs.getItems();
                 vba.route.ccnt.funcs.updateUserFavorite = function (elem) {
                     vba.root.changeLoading(true);
                     var post = {
                         productID: elem
                     };
-                    $.post("/api/products/updateUserFavorite", post).done(function (res) {
+                    $.post("/api/user/updateUserFavorite", post).done(function (res) {
                         if (res.type == "error") {
                             vba.alert({
                                 message: res.message == '' ? "İşlem Başarısız" : res.message,
@@ -592,11 +654,34 @@
                     vba.root.changeLoading(false);
                 }
 
+                //----------------Filter-------------------//
+                vba.route.ccnt.funcs.filterOperations = function () {
+                    vba.route.ccnt.items.filterForm.price = $("#price-filter").val();
+                    vba.route.ccnt.funcs.getItems();
+                }
+                vba.route.ccnt.funcs.getProductsGrid = function () {
+                    if (vba.route.ccnt.items.filterForm.defaultProductsGrid != "") {
+                        $("#gridProductButton").addClass("active");
+                        $("#listProductButton").removeClass("active");
+                        $("#products-grid").html(vba.route.ccnt.items.filterForm.defaultProductsGrid);
+                    }
+                }
+                vba.route.ccnt.funcs.getProductsList = function () {
+                    $("#gridProductButton").removeClass("active");
+                    $("#listProductButton").addClass("active");
+                    vba.route.ccnt.items.filterForm.defaultProductsGrid = $("#products-grid").html();
+                    var data = $(".dataContainer").html();
+                    $(".dataContainer").removeClass("row");
+                    $(".products-block").addClass("layout-5");
+                    $(".dataContainer").html("<div class=\"product-item\"> <div class=\"row\">" + data + "</div> </div>");
+                }
                 $('#listSorting').change(function () {
                     vba.route.ccnt.items.filterForm.listSorting = this.value;
                     vba.route.ccnt.items.filterForm.page = 1;
                     vba.route.ccnt.funcs.getItems();
                 });
+                //----------------end Filter-------------------//
+
                 $.getScript("/js/main.js", function () { }); //Template CSS
                 vba.root.changeLoading(false);
             }
@@ -686,9 +771,9 @@
                                 $(".categoryName").attr("href", "/categories/" + res.categoryID);
                                 $(".productSalePrice").text(res.data.salePrice + " ₺");
                                 $(".productBasePrice").text(res.data.basePrice + " ₺");
-                                $(".productStock").html(res.data.stock > 0 ? " <span class=\"availability\">Stok Durumu :</span> <i class=\"fa fa-check-square-o\" aria-hidden=\"true\"></i>Stokta var" : "<span class=\"availability\">Stok Durumu :</span><font color=\"red\" class=\"beniGoster-text\"> <i class=\"fa fa-times-circle-o\" aria-hidden=\"true\"></i>Stokta Yok<font>");
+                                $(".productStock").html(res.data.stock > 0 ? " <span class=\"availability\">Stok Durumu :</span> <i class=\"fa fa-check-square-o\" aria-hidden=\"true\"></i>Stokta var" : "<span class=\"availability\">Stok Durumu :</span><font color=\"red\" class=\"beniGoster-text\"> <i class=\"fa fa-times-circle-o\" aria-hidden=\"true\"></i>Stokta Yok</font>");
                                 $(".productMainImage").html("<img class=\"img-responsive\" src=\"/uploads/products/" + res.data.image + "\" alt=\"Product Image\">");
-                                $(".product-short-description").text((res.data.details.split(" ").slice(0, 20).join(" ")) + "...");
+                                $(".product-short-description").text(vba.toMinString(res.data.details,20));
                                 $("#descriptionDetails").text(res.data.details);
                                 $("#additional-information").text(res.data.details);
                                 $(".commetsCount").text("Toplam Yorum (" + res.comments.length + ")");
@@ -909,6 +994,9 @@
         var transformedInput = inputValue.toLowerCase();
         e.value = transformedInput;
         return false;
+    },
+    toMinString: function (str, limit) {
+        return (str.split(" ").slice(0, limit).join(" ")) + "...";
     },
     pagination: function () {
         $("#pages_placeholder .pagination ul").hide();

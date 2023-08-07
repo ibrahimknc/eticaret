@@ -1,6 +1,7 @@
 ﻿using eticaret.Data;
 using eticaret.Domain.Entities;
-using eticaret.Services.userServices.Dto; 
+using eticaret.Services.userServices.Dto;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -19,7 +20,8 @@ namespace eticaret.Services.userServices
             {
                 { "type", null }, // success-error
 				{ "message",null },
-                { "data", null}
+                { "data", null},
+                { "c", null}
             };
         public Dictionary<string, object> getUserProfile(Guid id)
         {
@@ -169,18 +171,18 @@ namespace eticaret.Services.userServices
                     if (string.IsNullOrEmpty(user.firstName) | string.IsNullOrEmpty(user.lastName))
                     {
                         response["type"] = "error"; response["message"] = "Lütfen Tüm Kutucukları Doldurunuz.";
-                    }  
+                    }
                     else if (clUsers == null)
                     {
                         response["type"] = "error"; response["message"] = "Üzgünüm Böyle Bir Kullanıcı Bulunamadı.";
                     }
                     else
-                    { 
+                    {
                         clUsers.firstName = user.firstName;
                         clUsers.lastName = user.lastName;
                         clUsers.phone = user.phone;
                         clUsers.address = user.address;
-                        clUsers.updatedTime = DateTime.UtcNow; 
+                        clUsers.updatedTime = DateTime.UtcNow;
 
                         _dbeticaretContext.SaveChanges();
                         response["type"] = "success"; response["message"] = "✔ Profil Güncelleme Başarılı.";
@@ -194,7 +196,7 @@ namespace eticaret.Services.userServices
         }
 
         public Dictionary<string, object> updateUserPassword(userDto user, string newPassword)
-        { 
+        {
             try
             {
                 var clUsers = _dbeticaretContext.users.AsQueryable().FirstOrDefault(x => x.id == user.id);
@@ -222,8 +224,8 @@ namespace eticaret.Services.userServices
                     }
                     else
                     {
-                        clUsers.password = veriyoneticisi.MD5Hash(newPassword); 
-                        clUsers.updatedTime = DateTime.UtcNow; 
+                        clUsers.password = veriyoneticisi.MD5Hash(newPassword);
+                        clUsers.updatedTime = DateTime.UtcNow;
                         _dbeticaretContext.SaveChanges();
                         response["type"] = "success"; response["message"] = "✔ Şifre Güncelleme Başarılı.";
                     }
@@ -231,6 +233,93 @@ namespace eticaret.Services.userServices
                 catch { response["type"] = "error"; response["message"] = ""; }
             }
             catch { response["type"] = "error"; response["message"] = ""; }
+
+            return response;
+        }
+
+        public Dictionary<string, object> updateUserFavorite(Guid userID, Guid productID)
+        {
+            try
+            {
+                var isUserFavorite = _dbeticaretContext.userFavorites.Any(x => x.productID == productID && x.userID == userID);
+                if (!isUserFavorite)
+                {
+                    UserFavorite userFavorite = new UserFavorite()
+                    {
+                        userID = userID,
+                        productID = productID,
+                        isActive = true,
+                        creatingTime = DateTime.UtcNow,
+                        updatedTime = DateTime.UtcNow
+                    };
+                    _dbeticaretContext.userFavorites.Add(userFavorite);
+                    var isCompleted = _dbeticaretContext.SaveChanges();
+
+                    if (isCompleted > 0)
+                    {
+                        response["type"] = "succcess"; response["message"] = "Favori Başarıyla Eklendi.";
+                    }
+                    else
+                    {
+                        response["type"] = "error"; response["message"] = "";
+                    }
+                }
+                else
+                {
+                    response["type"] = "error"; response["message"] = "Favori Daha Önce Eklenmiş.";
+                }
+            }
+            catch
+            {
+                response["type"] = "error"; response["message"] = "";
+            }
+
+            return response;
+        }
+  
+        public Dictionary<string, object> getUserFavorites(Guid userID, int page, int itemsPerPage, string search, int listSorting)
+        {
+            try
+            { 
+                var query = _dbeticaretContext.userFavorites.Include(c => c.Product).AsQueryable().Where(x =>
+                (listSorting <= 4 | (listSorting == 5 && x.Product.stock > 0)) & 
+                x.Product.isActive == true &
+                x.userID == userID &
+                (string.IsNullOrEmpty(search) | (!string.IsNullOrEmpty(search) &
+                ((x.Product.name.Contains(search)) |
+                (x.Product.tags.Contains(search)) |
+                (x.Product.details.Contains(search)))
+                )));
+
+                switch (listSorting)
+                {
+                    case 1:
+                        query = query.OrderBy(x => x.Product.salePrice);
+                        break;
+                    case 2:
+                        query = query.OrderByDescending(x => x.Product.salePrice);
+                        break;
+                    case 3:
+                        query = query.OrderBy(x => x.Product.name);
+                        break;
+                    case 4:
+                        query = query.OrderByDescending(x => x.Product.name);
+                        break;
+                    default:
+                        query = query.OrderByDescending(x => x.Product.id);
+                        break;
+                }
+
+                var count = query.Count();
+                var responseList = query.Skip((page - 1) * itemsPerPage).Take(itemsPerPage).ToList(); 
+
+                response["type"] = "success"; response["data"] = responseList; response["c"] = count;  
+
+            }
+            catch
+            {
+                response["type"] = "error"; response["message"] = "";
+            }
 
             return response;
         }

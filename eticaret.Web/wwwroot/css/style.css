@@ -15092,7 +15092,7 @@ input {
     padding-right: 15px;
 }
 
-.tab-content .tab-pane.active {
+.productTabContent.tab-content .tab-pane.active {
     border: 1px solid #ddd;
     border-top-color: transparent;
     padding: 0 5px 30px 5px;

@@ -65,7 +65,7 @@
                                 <!-- My Account -->
                                 <div class="dropdown account">
                                     <div class="dropdown-toggle" data-toggle="dropdown">
-                                        Hesabım @(Context.Session.GetString("login") == "true" ? "(" + Context.Session.GetString("firstName") + ")":"")
+                                        Hesap @(Context.Session.GetString("login") == "true" ? "(" + Context.Session.GetString("firstName") + ")" : "")
                                     </div>
                                     <div class="dropdown-menu">
                                         @if (!string.IsNullOrEmpty(Context.Session.GetString("id")) && (Context.Session.GetString("login") == "true"))
@@ -77,7 +77,7 @@
                                                 <a href="#" title="Sipariş Listesi"><i class="fa fa-archive"></i>Siparişlerim</a>
                                             </div>
                                             <div class="item">
-                                                <a href="#" title="Favorileri Listesi"><i class="fa fa-heart"></i>Favorilerim</a>
+                                                <a href="/user/favorites/@Context.Session.GetString("id")" title="Favorileri Listesi"><i class="fa fa-heart"></i>Favorilerim</a>
                                             </div>
                                             <div class="item">
                                                 <a href="javascript:;" onclick="vba.root.signOut()" title="Çıkış Yap"><i class="fa fa-sign-out text-danger"></i>Çıkış Yap</a>
@@ -280,7 +280,7 @@
 
         <div id="content" class="site-content">
             <div id="pages_placeholder">
-                                @RenderBody();
+                 @RenderBody();
             </div>
         </div>
 
