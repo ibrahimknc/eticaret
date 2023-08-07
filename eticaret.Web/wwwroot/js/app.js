@@ -806,6 +806,9 @@
                                 $(".productTags").text("#" + res.data.tags.replace(/,/g, ", #"));
                                 $(".productView").text(res.productView);
                                 $(".averageRating").html(vba.ratingChange(res.averageRating));
+                                $(".sumProductStock").attr("max", res.data.stock);
+                                $(".sumProductStock").attr("min", res.data.stock > 0 ? 1 : 0);
+                                $(".sumProductStock").attr("value", res.data.stock > 0 ? 1 : 0);
 
 
                                 if (res.comments.length > 0) {

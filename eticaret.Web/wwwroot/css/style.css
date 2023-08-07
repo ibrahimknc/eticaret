@@ -15207,3 +15207,8 @@ input {
 .alertify .ajs-modal {
     z-index: 9999;
 }
+.sumProductStock {
+    padding-right: 3.5px !important;
+    border-radius: 20px !important;
+    width: auto !important;
+}

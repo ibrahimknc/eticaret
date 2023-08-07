@@ -49,29 +49,27 @@
                             </div>
 
                             <div class="product-add-to-cart border-bottom">
-                                <div class="product-quantity">
-                                    <span class="control-label">QTY :</span>
-                                    <div class="qty">
-                                        <div class="input-group">
-                                            <input type="text" name="qty" value="1" data-min="1">
-                                            <span class="adjust-qty">
-                                                <span class="adjust-btn plus">+</span>
-                                                <span class="adjust-btn minus">-</span>
-                                            </span>
+                                <form>
+                                    <div class="product-quantity">
+                                        <span class="control-label">Miktar :</span>
+                                        <div class="qty">
+                                            <div class="input-group">
+                                                <input type="number" name="qty" class="form-control sumProductStock" value="0" min="0" max="0">
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <div class="product-buttons">
-                                    <a class="add-to-cart" href="#">
-                                        <i class="fa fa-shopping-basket" aria-hidden="true"></i>
-                                        <span>Sepete Ekle</span>
-                                    </a>
+                                    <div class="product-buttons">
+                                        <a class="add-to-cart" href="#">
+                                            <i class="fa fa-shopping-basket" aria-hidden="true"></i>
+                                            <span>Sepete Ekle</span>
+                                        </a>
 
-                                    <a class="add-wishlist" href="#">
-                                        <i class="fa fa-heart" aria-hidden="true"></i>
-                                    </a>
-                                </div>
+                                        <a class="add-wishlist" href="#">
+                                            <i class="fa fa-heart" aria-hidden="true"></i>
+                                        </a>
+                                    </div>
+                                </form>
                             </div>
 
                             <div class="product-share border-bottom">
@@ -105,7 +103,7 @@
                                 </div>
 
                                 <div class="item">
-                                    <a data-toggle="tab" href="#review" onclick="vba.route.ccnt.funcs.scrollToSection('#commentFormBody');return false"><i class="zmdi zmdi-edit" aria-hidden="true"></i><span class="text">Yorum Yapın</span></a>
+                                    <a data-toggle="tab" href="javascript:;" onclick="vba.route.ccnt.funcs.scrollToSection('#commentForm');return false"><i class="zmdi zmdi-edit" aria-hidden="true"></i><span class="text">Yorum Yapın</span></a>
                                 </div>
                             </div>
 
@@ -120,7 +118,7 @@
                                 <div class="item">
                                     <span class="control-label">Taglar :</span>
                                     <a href="javascript:;" title="tags" class="productTags">...</a>
-                                   
+
                                 </div>
                             </div>
                         </div>
