@@ -250,7 +250,8 @@
                 vba.route.ccnt.funcs.updateUserFavorite = function (elem) {
                     vba.root.changeLoading(true);
                     var post = {
-                        productID: elem
+                        productID: elem,
+                        favoriteID: "00000000-0000-0000-0000-000000000000"
                     };
                     $.post("/api/user/updateUserFavorite", post).done(function (res) {
                         if (res.type == "error") {
@@ -408,25 +409,49 @@
                 vba.route.ccnt.items.filterForm.itemsPerPage = 3;
                 vba.route.ccnt.items.filterForm.totalItems = 0;
                 vba.route.ccnt.items.filterForm.listSorting = 0;
-                vba.route.ccnt.funcs.updateItemFavorite = function (form) {
-                    $.post("/api/user/updateUser", $(form).serialize()
-                    ).done(function (res) {
-                        if (res.type == "error") {
-                            vba.alert({
-                                message: res.message == '' ? "İşlem Başarısız" : res.message,
-                                classes: 'alert-danger'
+                vba.route.ccnt.funcs.updateUserFavorite = function (elem) {
+
+                    var confirmDialog = alertify.confirm();
+                    confirmDialog.setting('labels', { ok: "Evet", cancel: "Hayır" });
+                    confirmDialog.setting('transition', 'zoom');
+                    confirmDialog.setting('movable', true);
+                    confirmDialog.setting('closable', false);
+                    confirmDialog.setting('pinnable', true);
+                    confirmDialog.setting('title', "İşlem Onay Penceresi");
+                    confirmDialog.setting('message', "<i class=\"fa fa-exclamation-triangle text-danger\" aria-hidden=\"true\"></i> Favorilerden Çıkarmak İstediğinizden Eminmisiniz?");
+                    confirmDialog.show();
+                    confirmDialog.set('onok', function () {
+                        vba.root.changeLoading(true);
+                        var post = {
+                            productID: "00000000-0000-0000-0000-000000000000",
+                            favoriteID: elem
+                        };
+                        $.post("/api/user/updateUserFavorite", post)
+                            .done(function (res) {
+                                if (res.type == "error") {
+                                    vba.alert({
+                                        message: res.message == '' ? "İşlem Başarısız" : res.message,
+                                        classes: 'alert-danger'
+                                    });
+                                    vba.root.changeLoading(false);
+                                } else {
+                                    vba.alert({
+                                        message: res.message == '' ? "İşlem Başarılı" : res.message,
+                                        classes: "alert-success"
+                                    });
+                                    vba.route.ccnt.funcs.getItems();
+                                }
+                            })
+                            .fail(function () {
+                                vba.alert({
+                                    message: "İşlem başarısız",
+                                    classes: 'alert-danger'
+                                });
+                                vba.root.changeLoading(false);
                             });
-                            vba.root.changeLoading(false);
-                        } else {
-                            vba.alert({
-                                message: res.message == '' ? "İşlem Başarılı" : res.message,
-                                classes: "alert-success"
-                            });
-                            vba.route.ccnt.funcs.getItems();
-                        }
-                    }).fail(function () {
+                    }).set('oncancel', function () {
                         vba.alert({
-                            message: "İşlem başarısız",
+                            message: "Favori Çıkarmaktan Vazgeçildi.",
                             classes: 'alert-danger'
                         });
                     });
@@ -631,7 +656,8 @@
                 vba.route.ccnt.funcs.updateUserFavorite = function (elem) {
                     vba.root.changeLoading(true);
                     var post = {
-                        productID: elem
+                        productID: elem,
+                        favoriteID: "00000000-0000-0000-0000-000000000000"
                     };
                     $.post("/api/user/updateUserFavorite", post).done(function (res) {
                         if (res.type == "error") {
@@ -784,9 +810,9 @@
 
                                 if (res.comments.length > 0) {
                                     $(".comments-list").empty();
-                                    $.each(res.comments, function (index, item) { 
+                                    $.each(res.comments, function (index, item) {
 
-                                        var ratingHtml = vba.ratingChange(item.rating);  
+                                        var ratingHtml = vba.ratingChange(item.rating);
 
                                         $(".comments-list").append(`<div class="item col-md-12">
                                                                 <div class="comment-left pull-left">
@@ -824,12 +850,12 @@
                                     responseHTML += `</div>`;
                                     $("#productImageList").append(responseHTML);
                                 }
-                                  
+
                                 if (res.relatedProducts.length > 0) {
                                     var responseHTML = `<div class="products owl-theme owl-carousel"> `;
                                     $.each(res.relatedProducts, function (index, item) {
 
-                                        var ratingHtml = vba.ratingChange(item.averageRating);  
+                                        var ratingHtml = vba.ratingChange(item.averageRating);
                                         responseHTML += `<div class="product-item">
                                                             <div class="product-image">
                                                                 <a href="/products/${item.product.id}">
@@ -854,7 +880,7 @@
                                                             </div>
 
                                                             <div class="product-buttons">
-                                                                <a class="add-to-cart" href="#">
+                                                                <a class="add-to-cart" href="javascript:;" onclick="vba.route.ccnt.funcs.updateUserFavorite('${item.product.id}');">
                                                                     <i class="fa fa-shopping-basket" aria-hidden="true"></i>
                                                                 </a>
 
@@ -886,6 +912,33 @@
                     vba.root.changeLoading(false);
                 }
                 vba.route.ccnt.funcs.getItems();
+
+                vba.route.ccnt.funcs.updateUserFavorite = function (elem) {
+                    vba.root.changeLoading(true);
+                    var post = {
+                        productID: elem,
+                        favoriteID: "00000000-0000-0000-0000-000000000000"
+                    };
+                    $.post("/api/user/updateUserFavorite", post).done(function (res) {
+                        if (res.type == "error") {
+                            vba.alert({
+                                message: res.message == '' ? "İşlem Başarısız" : res.message,
+                                classes: 'alert-danger'
+                            });
+                        } else {
+                            vba.alert({
+                                message: res.message == '' ? "İşlem Başarılı" : res.message,
+                                classes: "alert-success"
+                            });
+                        }
+                    }).fail(function () {
+                        vba.alert({
+                            message: "İşlem başarısız",
+                            classes: 'alert-danger'
+                        });
+                    });
+                    vba.root.changeLoading(false);
+                }
                 vba.route.ccnt.funcs.updateComment = function (form) {
                     vba.root.changeLoading(true);
 
@@ -989,9 +1042,9 @@
             }
             else {
                 ratingHtml += '<div class="star off"></div>';
-            } 
+            }
         }
-        return ratingHtml; 
+        return ratingHtml;
     },
 
     pagination: function () {

@@ -1,6 +1,7 @@
 ﻿using eticaret.Data;
 using eticaret.Domain.Entities;
-using eticaret.Services.userServices.Dto; 
+using eticaret.Services.userServices.Dto;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -236,37 +237,59 @@ namespace eticaret.Services.userServices
             return response;
         }
 
-        public Dictionary<string, object> updateUserFavorite(Guid userID, Guid productID)
+        public Dictionary<string, object> updateUserFavorite(Guid userID, Guid productID, Guid favoriteID)
         {
             try
             {
-                var isUserFavorite = _dbeticaretContext.userFavorites.Any(x => x.productID == productID && x.userID == userID);
-                if (!isUserFavorite)
+                if (userID != Guid.Empty && productID != Guid.Empty && favoriteID == Guid.Empty)
                 {
-                    UserFavorite userFavorite = new UserFavorite()
+                    var isUserFavorite = _dbeticaretContext.userFavorites.Any(x => x.productID == productID && x.userID == userID);
+                    if (!isUserFavorite)
                     {
-                        userID = userID,
-                        productID = productID,
-                        isActive = true,
-                        creatingTime = DateTime.UtcNow,
-                        updatedTime = DateTime.UtcNow
-                    };
-                    _dbeticaretContext.userFavorites.Add(userFavorite);
-                    var isCompleted = _dbeticaretContext.SaveChanges();
+                        UserFavorite userFavorite = new UserFavorite()
+                        {
+                            userID = userID,
+                            productID = productID,
+                            isActive = true,
+                            creatingTime = DateTime.UtcNow,
+                            updatedTime = DateTime.UtcNow
+                        };
+                        _dbeticaretContext.userFavorites.Add(userFavorite);
+                        var isCompleted = _dbeticaretContext.SaveChanges();
 
-                    if (isCompleted > 0)
-                    {
-                        response["type"] = "succcess"; response["message"] = "Favori Başarıyla Eklendi.";
+                        if (isCompleted > 0)
+                        {
+                            response["type"] = "succcess"; response["message"] = "Favori Başarıyla Eklendi.";
+                        }
+                        else
+                        {
+                            response["type"] = "error"; response["message"] = "";
+                        }
                     }
                     else
                     {
-                        response["type"] = "error"; response["message"] = "";
+                        response["type"] = "error"; response["message"] = "Favori Daha Önce Eklenmiş.";
+                    } 
+                }
+                else if (userID == Guid.Empty && productID == Guid.Empty && favoriteID != Guid.Empty)
+                {
+                    var productToDelete = _dbeticaretContext.userFavorites.FirstOrDefault(x=> x.id == favoriteID); 
+                    if (productToDelete != null)
+                    {
+                        _dbeticaretContext.userFavorites.Remove(productToDelete);
+                        _dbeticaretContext.SaveChanges();
+                        response["type"] = "succcess"; response["message"] = "Favori Başarıyla Silindi.";
+                    }
+                    else
+                    {
+                        response["type"] = "error"; response["message"] = "Favori Silinemedi!";
                     }
                 }
                 else
                 {
-                    response["type"] = "error"; response["message"] = "Favori Daha Önce Eklenmiş.";
+                    response["type"] = "error"; response["message"] = "";
                 }
+
             }
             catch
             {
@@ -334,7 +357,7 @@ namespace eticaret.Services.userServices
                 var count = query.Count();
                 var responseList = query.Skip((page - 1) * itemsPerPage).Take(itemsPerPage).ToList();
 
-                response["type"] = "success"; response["data"] = responseList; response["c"] = count; 
+                response["type"] = "success"; response["data"] = responseList; response["c"] = count;
             }
             catch
             {
