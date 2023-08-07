@@ -276,20 +276,39 @@ namespace eticaret.Services.userServices
 
             return response;
         }
-  
+
         public Dictionary<string, object> getUserFavorites(Guid userID, int page, int itemsPerPage, string search, int listSorting)
         {
             try
-            { 
-                var query = _dbeticaretContext.userFavorites.Include(c => c.Product).AsQueryable().Where(x =>
-                (listSorting <= 4 | (listSorting == 5 && x.Product.stock > 0)) & 
-                x.Product.isActive == true &
-                x.userID == userID &
-                (string.IsNullOrEmpty(search) | (!string.IsNullOrEmpty(search) &
-                ((x.Product.name.Contains(search)) |
-                (x.Product.tags.Contains(search)) |
-                (x.Product.details.Contains(search)))
-                )));
+            {
+                var query = _dbeticaretContext.userFavorites
+                   .Join(
+                       _dbeticaretContext.products,
+                       userFavorite => userFavorite.productID,
+                       product => product.id,
+                       (userFavorite, product) => new
+                       {
+                           UserFavorite = userFavorite,
+                           Product = product
+                       }
+                   )
+                   .Where(x =>
+                       (listSorting <= 4 || (listSorting == 5 && x.Product.stock > 0)) &&
+                       x.Product.isActive == true &&
+                       x.UserFavorite.userID == userID &&
+                       (string.IsNullOrEmpty(search) ||
+                       (!string.IsNullOrEmpty(search) &&
+                       (x.Product.name.Contains(search) ||
+                       x.Product.tags.Contains(search) ||
+                       x.Product.details.Contains(search)))
+                   ))
+                   .OrderByDescending(x => x.Product.id)
+                   .Select(x => new
+                   {
+                       UserFavorite = x.UserFavorite,
+                       Product = x.Product,
+                       commentCount = _dbeticaretContext.comments.Count(c => c.productID == x.Product.id),
+                   });
 
                 switch (listSorting)
                 {
@@ -311,9 +330,9 @@ namespace eticaret.Services.userServices
                 }
 
                 var count = query.Count();
-                var responseList = query.Skip((page - 1) * itemsPerPage).Take(itemsPerPage).ToList(); 
+                var responseList = query.Skip((page - 1) * itemsPerPage).Take(itemsPerPage).ToList();
 
-                response["type"] = "success"; response["data"] = responseList; response["c"] = count;  
+                response["type"] = "success"; response["data"] = responseList; response["c"] = count;
 
             }
             catch
