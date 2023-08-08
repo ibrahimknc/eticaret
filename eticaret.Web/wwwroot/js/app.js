@@ -3,7 +3,6 @@
         return parseFloat(n).toFixed(2);
     },
     settings: {
-
         serverDate: new Date(),
         staticID: ""
     },
@@ -91,9 +90,117 @@
                 vba.route.ccnt.funcs.getItems();
             }
             return false;
+        },
+        addBasket: function (id, name, image, price, qty) {
+            var product = {
+                id: id,
+                name: name,
+                image: image,
+                price: price,
+                quantity: qty
+            };
+
+            var basket = [];
+            if ($.cookie('basket')) {
+                basket = JSON.parse($.cookie('basket'));
+            }
+
+            var existingProductIndex = basket.findIndex(function (product) {
+                return product.id === id;
+            });
+
+            if (existingProductIndex !== -1) {
+                // Ürün zaten sepette var, quantity değerini artır
+                basket[existingProductIndex].quantity += 1;
+                vba.alert({
+                    message: "Sepetteki Ürün Güncellendi.",
+                    classes: "alert-success"
+                });
+            } else {
+                // Ürün sepette yok, yeni ürün ekle
+                basket.push(product);
+                vba.alert({
+                    message: "Ürün Sepete Eklendi.",
+                    classes: "alert-success"
+                });
+            }
+
+            $.cookie('basket', JSON.stringify(basket));
+            vba.root.getBasket();
+        },
+        getBasket: function () {
+            var basket = [];
+            if ($.cookie('basket')) {
+                basket = JSON.parse($.cookie('basket'));
+            }
+            $(".basketCard").empty();
+            var totalPrice = 0;
+            // Sepetteki ürünleri listeleyin
+            for (var i = 0; i < basket.length; i++) {
+                totalPrice += basket[i].quantity * basket[i].price;
+                $(".basketCard").append(` 
+                <tr>
+                    <td class="product-image">
+                        <a href="/products/${basket[i].id}">
+                            <img src="/uploads/products/${basket[i].image}" alt="Product">
+                        </a>
+                    </td>
+                    <td>
+                        <div class="product-name">
+                            <a href="/products/${basket[i].id}">${basket[i].name}</a>
+                        </div>
+                        <div>
+                            ${basket[i].quantity} x <span class="product-price">${basket[i].price} ₺</span>
+                        </div>
+                    </td>
+                    <td class="action">
+                        <a class="remove" href="javascript:;" onclick="vba.root.delBasket('${basket[i].id}');">
+                            <i class="fa fa-trash-o" aria-hidden="true"></i>
+                        </a>
+                    </td>
+                </tr>
+               `);
+            } 
+
+            $(".basketCard").append(` 
+            <tr class="total">
+                <td>Toplam:</td>
+                <td colspan="2">${totalPrice} ₺</td>
+            </tr>
+
+            <tr>
+                <td colspan="3" class="d-flex justify-content-between"> 
+                    
+                   ${basket.length > 0 ? `
+                   <a class="btn btn-primary" href="product-cart.html" title="View Cart">Sepete Git</a>
+                   <a class="btn btn-primary" href="product-checkout.html" title="Checkout">Siparişi Tamamla</a>`
+                                        : `Sepette Ürün Bulunmamaktadır.`}
+                </td>
+            </tr>`);
+
+            $(".cart-count").text(basket.length);
+        },
+        delBasket: function (id) {
+            var basket = [];
+            if ($.cookie('basket')) {
+                basket = JSON.parse($.cookie('basket'));
+            }
+            var updatedBasket = basket.filter(function (product) {
+                return product.id !== id;
+            });
+
+            // Güncellenmiş çerezi kaydet
+            $.cookie('basket', JSON.stringify(updatedBasket));
+
+            vba.alert({
+                message: "Ürün Sepetten Silindi.",
+                classes: "alert-success"
+            });
+            vba.root.getBasket();
         }
     },
     load: function () {
+        vba.root.getBasket();
         $("#pages_placeholder [data-repeat]").each(function () {
             var verName = $(this).attr("data-repeat");
             $(this).removeAttr("data-repeat");
@@ -1104,7 +1211,7 @@
                         listSorting: vba.route.ccnt.items.filterForm.listSorting,
                         search: vba.route.ccnt.items.filterForm.id,
                         page: vba.route.ccnt.items.filterForm.page,
-                        itemsPerPage: vba.route.ccnt.items.filterForm.itemsPerPage 
+                        itemsPerPage: vba.route.ccnt.items.filterForm.itemsPerPage
                     };
 
                     $.post("/api/default/getSearchProduct", post).done(function (res) {
@@ -1124,7 +1231,7 @@
                             } else {
                                 $("#pages_placeholder .dataContainer").html(" <div class='col-lg-12 mb-3'> <div class='row g-0 bg-light py-4'><div class='col-md-12 d-flex align-items-center justify-content-center'> 😔 Üzgünüm, talebinizle eşleşen birşey bulamadık 😔</div></div></div>").hide();
                                 $("#pages_placeholder .dataContainer").fadeIn(500);
-                            } 
+                            }
                             $(".total-products").html("Toplam <b><u>" + res.c + "</u></b> Ürünü Var");
                             $(".showingTotalProducts").html("Toplam <b><u>" + res.c + "</u></b> Üründen <b><u>" + res.data.length + "</u></b> Adet Gösteriliyor");
                             vba.route.ccnt.items.filterForm.totalItems = res.c;
@@ -1173,7 +1280,7 @@
                     vba.route.ccnt.funcs.getItems();
                 });
                 //----------------end Filter-------------------// 
-                 
+
 
                 $(".title").text(vba.settings.staticID);
                 $(".searchTitle").text(vba.settings.staticID);
