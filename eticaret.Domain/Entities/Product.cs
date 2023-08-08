@@ -17,8 +17,9 @@ namespace eticaret.Domain.Entities
         public decimal? stock { get; set; } 
         public string tags { get; set; }
         public int? popularity { get; set; }
+        public Guid shopID { get; set; }
 
         public Category Category { get; set; }
-
+        public Shop Shop { get; set; } 
     }
 }

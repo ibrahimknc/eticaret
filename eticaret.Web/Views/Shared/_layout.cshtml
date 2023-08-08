@@ -262,8 +262,8 @@
 
                             <!-- Search -->
                             <div class="form-search">
-                                <form id="searchForm" onsubmit="vba.root.search(); return false;" ">
-                                    <input type="text" class="form-input" placeholder="Search">
+                                <form id="searchForm" onsubmit="vba.root.search(this); return false;" >
+                                    <input type="text" class="form-input" placeholder="Search" name="data">
                                     <button type="submit" class="fa fa-search"></button>
                                 </form>
                             </div>

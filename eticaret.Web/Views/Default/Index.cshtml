@@ -261,6 +261,7 @@
                                         <div class="product-item">
                                             <div class="product-image">
                                                 <a href="/products/@item.ProductID">
+                                                    <img src="/img/kurdale.png" alt="kurdale" class="kurdale">
                                                     <img src="/uploads/products/@item.Image" alt="Product Image">
                                                 </a>
                                             </div>
@@ -315,13 +316,8 @@
                                                 </a>
                                             </div>
 
-                                            <div class="product-rating">
-                                                <div class="star on"></div>
-                                                <div class="star on"></div>
-                                                <div class="star on "></div>
-                                                <div class="star on"></div>
-                                                <div class="star"></div>
-                                            </div>
+                                            <div class="product-rating">@Html.Raw(veriyoneticisi.ratingChange(item.averageRating)) </div>
+                                            <span class="review-count">(@(item.commentCount))</span>
 
                                             <div class="product-price">
                                                 <span class="sale-price">@item.SalePrice</span>
@@ -364,13 +360,8 @@
                                                 </a>
                                             </div>
 
-                                            <div class="product-rating">
-                                                <div class="star on"></div>
-                                                <div class="star on"></div>
-                                                <div class="star on "></div>
-                                                <div class="star on"></div>
-                                                <div class="star"></div>
-                                            </div>
+                                            <div class="product-rating">@Html.Raw(veriyoneticisi.ratingChange(item.averageRating)) </div>
+                                            <span class="review-count">(@(item.commentCount))</span>
 
                                             <div class="product-price">
                                                 <span class="sale-price">@item.SalePrice</span>

@@ -203,6 +203,9 @@ namespace eticaret.Data.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("numeric(18,2)");
 
+                    b.Property<Guid>("shopID")
+                        .HasColumnType("uuid");
+
                     b.Property<decimal?>("stock")
                         .HasPrecision(18, 2)
                         .HasColumnType("numeric(18,2)");
@@ -217,6 +220,8 @@ namespace eticaret.Data.Migrations
                     b.HasKey("id");
 
                     b.HasIndex("categoriID");
+
+                    b.HasIndex("shopID");
 
                     b.ToTable("Products");
                 });
@@ -326,6 +331,33 @@ namespace eticaret.Data.Migrations
                     b.HasKey("id");
 
                     b.ToTable("Settings");
+                });
+
+            modelBuilder.Entity("eticaret.Domain.Entities.Shop", b =>
+                {
+                    b.Property<Guid>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("uuid_generate_v4()");
+
+                    b.Property<DateTime>("creatingTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("image")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("isActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("name")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("updatedTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("id");
+
+                    b.ToTable("Shops");
                 });
 
             modelBuilder.Entity("eticaret.Domain.Entities.Slider", b =>
@@ -483,7 +515,15 @@ namespace eticaret.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("eticaret.Domain.Entities.Shop", "Shop")
+                        .WithMany()
+                        .HasForeignKey("shopID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Category");
+
+                    b.Navigation("Shop");
                 });
 
             modelBuilder.Entity("eticaret.Domain.Entities.ProductIMG", b =>

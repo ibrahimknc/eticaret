@@ -10,8 +10,8 @@ using eticaret.Data;
 namespace eticaret.Data.Migrations
 {
     [DbContext(typeof(dbeticaretContext))]
-    [Migration("20230803064251_AddedNewTable")]
-    partial class AddedNewTable
+    [Migration("20230808081023_AddedFirstMigration")]
+    partial class AddedFirstMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -93,6 +93,9 @@ namespace eticaret.Data.Migrations
 
                     b.Property<Guid>("productID")
                         .HasColumnType("uuid");
+
+                    b.Property<int>("rating")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("updatedTime")
                         .HasColumnType("timestamp with time zone");
@@ -202,6 +205,9 @@ namespace eticaret.Data.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("numeric(18,2)");
 
+                    b.Property<Guid>("shopID")
+                        .HasColumnType("uuid");
+
                     b.Property<decimal?>("stock")
                         .HasPrecision(18, 2)
                         .HasColumnType("numeric(18,2)");
@@ -216,6 +222,8 @@ namespace eticaret.Data.Migrations
                     b.HasKey("id");
 
                     b.HasIndex("categoriID");
+
+                    b.HasIndex("shopID");
 
                     b.ToTable("Products");
                 });
@@ -249,6 +257,37 @@ namespace eticaret.Data.Migrations
                     b.HasIndex("productID");
 
                     b.ToTable("ProductIMG");
+                });
+
+            modelBuilder.Entity("eticaret.Domain.Entities.ProductViews", b =>
+                {
+                    b.Property<Guid>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("uuid_generate_v4()");
+
+                    b.Property<DateTime>("creatingTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ip")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<bool>("isActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid>("productID")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("updatedTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("productID");
+
+                    b.ToTable("ProductViews");
                 });
 
             modelBuilder.Entity("eticaret.Domain.Entities.Setting", b =>
@@ -296,6 +335,33 @@ namespace eticaret.Data.Migrations
                     b.ToTable("Settings");
                 });
 
+            modelBuilder.Entity("eticaret.Domain.Entities.Shop", b =>
+                {
+                    b.Property<Guid>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("uuid_generate_v4()");
+
+                    b.Property<DateTime>("creatingTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("image")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("isActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("name")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("updatedTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("id");
+
+                    b.ToTable("Shops");
+                });
+
             modelBuilder.Entity("eticaret.Domain.Entities.Slider", b =>
                 {
                     b.Property<Guid>("id")
@@ -337,6 +403,10 @@ namespace eticaret.Data.Migrations
                         .HasColumnType("uuid")
                         .HasDefaultValueSql("uuid_generate_v4()");
 
+                    b.Property<string>("address")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
                     b.Property<DateTime>("creatingTime")
                         .HasColumnType("timestamp with time zone");
 
@@ -365,6 +435,10 @@ namespace eticaret.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(32)
                         .HasColumnType("character varying(32)");
+
+                    b.Property<string>("phone")
+                        .HasMaxLength(12)
+                        .HasColumnType("character varying(12)");
 
                     b.Property<DateTime?>("updatedTime")
                         .HasColumnType("timestamp with time zone");
@@ -443,10 +517,29 @@ namespace eticaret.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("eticaret.Domain.Entities.Shop", "Shop")
+                        .WithMany()
+                        .HasForeignKey("shopID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Category");
+
+                    b.Navigation("Shop");
                 });
 
             modelBuilder.Entity("eticaret.Domain.Entities.ProductIMG", b =>
+                {
+                    b.HasOne("eticaret.Domain.Entities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("productID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("eticaret.Domain.Entities.ProductViews", b =>
                 {
                     b.HasOne("eticaret.Domain.Entities.Product", "Product")
                         .WithMany()

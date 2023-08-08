@@ -62,5 +62,21 @@ namespace eticaret.Web.Controllers
                 return Redirect("/underConstruction");
             }
         }
+
+        [HttpGet("search/{id}")]
+        public IActionResult search()
+        {
+            if (veriyoneticisi.isActive == true)
+            {
+                if (!Request.Path.Value.Contains("/ajax/"))
+                    return View();
+                else
+                    return PartialView();
+            }
+            else
+            {
+                return Redirect("/underConstruction");
+            }
+        }
     }
 }

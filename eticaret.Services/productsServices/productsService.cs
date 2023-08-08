@@ -34,7 +34,7 @@ namespace eticaret.Services.productsServices
         {
             try
             {
-                var responseProduct = _dbeticaretContext.products.Include(c => c.Category).AsQueryable().FirstOrDefault(x => x.id == id);
+                var responseProduct = _dbeticaretContext.products.Include(c => c.Category).Include(c => c.Shop).AsQueryable().FirstOrDefault(x => x.id == id);
 
                 if (responseProduct.isActive == true)
                 {
@@ -82,8 +82,7 @@ namespace eticaret.Services.productsServices
                 else
                 {
                     response["type"] = "inActive"; response["message"] = "";
-                }
-
+                } 
             }
             catch
             {

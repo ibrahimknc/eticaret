@@ -1,7 +1,6 @@
 ﻿using eticaret.Data;
 using eticaret.Domain.Entities;
-using eticaret.Services.userServices.Dto;
-using Microsoft.EntityFrameworkCore;
+using eticaret.Services.userServices.Dto; 
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;

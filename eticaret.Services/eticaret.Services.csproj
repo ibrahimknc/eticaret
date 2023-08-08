@@ -15,4 +15,9 @@
     <ProjectReference Include="..\eticaret.Domain\eticaret.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="searchServices\Dto\" />
+    <Folder Include="shopServices\Dto\" />
+  </ItemGroup>
+
 </Project>

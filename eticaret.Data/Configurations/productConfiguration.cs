@@ -23,7 +23,10 @@ namespace eticaret.Data.Configurations
 				.IsRequired()
 				.HasMaxLength(50);
 
-			builder.Property(e => e.name)
+			builder.Property(e => e.shopID)
+					.IsRequired();
+
+            builder.Property(e => e.name)
 				.IsRequired()
 				.HasMaxLength(50);
 
