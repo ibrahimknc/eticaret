@@ -89,7 +89,7 @@
 											</div>
 
 											<div class="product-buttons">
-												<a class="add-to-cart {{item.product.stock > 0?'':'d-none'}}" href="javascript:;" onclick="{{item.product.stock > 0 ? 'vba.root.addBasket(\''+item.product.id+'\',\''+item.product.name+'\',\''+item.product.image+'\',\''+item.product.salePrice+'\',\''+item.product.stock+'\',1);' : ''}}">
+												<a class="add-to-cart {{item.product.stock > 0?'':'d-none'}}" href="javascript:;" onclick="{{item.product.stock > 0 ? 'vba.root.addBasket(\''+item.product.id+'\',\''+item.product.name+'\',\''+item.product.image+'\',\''+item.product.salePrice+'\',\''+item.product.stock+'\',\''+item.product.shippingAmount+'\',1);' : ''}}">
 													<i class="fa fa-shopping-basket" aria-hidden="true"></i>
 												</a>
 

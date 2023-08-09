@@ -13,6 +13,7 @@ namespace eticaret.Domain.Entities
         public string image { get; set; }
         public decimal salePrice { get; set; }
         public decimal? basePrice { get; set; }
+        public decimal? shippingAmount { get; set; } = 0; 
         public string details { get; set; }
         public decimal? stock { get; set; } 
         public string tags { get; set; }

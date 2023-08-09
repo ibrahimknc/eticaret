@@ -9,6 +9,8 @@ namespace eticaret.Services.productsServices.Dto
         public DateTime creatingTime { get; set; } 
         public DateTime? updatedTime { get; set; }
         public Guid categoriID { get; set; }
+        public decimal? shippingAmount { get; set; } = 0;
+
         public string name { get; set; }
         public string image { get; set; }
         public decimal salePrice { get; set; }

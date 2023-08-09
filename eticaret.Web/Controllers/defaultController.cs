@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc; 
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc; 
 
 namespace eticaret.Web.Controllers
 {
@@ -93,6 +94,29 @@ namespace eticaret.Web.Controllers
             {
                 return Redirect("/underConstruction");
             }
-        } 
+        }
+
+        [Route("[action]"), Route("ajax/[action]")]
+        public IActionResult productCheckout()
+        {
+            if (veriyoneticisi.isActive == true)
+            {
+                if (HttpContext.Session.GetString("login") == "true" && !string.IsNullOrEmpty(HttpContext.Session.GetString("id")))
+                {
+                    if (!Request.Path.Value.Contains("/ajax/"))
+                        return View();
+                    else
+                        return PartialView();
+                }
+                else
+                {
+                    return Redirect("/user/login");
+                }
+            }
+            else
+            {
+                return Redirect("/underConstruction");
+            }
+        }
     }
 }

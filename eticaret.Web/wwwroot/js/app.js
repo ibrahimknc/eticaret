@@ -1,4 +1,6 @@
-﻿var vba = {
+﻿//Tüm Kod Bloklarını Kapatma: Ctrl + M, Ctrl + O
+//Tüm Kod Bloklarını Açma: Ctrl + M, Ctrl + L
+var vba = {
     parseFloat: function (n) {
         return parseFloat(n).toFixed(2);
     },
@@ -91,13 +93,14 @@
             }
             return false;
         },
-        addBasket: function (id, name, image, price, stock, qty) {
+        addBasket: function (id, name, image, price, stock, shippingAmount, qty) {
             var product = {
                 id: id,
                 name: name,
                 image: image,
                 price: price,
                 stock: stock,
+                shippingAmount: shippingAmount,
                 quantity: qty
             };
 
@@ -157,7 +160,7 @@
                             <a href="/products/${basket[i].id}">${basket[i].name}</a>
                         </div>
                         <div class="d-flex align-items-center">
-                             <input type="number" name="qty" class="form-control sumProductStock" value="${basket[i].quantity}" min="1" max="${basket[i].stock}"  onchange="vba.root.qtyChange('${basket[i].id}','${basket[i].name}','${basket[i].image}','${basket[i].price}','${basket[i].stock}',this )"> 
+                             <input type="number" name="qty" class="form-control sumProductStock" value="${basket[i].quantity}" min="1" max="${basket[i].stock}"  onchange="vba.root.qtyChange('${basket[i].id}','${basket[i].name}','${basket[i].image}','${basket[i].price}','${basket[i].stock}','${basket[i].shippingAmount}',this )"> 
                              &nbsp; x &nbsp;
                              <span class="product-price mb-0">${basket[i].price} ₺</span>
                         </div>
@@ -182,7 +185,7 @@
                     
                    ${basket.length > 0 ? `
                    <a class="btn btn-primary" href="/basket" title="View Cart">Sepete Git</a>
-                   <a class="btn btn-primary" href="product-checkout.html" title="Checkout">Siparişi Tamamla</a>`
+                   <a class="btn btn-primary" href="/productCheckout" title="Checkout">Siparişi Tamamla</a>`
                     : `Sepette Ürün Bulunmamaktadır.`}
                 </td>
             </tr>`);
@@ -208,10 +211,10 @@
             });
             vba.root.getBasket();
         },
-        qtyChange: function (id, name, image, price, stock, elem) {
+        qtyChange: function (id, name, image, price, stock, shippingAmount, elem) {
             var inputQty = "u" + elem.value;
             if (elem.value > 0) {
-                vba.root.addBasket(id, name, image, price, stock, inputQty);
+                vba.root.addBasket(id, name, image, price, stock, shippingAmount, inputQty);
             } else {
                 vba.root.delBasket(id);
             } 
@@ -429,24 +432,25 @@
                     if (basket.length > 0) {
                         $(".checkout-btn").removeClass("d-none");
                         var totalPrice = 0;
-                        var shipping = 25;
+                        var shipping = 0;
                         // Sepetteki ürünleri listeleyin
                         for (var i = 0; i < basket.length; i++) {
                             totalPrice += basket[i].quantity * basket[i].price;
+                            shipping += parseFloat(basket[i].shippingAmount);
                             $(".basketBody").append(` 
                            <tr>
 						        <td class="product-remove">
-							        <a title="Remove this item" class="remove" href="javascript:;" onclick="vba.root.delBasket('${basket[i].id}'); vba.route.ccnt.funcs.getItems();">
+							        <a title="Ürünü sepetten çıkar" class="remove" href="javascript:;" onclick="vba.root.delBasket('${basket[i].id}'); vba.route.ccnt.funcs.getItems();">
 								        <i class="fa fa-times"></i>
 							        </a>
 						        </td>
 						        <td>
-							        <a ref="/products/${basket[i].id}">
+							        <a href="/products/${basket[i].id}">
 								        <img width="80" alt="Product Image" class="img-responsive" src="/uploads/products/${basket[i].image}">
 							        </a>
 						        </td>
 						        <td>
-							        <a ref="/products/${basket[i].id}" class="product-name">${basket[i].name}</a>
+							        <a href="/products/${basket[i].id}" class="product-name">${basket[i].name}</a>
 						        </td>
 						        <td class="text-center">
 							        ${basket[i].price} ₺
@@ -455,10 +459,13 @@
 							        <div class="product-quantity">
 								        <div class="qty">
 									        <div class="input-group">
-										        <input type="number" name="qty" class="form-control" value="${basket[i].quantity}" min="1" max="${basket[i].stock}" onchange="vba.root.qtyChange('${basket[i].id}','${basket[i].name}','${basket[i].image}','${basket[i].price}','${basket[i].stock}',this); vba.route.ccnt.funcs.getItems(); ">
+										        <input type="number" name="qty" class="form-control" value="${basket[i].quantity}" min="1" max="${basket[i].stock}" onchange="vba.root.qtyChange('${basket[i].id}','${basket[i].name}','${basket[i].image}','${basket[i].price}','${basket[i].stock}','${basket[i].shippingAmount}',this); vba.route.ccnt.funcs.getItems(); ">
 									        </div>
 								        </div>
 							        </div>
+						        </td>
+                                 <td class="text-center">
+							        ${basket[i].shippingAmount} ₺
 						        </td>
 						        <td class="text-center">
 							       ${basket[i].quantity * basket[i].price} ₺
@@ -470,25 +477,31 @@
                         $(".basketFoot").html(` 
                             <tr class="cart-total">
 						        <td rowspan="3" colspan="3"></td>
-						        <td colspan="2" class="text-right">Toplam Ürün: </td>
+						        <td colspan="3" class="text-right">Toplam Ürün: </td>
 						        <td colspan="1" class="text-center">${totalPrice} ₺</td>
 					        </tr>
 					        <tr class="cart-total">
-						        <td colspan="2" class="text-right">Toplam Nakliye: </td>
+						        <td colspan="3" class="text-right">Toplam Nakliye: </td>
 						        <td colspan="1" class="text-center">${shipping} ₺</td>
 					        </tr>
 					        <tr class="cart-total">
-						        <td colspan="2" class="total text-right">Toplam: </td>
+						        <td colspan="3" class="total text-right">Toplam: </td>
 						        <td colspan="1" class="total text-center">${totalPrice + shipping} ₺</td>
 					        </tr>`);
                     }
                     else {
                         $(".checkout-btn").addClass("d-none");
-                        $(".basketBody").append(`<tr class="cart-total text-center"><td colspan="6">Ürün bulunmamaktadır</td></tr>`);
+                        $(".basketBody").append(`<tr class="cart-total text-center"><td colspan="7"><b>Sepette Ürün bulunmamaktadır</b></td></tr>`);
                     }
                     vba.root.changeLoading(false);
                 }
                 vba.route.ccnt.funcs.getItems(); 
+            }
+        },
+        "/productCheckout": {
+            load: function () {
+                console.log("ok");
+                vba.root.changeLoading(false);
             }
         },
         "/user/profile": {
@@ -926,12 +939,14 @@
                 vba.route.ccnt.funcs.addBasket = function () {
                     if (vba.route.ccnt.items.filterForm.Data.stock > 0) {
                         var quantity = $("#qtyForm").find('input[name="qty"]').val();
+                        console.log(vba.route.ccnt.items.filterForm.Data.shippingAmount);
                         vba.root.addBasket(
                             vba.route.ccnt.items.filterForm.id,
                             vba.route.ccnt.items.filterForm.Data.name,
                             vba.route.ccnt.items.filterForm.Data.image,
                             vba.route.ccnt.items.filterForm.Data.salePrice,
                             vba.route.ccnt.items.filterForm.Data.stock,
+                            vba.route.ccnt.items.filterForm.Data.shippingAmount,
                             quantity); 
                     }
                     else {
@@ -1465,8 +1480,7 @@
             }
         }
         return ratingHtml;
-    },
-
+    }, 
     pagination: function () {
         $("#pages_placeholder .pagination ul").hide();
         $("#pages_placeholder .pagination ul .nav-page").remove();

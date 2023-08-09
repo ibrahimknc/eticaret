@@ -5,11 +5,9 @@ using Microsoft.EntityFrameworkCore;
 namespace eticaret.Data
 {
     public class dbeticaretContext : DbContext
-    {
-
+    { 
         public dbeticaretContext(DbContextOptions dbContextOptions) : base(dbContextOptions) { }
-
-
+         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(dbeticaretContext).Assembly);
@@ -27,6 +25,7 @@ namespace eticaret.Data
             modelBuilder.ApplyConfiguration(new commentConfiguration());
             modelBuilder.ApplyConfiguration(new productViewsConfiguration());
             modelBuilder.ApplyConfiguration(new shopConfiguration());
+            modelBuilder.ApplyConfiguration(new productCheckoutConfiguration());
 
             #region Log ForeignKey
             modelBuilder.Entity<Log>()
@@ -84,6 +83,14 @@ namespace eticaret.Data
           .WithMany()
           .HasForeignKey(l => l.productID);
             #endregion
+
+            #region Product Checkout ForeignKey
+            
+            modelBuilder.Entity<ProductCheckout>()
+            .HasOne(l => l.User)
+            .WithMany()
+            .HasForeignKey(l => l.userID);
+            #endregion
         }
 
 
@@ -100,6 +107,7 @@ namespace eticaret.Data
         public DbSet<Comment> comments { get; set; }
         public DbSet<ProductViews> productViews { get; set; }
         public DbSet<Shop> shops { get; set; }
+        public DbSet<ProductCheckout> productCheckouts { get; set; }
 
     }
 }

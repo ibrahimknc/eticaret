@@ -15,8 +15,9 @@ namespace eticaret.Data.Configurations
            .IsRequired();
 
             builder.Property(e => e.basePrice).HasPrecision(18, 2);
+            builder.Property(e => e.shippingAmount).HasPrecision(18, 2);
 
-			builder.Property(e => e.updatedTime).HasColumnType("timestamp with time zone");
+            builder.Property(e => e.updatedTime).HasColumnType("timestamp with time zone");
 			builder.Property(e => e.creatingTime).HasColumnType("timestamp with time zone");
 
 			builder.Property(e => e.image)

@@ -36,7 +36,8 @@ namespace eticaret.Services.viewsFavoriteServices
              x.Product.salePrice,
              x.Product.categoriID,
              CategoryName = x.Product.Category.name,
-             x.Product.image
+             x.Product.image,
+             x.Product.shippingAmount
          })
          .Where(g => g.Count() > 0)
          .OrderByDescending(g => g.Count())
@@ -54,6 +55,7 @@ namespace eticaret.Services.viewsFavoriteServices
              CategoryID = g.Key.categoriID,
              CategoryName = g.Key.CategoryName,
              Image = g.Key.image,
+             shippingAmount = g.Key.shippingAmount,
              commentCount = _dbeticaretContext.comments.Count(c => c.productID == g.Key.id),
              averageRating = _dbeticaretContext.comments
                             .Where(c => c.productID == g.Key.id)

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using eticaret.Data;
@@ -9,9 +10,10 @@ using eticaret.Data;
 namespace eticaret.Data.Migrations
 {
     [DbContext(typeof(dbeticaretContext))]
-    partial class dbeticaretContextModelSnapshot : ModelSnapshot
+    [Migration("20230809140349_addTableProducCheckoutTwo")]
+    partial class addTableProducCheckoutTwo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -170,9 +172,6 @@ namespace eticaret.Data.Migrations
                         .HasColumnType("uuid")
                         .HasDefaultValueSql("uuid_generate_v4()");
 
-                    b.Property<Guid?>("ProductCheckoutid")
-                        .HasColumnType("uuid");
-
                     b.Property<decimal?>("basePrice")
                         .HasPrecision(18, 2)
                         .HasColumnType("numeric(18,2)");
@@ -226,8 +225,6 @@ namespace eticaret.Data.Migrations
 
                     b.HasKey("id");
 
-                    b.HasIndex("ProductCheckoutid");
-
                     b.HasIndex("categoriID");
 
                     b.HasIndex("shopID");
@@ -242,24 +239,6 @@ namespace eticaret.Data.Migrations
                         .HasColumnType("uuid")
                         .HasDefaultValueSql("uuid_generate_v4()");
 
-                    b.Property<string>("billingAddress")
-                        .HasColumnType("text");
-
-                    b.Property<string>("billingCity")
-                        .HasColumnType("text");
-
-                    b.Property<string>("billingCompanyName")
-                        .HasColumnType("text");
-
-                    b.Property<string>("billingCountry")
-                        .HasColumnType("text");
-
-                    b.Property<string>("billingFirstName")
-                        .HasColumnType("text");
-
-                    b.Property<string>("billingLastName")
-                        .HasColumnType("text");
-
                     b.Property<DateTime>("creatingTime")
                         .HasColumnType("timestamp with time zone");
 
@@ -269,36 +248,15 @@ namespace eticaret.Data.Migrations
                     b.Property<bool?>("isPayment")
                         .HasColumnType("boolean");
 
+                    b.Property<Guid>("productID")
+                        .HasColumnType("uuid");
+
                     b.Property<int>("quantity")
                         .HasColumnType("integer");
 
-                    b.Property<string>("shippingAddress")
-                        .HasColumnType("text");
-
-                    b.Property<string>("shippingCity")
-                        .HasColumnType("text");
-
-                    b.Property<string>("shippingCompanyName")
-                        .HasColumnType("text");
-
-                    b.Property<string>("shippingCountry")
-                        .HasColumnType("text");
-
-                    b.Property<string>("shippingFirstName")
-                        .HasColumnType("text");
-
-                    b.Property<string>("shippingLastName")
-                        .HasColumnType("text");
-
-                    b.Property<int>("status")
-                        .HasColumnType("integer");
-
-                    b.Property<decimal?>("totalPayment")
+                    b.Property<decimal?>("shippingAmount")
                         .HasPrecision(18, 2)
                         .HasColumnType("numeric(18,2)");
-
-                    b.Property<decimal?>("totalshippingAmount")
-                        .HasColumnType("numeric");
 
                     b.Property<DateTime?>("updatedTime")
                         .HasColumnType("timestamp with time zone");
@@ -307,6 +265,8 @@ namespace eticaret.Data.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("id");
+
+                    b.HasIndex("productID");
 
                     b.HasIndex("userID");
 
@@ -596,10 +556,6 @@ namespace eticaret.Data.Migrations
 
             modelBuilder.Entity("eticaret.Domain.Entities.Product", b =>
                 {
-                    b.HasOne("eticaret.Domain.Entities.ProductCheckout", null)
-                        .WithMany("Products")
-                        .HasForeignKey("ProductCheckoutid");
-
                     b.HasOne("eticaret.Domain.Entities.Category", "Category")
                         .WithMany()
                         .HasForeignKey("categoriID")
@@ -619,11 +575,19 @@ namespace eticaret.Data.Migrations
 
             modelBuilder.Entity("eticaret.Domain.Entities.ProductCheckout", b =>
                 {
+                    b.HasOne("eticaret.Domain.Entities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("productID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("eticaret.Domain.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("userID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Product");
 
                     b.Navigation("User");
                 });
@@ -667,11 +631,6 @@ namespace eticaret.Data.Migrations
                     b.Navigation("Product");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("eticaret.Domain.Entities.ProductCheckout", b =>
-                {
-                    b.Navigation("Products");
                 });
 #pragma warning restore 612, 618
         }

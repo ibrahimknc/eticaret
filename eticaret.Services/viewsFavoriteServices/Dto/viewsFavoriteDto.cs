@@ -9,6 +9,8 @@ namespace eticaret.Services.viewsFavoriteServices.Dto
         public string Name { get; set; }
         public string Tags { get; set; }
         public DateTime? CreatingTime { get; set; }
+        public decimal? shippingAmount { get; set; } = 0;
+
         public decimal? Stock { get; set; }
         public string Details { get; set; }
         public decimal? BasePrice { get; set; }
