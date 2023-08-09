@@ -49,7 +49,7 @@
                             </div>
 
                             <div class="product-add-to-cart border-bottom">
-                                <form>
+                                <form id="qtyForm" >
                                     <div class="product-quantity">
                                         <span class="control-label">Miktar :</span>
                                         <div class="qty">
@@ -60,12 +60,12 @@
                                     </div>
 
                                     <div class="product-buttons">
-                                        <a class="add-to-cart" href="#">
+                                        <a class="add-to-cart" href="javascript:;" onclick="vba.route.ccnt.funcs.addBasket();">
                                             <i class="fa fa-shopping-basket" aria-hidden="true"></i>
                                             <span>Sepete Ekle</span>
                                         </a>
 
-                                        <a class="add-wishlist" href="#">
+                                        <a class="add-wishlist" href="javascript:;" onclick="vba.route.ccnt.funcs.updateUserFavorite();">
                                             <i class="fa fa-heart" aria-hidden="true"></i>
                                         </a>
                                     </div>

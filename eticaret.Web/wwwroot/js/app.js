@@ -111,7 +111,7 @@
 
             if (existingProductIndex !== -1) {
                 // Ürün zaten sepette var, quantity değerini artır
-                basket[existingProductIndex].quantity += 1;
+                basket[existingProductIndex].quantity = parseInt(basket[existingProductIndex].quantity) + parseInt(qty);
                 vba.alert({
                     message: "Sepetteki Ürün Güncellendi.",
                     classes: "alert-success"
@@ -827,6 +827,17 @@
             load: function () {
                 vba.route.ccnt.items.filterForm = {};
                 vba.route.ccnt.items.filterForm.id = vba.settings.staticID;
+                vba.route.ccnt.items.filterForm.Data = [];
+
+                vba.route.ccnt.funcs.addBasket = function () { 
+                    var quantity = $("#qtyForm").find('input[name="qty"]').val();
+                    vba.root.addBasket(
+                        vba.route.ccnt.items.filterForm.id,
+                        vba.route.ccnt.items.filterForm.Data.name,
+                        vba.route.ccnt.items.filterForm.Data.image,
+                        vba.route.ccnt.items.filterForm.Data.salePrice,
+                        quantity);
+                }
                 vba.route.ccnt.funcs.shareProduct = function (elem) {
                     vba.modal.init();
                     if (vba.modal.name != "recommendsInfo") {
@@ -902,6 +913,8 @@
                         }
                         else {
                             if (res.data.id !== null) {
+                                vba.route.ccnt.items.filterForm.Data = res.data;
+
                                 $(".productTitle").text(res.title);
                                 $(".categoryName").html(res.categoryName);
                                 $(".categoryName").attr("title", res.categoryName);
@@ -1029,10 +1042,10 @@
                 }
                 vba.route.ccnt.funcs.getItems();
 
-                vba.route.ccnt.funcs.updateUserFavorite = function (elem) {
+                vba.route.ccnt.funcs.updateUserFavorite = function () {
                     vba.root.changeLoading(true);
                     var post = {
-                        productID: elem,
+                        productID: vba.route.ccnt.items.filterForm.id,
                         favoriteID: "00000000-0000-0000-0000-000000000000"
                     };
                     $.post("/api/user/updateUserFavorite", post).done(function (res) {
