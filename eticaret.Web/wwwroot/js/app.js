@@ -91,12 +91,13 @@
             }
             return false;
         },
-        addBasket: function (id, name, image, price, qty) {
+        addBasket: function (id, name, image, price, stock, qty) {
             var product = {
                 id: id,
                 name: name,
                 image: image,
                 price: price,
+                stock: stock,
                 quantity: qty
             };
 
@@ -111,7 +112,13 @@
 
             if (existingProductIndex !== -1) {
                 // Ürün zaten sepette var, quantity değerini artır
-                basket[existingProductIndex].quantity = parseInt(basket[existingProductIndex].quantity) + parseInt(qty);
+                if (qty.toString().includes("u")) {
+                    basket[existingProductIndex].quantity = parseInt(qty.split("u")[1]); //Burada qtyChange() gelen Sepette artırma eksilme işleminde çalışır.
+                }
+                else {
+                    basket[existingProductIndex].quantity = parseInt(basket[existingProductIndex].quantity) + parseInt(qty); //Burada Sepette ekle butonu tıklama sırasında artırma eksilme işleminde çalışır.
+                }
+               
                 vba.alert({
                     message: "Sepetteki Ürün Güncellendi.",
                     classes: "alert-success"
@@ -149,8 +156,10 @@
                         <div class="product-name">
                             <a href="/products/${basket[i].id}">${basket[i].name}</a>
                         </div>
-                        <div>
-                            ${basket[i].quantity} x <span class="product-price">${basket[i].price} ₺</span>
+                        <div class="d-flex align-items-center">
+                             <input type="number" name="qty" class="form-control sumProductStock" value="${basket[i].quantity}" min="1" max="${basket[i].stock}"  onchange="vba.root.qtyChange('${basket[i].id}','${basket[i].name}','${basket[i].image}','${basket[i].price}','${basket[i].stock}',this )"> 
+                             &nbsp; x &nbsp;
+                             <span class="product-price mb-0">${basket[i].price} ₺</span>
                         </div>
                     </td>
                     <td class="action">
@@ -160,7 +169,7 @@
                     </td>
                 </tr>
                `);
-            } 
+            }
 
             $(".basketCard").append(` 
             <tr class="total">
@@ -172,9 +181,9 @@
                 <td colspan="3" class="d-flex justify-content-between"> 
                     
                    ${basket.length > 0 ? `
-                   <a class="btn btn-primary" href="product-cart.html" title="View Cart">Sepete Git</a>
+                   <a class="btn btn-primary" href="/basket" title="View Cart">Sepete Git</a>
                    <a class="btn btn-primary" href="product-checkout.html" title="Checkout">Siparişi Tamamla</a>`
-                                        : `Sepette Ürün Bulunmamaktadır.`}
+                    : `Sepette Ürün Bulunmamaktadır.`}
                 </td>
             </tr>`);
 
@@ -197,6 +206,10 @@
                 classes: "alert-success"
             });
             vba.root.getBasket();
+        },
+        qtyChange: function (id, name, image, price, stock, elem) {
+            var inputQty = "u" + elem.value;
+            vba.root.addBasket(id, name, image, price, stock, inputQty);
         }
     },
     load: function () {
@@ -395,11 +408,83 @@
         },
         "/aboutus": {
             load: function () {
-                var titlebody = document.getElementById("titlebody");
-                if (titlebody) {
-                    titlebody.innerText = vba.settings.title;
-                }
                 vba.root.changeLoading(false);
+            }
+        },
+        "/basket": {
+            load: function () {
+                vba.route.ccnt.funcs.getItems = function () {
+                    var basket = [];
+                    if ($.cookie('basket')) {
+                        basket = JSON.parse($.cookie('basket'));
+                    }
+                    $(".basketBody").empty();
+                    $(".basketFoot").empty();
+
+                    if (basket.length > 0) {
+                        $(".checkout-btn").removeClass("d-none");
+                        var totalPrice = 0;
+                        var shipping = 25;
+                        // Sepetteki ürünleri listeleyin
+                        for (var i = 0; i < basket.length; i++) {
+                            totalPrice += basket[i].quantity * basket[i].price;
+                            $(".basketBody").append(` 
+                           <tr>
+						        <td class="product-remove">
+							        <a title="Remove this item" class="remove" href="javascript:;" onclick="vba.root.delBasket('${basket[i].id}'); vba.route.ccnt.funcs.getItems();">
+								        <i class="fa fa-times"></i>
+							        </a>
+						        </td>
+						        <td>
+							        <a ref="/products/${basket[i].id}">
+								        <img width="80" alt="Product Image" class="img-responsive" src="/uploads/products/${basket[i].image}">
+							        </a>
+						        </td>
+						        <td>
+							        <a ref="/products/${basket[i].id}" class="product-name">${basket[i].name}</a>
+						        </td>
+						        <td class="text-center">
+							        ${basket[i].price} ₺
+						        </td>
+						        <td>
+							        <div class="product-quantity">
+								        <div class="qty">
+									        <div class="input-group">
+										        <input type="number" name="qty" class="form-control" value="${basket[i].quantity}" min="1" max="${basket[i].stock}" onchange="vba.root.qtyChange('${basket[i].id}','${basket[i].name}','${basket[i].image}','${basket[i].price}','${basket[i].stock}',this); vba.route.ccnt.funcs.getItems(); ">
+									        </div>
+								        </div>
+							        </div>
+						        </td>
+						        <td class="text-center">
+							       ${basket[i].quantity * basket[i].price} ₺
+						        </td>
+					        </tr>
+                        `);
+                        }
+
+                        $(".basketFoot").html(` 
+                            <tr class="cart-total">
+						        <td rowspan="3" colspan="3"></td>
+						        <td colspan="2" class="text-right">Toplam Ürün</td>
+						        <td colspan="1" class="text-center">${totalPrice}</td>
+					        </tr>
+					        <tr class="cart-total">
+						        <td colspan="2" class="text-right">Toplam Nakliye</td>
+						        <td colspan="1" class="text-center">${shipping}</td>
+					        </tr>
+					        <tr class="cart-total">
+						        <td colspan="2" class="total text-right">Toplam</td>
+						        <td colspan="1" class="total text-center">${totalPrice + shipping}</td>
+					        </tr>`);
+                    }
+                    else {
+                        $(".checkout-btn").addClass("d-none");
+                        $(".basketBody").append(`<tr class="cart-total text-center"><td colspan="6">Ürün bulunmamaktadır</td></tr>`);
+                    }
+                    vba.root.changeLoading(false);
+                }
+                vba.route.ccnt.funcs.getItems();
+
             }
         },
         "/user/profile": {
@@ -829,13 +914,14 @@
                 vba.route.ccnt.items.filterForm.id = vba.settings.staticID;
                 vba.route.ccnt.items.filterForm.Data = [];
 
-                vba.route.ccnt.funcs.addBasket = function () { 
+                vba.route.ccnt.funcs.addBasket = function () {
                     var quantity = $("#qtyForm").find('input[name="qty"]').val();
                     vba.root.addBasket(
                         vba.route.ccnt.items.filterForm.id,
                         vba.route.ccnt.items.filterForm.Data.name,
                         vba.route.ccnt.items.filterForm.Data.image,
                         vba.route.ccnt.items.filterForm.Data.salePrice,
+                        vba.route.ccnt.items.filterForm.Data.stock,
                         quantity);
                 }
                 vba.route.ccnt.funcs.shareProduct = function (elem) {

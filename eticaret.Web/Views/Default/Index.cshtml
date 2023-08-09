@@ -5,7 +5,7 @@
             <div id="tiva-slideshow" class="nivoSlider">
                 @foreach (var item in (List<sliderDto>)await response.getSlidersAsync())
                 {
-                    <a href="#"> <img class="img-responsive" src="/uploads/sliders/@item.image" alt="@item.title"></a>
+                    <a href="javasccript:;"> <img class="img-responsive" src="/uploads/sliders/@item.image" alt="@item.title"></a>
                 }
             </div>
         </div>
@@ -281,7 +281,7 @@
                                             </div>
 
                                             <div class="product-buttons">
-                                                <a class="add-to-cart" href="javascript:;" onclick="vba.root.addBasket('@item.ProductID','@item.Name','@item.Image','@item.SalePrice',1);">
+                                                <a class="add-to-cart" href="javascript:;" onclick="vba.root.addBasket('@item.ProductID','@item.Name','@item.Image','@item.SalePrice','@item.Stock',1);">
                                                     <i class="fa fa-shopping-basket" aria-hidden="true"></i>
                                                 </a>
 
@@ -326,7 +326,7 @@
                                             </div>
 
                                             <div class="product-buttons">
-                                                <a class="add-to-cart" href="javascript:;" onclick="vba.root.addBasket('@item.ProductID','@item.Name','@item.Image','@item.SalePrice',1);">
+                                                <a class="add-to-cart" href="javascript:;" onclick="vba.root.addBasket('@item.ProductID','@item.Name','@item.Image','@item.SalePrice','@item.Stock',1);">
                                                     <i class="fa fa-shopping-basket" aria-hidden="true"></i>
                                                 </a>
 
@@ -371,7 +371,7 @@
                                             </div>
 
                                             <div class="product-buttons">
-                                                <a class="add-to-cart" href="javascript:;" onclick="vba.root.addBasket('@item.ProductID','@item.Name','@item.Image','@item.SalePrice',1);">
+                                                <a class="add-to-cart" href="javascript:;" onclick="vba.root.addBasket('@item.ProductID','@item.Name','@item.Image','@item.SalePrice','@item.Stock',1);">
                                                     <i class="fa fa-shopping-basket" aria-hidden="true"></i>
                                                 </a>
 

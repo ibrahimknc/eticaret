@@ -1,0 +1,51 @@
+﻿<!-- Breadcrumb -->
+<div id="breadcrumb">
+    <div class="container">
+        <h2 class="title">Alışveriş Sepeti</h2>
+
+        <ul class="breadcrumb">
+            <li><a href="/" title="Home">Ana Sayfa</a></li>
+            <li><span>Sepet</span></li>
+        </ul>
+    </div>
+</div>
+
+<div class="container">
+    <div class="page-cart">
+        <div class="table-responsive">
+            <table class="cart-summary table table-bordered">
+                <thead>
+                    <tr>
+                        <th class="width-20">&nbsp;</th>
+                        <th class="width-80 text-center">Resim</th>
+                        <th>Ürün Adı</th>
+                        <th class="width-100 text-center">Fiyatı</th>
+                        <th class="width-100 text-center">Miktar</th>
+                        <th class="width-100 text-center">Toplam</th>
+                    </tr>
+                </thead>
+
+                <tbody class="basketBody"> </tbody>
+
+                <tfoot class="basketFoot"> </tfoot>
+            </table>
+        </div>
+
+        <div class="checkout-btn d-none">
+            @if (!string.IsNullOrEmpty(Context.Session.GetString("id")) && (Context.Session.GetString("login") == "true"))
+            {
+                <a href="product-checkout.html" class="btn btn-primary pull-right" title="Proceed to checkout">
+                    <span>Sepeti Onayla</span>
+                    <i class="fa fa-angle-right ml-xs"></i>
+                </a>
+            }
+            else
+            {
+                <a href="/user/login" class="btn btn-primary pull-right" title="Proceed to checkout">
+                    <span>Sepeti Onaylamak için Giriş Yap</span>
+                    <i class="fa fa-angle-right ml-xs"></i>
+                </a>
+            }
+        </div>
+    </div>
+</div>

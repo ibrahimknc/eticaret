@@ -15195,9 +15195,11 @@ input {
 .ml-5 {
     margin-left: 8px;
 }
+
 .mt-5 {
     margin-top: 8px !important;
 }
+
 .borderStyle {
     border: 1px dashed;
     border-color: #ddd;
@@ -15207,14 +15209,17 @@ input {
 .alertify .ajs-modal {
     z-index: 9999;
 }
+
 .sumProductStock {
     padding-right: 3.5px !important;
     border-radius: 20px !important;
     width: auto !important;
 }
-.ml-0{
-    margin-left:0px !important;
+
+.ml-0 {
+    margin-left: 0px !important;
 }
+
 .justify-content-between {
     justify-content: space-between;
 }
@@ -15225,10 +15230,12 @@ input {
     border: 2px solid #ffffff4a;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
 }
+
 .breadcrumbShopPage {
     padding-top: 25pt !important;
     padding-bottom: 25px !important;
 }
+
 .kurdale {
     z-index: 1;
     width: 50px !important;
@@ -15240,4 +15247,6 @@ input {
     margin-top: -2px;
 }
 
- 
+.d-none {
+    display: none !important;
+}
