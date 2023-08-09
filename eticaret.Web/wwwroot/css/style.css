@@ -15026,6 +15026,7 @@ input {
     border-width: 1px 0 0 0;
     border-radius: 20px;
     margin-bottom: 10px !important;
+    opacity: 0.5;
 }
 
     .hrStyle-seven:before { /* Not really supposed to work, but does */
@@ -15249,4 +15250,12 @@ input {
 
 .d-none {
     display: none !important;
+}
+
+.products-list { 
+    margin: 0px !important;
+}
+
+.products-list .kurdale {
+    margin-left: 13px !important;
 }

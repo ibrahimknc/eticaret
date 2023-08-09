@@ -188,6 +188,7 @@
             </tr>`);
 
             $(".cart-count").text(basket.length);
+            if (window.location.href.includes("basket")) { vba.controller["/basket"].load(); } //sepet sayfasında ise sepeti güncelle
         },
         delBasket: function (id) {
             var basket = [];
@@ -209,7 +210,11 @@
         },
         qtyChange: function (id, name, image, price, stock, elem) {
             var inputQty = "u" + elem.value;
-            vba.root.addBasket(id, name, image, price, stock, inputQty);
+            if (elem.value > 0) {
+                vba.root.addBasket(id, name, image, price, stock, inputQty);
+            } else {
+                vba.root.delBasket(id);
+            } 
         }
     },
     load: function () {
@@ -465,16 +470,16 @@
                         $(".basketFoot").html(` 
                             <tr class="cart-total">
 						        <td rowspan="3" colspan="3"></td>
-						        <td colspan="2" class="text-right">Toplam Ürün</td>
-						        <td colspan="1" class="text-center">${totalPrice}</td>
+						        <td colspan="2" class="text-right">Toplam Ürün: </td>
+						        <td colspan="1" class="text-center">${totalPrice} ₺</td>
 					        </tr>
 					        <tr class="cart-total">
-						        <td colspan="2" class="text-right">Toplam Nakliye</td>
-						        <td colspan="1" class="text-center">${shipping}</td>
+						        <td colspan="2" class="text-right">Toplam Nakliye: </td>
+						        <td colspan="1" class="text-center">${shipping} ₺</td>
 					        </tr>
 					        <tr class="cart-total">
-						        <td colspan="2" class="total text-right">Toplam</td>
-						        <td colspan="1" class="total text-center">${totalPrice + shipping}</td>
+						        <td colspan="2" class="total text-right">Toplam: </td>
+						        <td colspan="1" class="total text-center">${totalPrice + shipping} ₺</td>
 					        </tr>`);
                     }
                     else {
@@ -483,8 +488,7 @@
                     }
                     vba.root.changeLoading(false);
                 }
-                vba.route.ccnt.funcs.getItems();
-
+                vba.route.ccnt.funcs.getItems(); 
             }
         },
         "/user/profile": {
@@ -679,6 +683,11 @@
                                 var tmpl = "binditems";
                                 $("#pages_placeholder .dataContainer").append(vba.compileTemp(vba.route.ccnt.items[tmpl], res.data));
 
+                                $(".product-item").each(function (index, element) { // son kaydın altındaki HR kaldırıyor.
+                                    if (index === $(".product-item").length - 1) { 
+                                        $(element).find('.hrStyle-seven').addClass('d-none'); 
+                                    }
+                                });
                             } else {
                                 $("#pages_placeholder .dataContainer").html(" <div class='col-lg-12 mb-3'> <div class='row g-0 bg-light py-4'><div class='col-md-12 d-flex align-items-center justify-content-center'> 😔 Üzgünüm, talebinizle eşleşen birşey bulamadık 😔</div></div></div>").hide();
                                 $("#pages_placeholder .dataContainer").fadeIn(500);
@@ -915,14 +924,22 @@
                 vba.route.ccnt.items.filterForm.Data = [];
 
                 vba.route.ccnt.funcs.addBasket = function () {
-                    var quantity = $("#qtyForm").find('input[name="qty"]').val();
-                    vba.root.addBasket(
-                        vba.route.ccnt.items.filterForm.id,
-                        vba.route.ccnt.items.filterForm.Data.name,
-                        vba.route.ccnt.items.filterForm.Data.image,
-                        vba.route.ccnt.items.filterForm.Data.salePrice,
-                        vba.route.ccnt.items.filterForm.Data.stock,
-                        quantity);
+                    if (vba.route.ccnt.items.filterForm.Data.stock > 0) {
+                        var quantity = $("#qtyForm").find('input[name="qty"]').val();
+                        vba.root.addBasket(
+                            vba.route.ccnt.items.filterForm.id,
+                            vba.route.ccnt.items.filterForm.Data.name,
+                            vba.route.ccnt.items.filterForm.Data.image,
+                            vba.route.ccnt.items.filterForm.Data.salePrice,
+                            vba.route.ccnt.items.filterForm.Data.stock,
+                            quantity); 
+                    }
+                    else {
+                        vba.alert({
+                            message: "Ürün Stokta Yok.",
+                            classes: 'alert-danger' 
+                        });
+                    }
                 }
                 vba.route.ccnt.funcs.shareProduct = function (elem) {
                     vba.modal.init();

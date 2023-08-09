@@ -51,18 +51,18 @@
                 <div class="section product-categories">
                     <div class="block-title">
                         <h2 class="title">Kategoriler</h2>
-                    </div> 
+                    </div>
                     <div class="block-content">
                         @foreach (var item in (List<viewCategoryDto>)await response.geCategoriesAsync())
                         {
-                        <div class="item">
-                        <span class="arrow categoriesCountBox">@item.productCount</span>
-                        <a class="category-title" href="/categories/@item.id">@item.name</a>
-                        </div>
-                        }   
+                            <div class="item">
+                                <span class="arrow categoriesCountBox">@item.productCount</span>
+                                <a class="category-title" href="/categories/@item.id">@item.name</a>
+                            </div>
+                        }
                     </div>
                 </div>
-                 
+
                 <!-- Product - Flash Deals -->
                 <div class="section products-block nav-color flash-deals layout-4">
                     <div class="block-title">
@@ -281,9 +281,12 @@
                                             </div>
 
                                             <div class="product-buttons">
-                                                <a class="add-to-cart" href="javascript:;" onclick="vba.root.addBasket('@item.ProductID','@item.Name','@item.Image','@item.SalePrice','@item.Stock',1);">
-                                                    <i class="fa fa-shopping-basket" aria-hidden="true"></i>
-                                                </a>
+                                                @if (item.Stock > 0)
+                                                {
+                                                    <a class="add-to-cart" href="javascript:;" onclick="vba.root.addBasket('@item.ProductID','@item.Name','@item.Image','@item.SalePrice','@item.Stock',1);">
+                                                        <i class="fa fa-shopping-basket" aria-hidden="true"></i>
+                                                    </a>
+                                                }
 
                                                 <a class="add-wishlist" href="javascript:;" onclick="vba.route.ccnt.funcs.updateUserFavorite('@item.ProductID');">
                                                     <i class="fa fa-heart" aria-hidden="true"></i>
@@ -326,9 +329,12 @@
                                             </div>
 
                                             <div class="product-buttons">
-                                                <a class="add-to-cart" href="javascript:;" onclick="vba.root.addBasket('@item.ProductID','@item.Name','@item.Image','@item.SalePrice','@item.Stock',1);">
-                                                    <i class="fa fa-shopping-basket" aria-hidden="true"></i>
-                                                </a>
+                                                 @if (item.Stock > 0)
+                                                {
+                                                    <a class="add-to-cart" href="javascript:;" onclick="vba.root.addBasket('@item.ProductID','@item.Name','@item.Image','@item.SalePrice','@item.Stock',1);">
+                                                        <i class="fa fa-shopping-basket" aria-hidden="true"></i>
+                                                    </a>
+                                                }
 
                                                 <a class="add-wishlist" href="javascript:;" onclick="vba.route.ccnt.funcs.updateUserFavorite('@item.ProductID');">
                                                     <i class="fa fa-heart" aria-hidden="true"></i>
@@ -371,10 +377,12 @@
                                             </div>
 
                                             <div class="product-buttons">
-                                                <a class="add-to-cart" href="javascript:;" onclick="vba.root.addBasket('@item.ProductID','@item.Name','@item.Image','@item.SalePrice','@item.Stock',1);">
-                                                    <i class="fa fa-shopping-basket" aria-hidden="true"></i>
-                                                </a>
-
+                                                 @if (item.Stock > 0)
+                                                {
+                                                    <a class="add-to-cart" href="javascript:;" onclick="vba.root.addBasket('@item.ProductID','@item.Name','@item.Image','@item.SalePrice','@item.Stock',1);">
+                                                        <i class="fa fa-shopping-basket" aria-hidden="true"></i>
+                                                    </a>
+                                                }
                                                 <a class="add-wishlist" href="javascript:;" onclick="vba.route.ccnt.funcs.updateUserFavorite('@item.ProductID');">
                                                     <i class="fa fa-heart" aria-hidden="true"></i>
                                                 </a>
