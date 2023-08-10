@@ -82,7 +82,7 @@ var vba = {
         search: function (form) {
             var elem = vba.serializeForm(form);
             if (!window.location.pathname.includes("categories") && !window.location.pathname.includes("favorites") && !window.location.pathname.includes("shop")) {
-                vba.route.getController("/search/" + elem.data, "/");
+                vba.route.getController("/search/" + elem.data, "/search"); 
                 vba.settings.staticID = elem.data;
             }
 
@@ -1326,6 +1326,8 @@ var vba = {
         },
         "/search": {
             load: function () {
+               
+                    console.log("ok");
                 vba.route.ccnt.items.filterForm = {};
                 vba.route.ccnt.items.filterForm.id = vba.settings.staticID;
                 vba.route.ccnt.items.filterForm.page = 1;
@@ -1418,7 +1420,7 @@ var vba = {
 
                 vba.root.changeLoading(false);
             }
-        },
+        }
     },
     alert: function (obj) {
         if (obj.classes == "alert-success") {
