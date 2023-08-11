@@ -11,6 +11,8 @@ public class veriyoneticisi
     public readonly static short siteId = 1; // 1-Site, 2-Site 
     public static bool isDevelopment = false;
 	public static bool isActive = true; 
+	public static bool isLogin = false;
+	public static Guid userID = Guid.Empty;
     public static Setting setting = new Setting();
 	public static Dictionary<string, string> projectSettings
     {

@@ -39,6 +39,7 @@ var vba = {
                 );
         },
         checkLogin: function () {
+            alert("checkLogin Kontrol edildi.");
             if (vba.root.user != null) {
                 $.post("/api/user/check", {})
                     .done(function (res) {
@@ -62,6 +63,10 @@ var vba = {
                     });
             }
         },
+        authCheck: function (auth) {
+            if (parseInt(vba.root.user.auth) <= parseInt(auth)) { return true; }
+            else { return false; }
+        },
         changeLoading: function (obj, overlay) {
             if (obj != null) { vba.loading = obj; }
             if (vba.loading) {
@@ -82,7 +87,7 @@ var vba = {
         search: function (form) {
             var elem = vba.serializeForm(form);
             if (!window.location.pathname.includes("categories") && !window.location.pathname.includes("favorites") && !window.location.pathname.includes("shop")) {
-                vba.route.getController("/search/" + elem.data, "/search"); 
+                vba.route.getController("/search/" + elem.data, "/search");
                 vba.settings.staticID = elem.data;
             }
 
@@ -121,7 +126,7 @@ var vba = {
                 else {
                     basket[existingProductIndex].quantity = parseInt(basket[existingProductIndex].quantity) + parseInt(qty); //Burada Sepette ekle butonu tıklama sırasında artırma eksilme işleminde çalışır.
                 }
-               
+
                 vba.alert({
                     message: "Sepetteki Ürün Güncellendi.",
                     classes: "alert-success"
@@ -192,6 +197,7 @@ var vba = {
 
             $(".cart-count").text(basket.length);
             if (window.location.href.includes("basket")) { vba.controller["/basket"].load(); } //sepet sayfasında ise sepeti güncelle
+            if (window.location.href.includes("productCheckout")) { vba.controller["/productCheckout"].load(); } //sepet sayfasında ise sepeti güncelle
         },
         delBasket: function (id) {
             var basket = [];
@@ -217,7 +223,7 @@ var vba = {
                 vba.root.addBasket(id, name, image, price, stock, shippingAmount, inputQty);
             } else {
                 vba.root.delBasket(id);
-            } 
+            }
         }
     },
     load: function () {
@@ -235,7 +241,7 @@ var vba = {
 
         setTimeout(function () {
             vba.root.checkLogin();
-        }, 120000);
+        }, 120000); // her 2 dk bir kontrol sağlayacaktır.
 
         setInterval(function () {
             vba.settings.serverDate.setMilliseconds(vba.settings.serverDate.getMilliseconds() + 1000);
@@ -377,6 +383,7 @@ var vba = {
     controller: {
         "/": {
             load: function () {
+                vba.root.checkLogin();
                 $.getScript("/js/main.js", function () { }); //Template CSS
 
                 vba.route.ccnt.funcs.updateUserFavorite = function (elem) {
@@ -495,241 +502,332 @@ var vba = {
                     }
                     vba.root.changeLoading(false);
                 }
-                vba.route.ccnt.funcs.getItems(); 
+                vba.route.ccnt.funcs.getItems();
             }
         },
         "/productCheckout": {
             load: function () {
-                console.log("ok");
-                vba.root.changeLoading(false);
+                if (!vba.root.user.isActive) {
+                    vba.route.getController("/user/login");
+                }
+                else { 
+                    vba.route.ccnt.funcs.getItems = function () {
+                        var basket = [];
+                        if ($.cookie('basket')) {
+                            basket = JSON.parse($.cookie('basket'));
+                        }
+                        $(".productBody").empty();
+                        $(".totalBody").empty();
+
+                        if (basket.length > 0) {
+                            $(".checkout-btn").removeClass("d-none");
+                            var totalPrice = 0;
+                            var totalShipping = 0;
+                            // Sepetteki ürünleri listeleyin
+                            for (var i = 0; i < basket.length; i++) {
+                                totalPrice += basket[i].quantity * basket[i].price;
+                                totalShipping += parseFloat(basket[i].shippingAmount);
+                                $(".productBody").append(` 
+                                        <tr>
+                                            <td>
+                                                <a href="/products/${basket[i].id}">
+                                                    <img width="80" alt="Product Image" class="img-responsive" src="/uploads/products/${basket[i].image}">
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a href="/products/${basket[i].id}" class="product-name">${basket[i].name}</a>
+                                            </td>
+                                            <td class="text-center">
+                                                ${basket[i].price} ₺
+                                            </td>
+                                            <td class="text-center">
+                                               ${basket[i].quantity}
+                                            </td>
+                                            <td class="text-center">
+                                                ${basket[i].price * basket[i].quantity} ₺
+                                            </td>
+                                            <td class="text-center">
+                                                ${basket[i].shippingAmount} ₺
+                                            </td>
+                                        </tr> 
+                                `);
+                            }
+
+                            $(".totalBody").html(`
+                            <tr class="cart-subtotal">
+                                <th>
+                                    Sepet Toplam 
+                                </th>
+                                <td>
+                                     <span class="amount">${totalPrice} ₺</span> 
+                                </td>
+                            </tr>
+                            <tr class="shipping">
+                                <th>
+                                    Kargo Toplam
+                                </th>
+                                <td>
+                                     <span class="amount">${totalShipping} ₺</span> 
+                                </td>
+                            </tr>
+                            <tr class="total">
+                                <th>
+                                    <strong>Toplam</strong>
+                                </th>
+                                <td>
+                                    <strong><span class="amount">${totalPrice + totalShipping} ₺</span></strong>
+                                </td>
+                            </tr> 
+                            `);
+                        }
+                        else {
+                            
+                            vba.route.getController("/basket", "/basket");
+                        }
+                        vba.root.changeLoading(false);
+                    }
+                    vba.route.ccnt.funcs.getItems();
+
+                    vba.root.changeLoading(false);
+                }
             }
         },
         "/user/profile": {
             load: function () {
-                vba.route.ccnt.funcs.updateItemProfile = function (form) {
-                    $.post("/api/user/updateUser", $(form).serialize()
-                    ).done(function (res) {
-                        if (res.type == "error") {
-                            vba.alert({
-                                message: res.message == '' ? "İşlem Başarısız" : res.message,
-                                classes: 'alert-danger'
-                            });
-                            vba.root.changeLoading(false);
-                        } else {
-                            vba.alert({
-                                message: res.message == '' ? "İşlem Başarılı" : res.message,
-                                classes: "alert-success"
-                            });
-                            vba.route.ccnt.funcs.getItems();
-                        }
-                    }).fail(function () {
-                        vba.alert({
-                            message: "İşlem başarısız",
-                            classes: 'alert-danger'
-                        });
-                    });
+                if (!vba.root.user.isActive) {
+                    vba.route.getController("/user/login");
                 }
-                vba.route.ccnt.funcs.updateItemProfilePass = function (form) {
-                    var objForm = $(form).serializeArray();
-                    var formObject = {};
-                    objForm.forEach(function (item) {
-                        formObject[item.name] = item.value;
-                    });
-
-                    if (formObject.password != null && formObject.newPassword != null && formObject.newPasswordRepeat != null) {
-                        if (objForm.newPassword == objForm.newPasswordRepeat) {
-                            $.post("/api/user/updateUserPassword", objForm
-                            ).done(function (res) {
-                                if (res.type == "error") {
-                                    vba.alert({
-                                        message: res.message == '' ? "İşlem Başarısız" : res.message,
-                                        classes: 'alert-danger'
-                                    });
-                                    vba.root.changeLoading(false);
-                                } else {
-                                    vba.alert({
-                                        message: res.message == '' ? "İşlem Başarılı" : res.message,
-                                        classes: "alert-success"
-                                    });
-                                    $(form).trigger("reset");
-                                    vba.route.ccnt.funcs.getItems();
-                                }
-                            }).fail(function () {
+                else {
+                    vba.route.ccnt.funcs.updateItemProfile = function (form) {
+                        $.post("/api/user/updateUser", $(form).serialize()
+                        ).done(function (res) {
+                            if (res.type == "error") {
                                 vba.alert({
-                                    message: "İşlem başarısız",
+                                    message: res.message == '' ? "İşlem Başarısız" : res.message,
                                     classes: 'alert-danger'
                                 });
+                                vba.root.changeLoading(false);
+                            } else {
+                                vba.alert({
+                                    message: res.message == '' ? "İşlem Başarılı" : res.message,
+                                    classes: "alert-success"
+                                });
+                                vba.route.ccnt.funcs.getItems();
+                            }
+                        }).fail(function () {
+                            vba.alert({
+                                message: "İşlem başarısız",
+                                classes: 'alert-danger'
                             });
+                        });
+                    }
+                    vba.route.ccnt.funcs.updateItemProfilePass = function (form) {
+                        var objForm = $(form).serializeArray();
+                        var formObject = {};
+                        objForm.forEach(function (item) {
+                            formObject[item.name] = item.value;
+                        });
+
+                        if (formObject.password != null && formObject.newPassword != null && formObject.newPasswordRepeat != null) {
+                            if (objForm.newPassword == objForm.newPasswordRepeat) {
+                                $.post("/api/user/updateUserPassword", objForm
+                                ).done(function (res) {
+                                    if (res.type == "error") {
+                                        vba.alert({
+                                            message: res.message == '' ? "İşlem Başarısız" : res.message,
+                                            classes: 'alert-danger'
+                                        });
+                                        vba.root.changeLoading(false);
+                                    } else {
+                                        vba.alert({
+                                            message: res.message == '' ? "İşlem Başarılı" : res.message,
+                                            classes: "alert-success"
+                                        });
+                                        $(form).trigger("reset");
+                                        vba.route.ccnt.funcs.getItems();
+                                    }
+                                }).fail(function () {
+                                    vba.alert({
+                                        message: "İşlem başarısız",
+                                        classes: 'alert-danger'
+                                    });
+                                });
+                            }
+                            else {
+                                vba.alert({
+                                    message: "Lütfen yeni şifreleri aynı giriniz.",
+                                    classes: 'alert-danger'
+                                });
+                            }
                         }
                         else {
                             vba.alert({
-                                message: "Lütfen yeni şifreleri aynı giriniz.",
+                                message: "Lütfen hiç boş bırakmayınız.",
                                 classes: 'alert-danger'
                             });
                         }
                     }
-                    else {
-                        vba.alert({
-                            message: "Lütfen hiç boş bırakmayınız.",
-                            classes: 'alert-danger'
-                        });
-                    }
-                }
-                vba.route.ccnt.funcs.getItems = function () {
-                    vba.root.changeLoading(true);
-                    $.post("/api/user/getUserProfile", {}).done(function (res) {
-                        if (res.type == "error") {
-                            vba.alert({
-                                message: res.message == '' ? "İşlem başarısız" : res.message,
-                                classes: 'alert-danger',
-                                duration: 5000
-                            });
-                            vba.root.checkLogin();
-                        }
-                        else if (res.type == "inActive") {
-                            vba.route.getController("/", "/");
-                        }
-                        else {
-                            if (res.data.id !== null) {
-                                $(".profile-firstName-lastName").text(res.data.firstName + " " + res.data.lastName);
-                                $(".profileMail").html(res.data.email);
-                                $('#profileForm input[name="firstName"]').val(res.data.firstName);
-                                $('#profileForm input[name="lastName"]').val(res.data.lastName);
-                                $('#profileForm input[name="email"]').val(res.data.email);
-                                $('#profileForm input[name="phone"]').val(res.data.phone);
-                                $('#profileForm textarea[name="address"]').val(res.data.address);
-
-                            } else {
-                                $("#pages_placeholder ").html(" <div class='col-lg-12 mb-3'> <div class='row g-0 bg-light py-4'><div class='col-md-12 d-flex align-items-center justify-content-center'> 😔 Üzgünüm, talebinizle eşleşen birşey bulamadık 😔</div></div></div>").hide();
-                                $("#pages_placeholder ").fadeIn(500);
+                    vba.route.ccnt.funcs.getItems = function () {
+                        vba.root.changeLoading(true);
+                        $.post("/api/user/getUserProfile", {}).done(function (res) {
+                            if (res.type == "error") {
+                                vba.alert({
+                                    message: res.message == '' ? "İşlem başarısız" : res.message,
+                                    classes: 'alert-danger',
+                                    duration: 5000
+                                });
+                                vba.root.checkLogin();
+                            }
+                            else if (res.type == "inActive") {
                                 vba.route.getController("/", "/");
                             }
-                        }
-                    }).fail(function () {
-                        vba.route.ccnt.items.dataLoading = false;
-                        $("#pages_placeholder .dataContainer").html(" <div class='col-lg-12 mb-3'> <div class='row g-0 bg-light py-4'><div class='col-md-12 d-flex align-items-center justify-content-center'> 😔 Üzgünüm, talebinizle eşleşen birşey bulamadık 😔</div></div></div>");
-                    });
-                    vba.root.changeLoading(false);
+                            else {
+                                if (res.data.id !== null) {
+                                    $(".profile-firstName-lastName").text(res.data.firstName + " " + res.data.lastName);
+                                    $(".profileMail").html(res.data.email);
+                                    $('#profileForm input[name="firstName"]').val(res.data.firstName);
+                                    $('#profileForm input[name="lastName"]').val(res.data.lastName);
+                                    $('#profileForm input[name="email"]').val(res.data.email);
+                                    $('#profileForm input[name="phone"]').val(res.data.phone);
+                                    $('#profileForm textarea[name="address"]').val(res.data.address);
+
+                                } else {
+                                    $("#pages_placeholder ").html(" <div class='col-lg-12 mb-3'> <div class='row g-0 bg-light py-4'><div class='col-md-12 d-flex align-items-center justify-content-center'> 😔 Üzgünüm, talebinizle eşleşen birşey bulamadık 😔</div></div></div>").hide();
+                                    $("#pages_placeholder ").fadeIn(500);
+                                    vba.route.getController("/", "/");
+                                }
+                            }
+                        }).fail(function () {
+                            vba.route.ccnt.items.dataLoading = false;
+                            $("#pages_placeholder .dataContainer").html(" <div class='col-lg-12 mb-3'> <div class='row g-0 bg-light py-4'><div class='col-md-12 d-flex align-items-center justify-content-center'> 😔 Üzgünüm, talebinizle eşleşen birşey bulamadık 😔</div></div></div>");
+                        });
+                        vba.root.changeLoading(false);
+                    }
+                    vba.route.ccnt.funcs.getItems();
                 }
-                vba.route.ccnt.funcs.getItems();
             }
         },
         "/user/favorites": {
             load: function () {
-                vba.route.ccnt.items.filterForm = {};
-                vba.route.ccnt.items.filterForm.id = vba.settings.staticID;
-                vba.route.ccnt.items.filterForm.page = 1;
-                vba.route.ccnt.items.filterForm.itemsPerPage = 3;
-                vba.route.ccnt.items.filterForm.totalItems = 0;
-                vba.route.ccnt.items.filterForm.listSorting = 0;
-                vba.route.ccnt.funcs.updateUserFavorite = function (elem) {
+                if (!vba.root.user.isActive) {
+                    vba.route.getController("/user/login");
+                }
+                else {
+                    vba.route.ccnt.items.filterForm = {};
+                    vba.route.ccnt.items.filterForm.id = vba.settings.staticID;
+                    vba.route.ccnt.items.filterForm.page = 1;
+                    vba.route.ccnt.items.filterForm.itemsPerPage = 3;
+                    vba.route.ccnt.items.filterForm.totalItems = 0;
+                    vba.route.ccnt.items.filterForm.listSorting = 0;
+                    vba.route.ccnt.funcs.updateUserFavorite = function (elem) {
 
-                    var confirmDialog = alertify.confirm();
-                    confirmDialog.setting('labels', { ok: "Evet", cancel: "Hayır" });
-                    confirmDialog.setting('transition', 'zoom');
-                    confirmDialog.setting('movable', true);
-                    confirmDialog.setting('closable', false);
-                    confirmDialog.setting('pinnable', true);
-                    confirmDialog.setting('title', "İşlem Onay Penceresi");
-                    confirmDialog.setting('message', "<i class=\"fa fa-exclamation-triangle text-danger\" aria-hidden=\"true\"></i> Favorilerden Çıkarmak İstediğinizden Eminmisiniz?");
-                    confirmDialog.show();
-                    confirmDialog.set('onok', function () {
-                        vba.root.changeLoading(true);
-                        var post = {
-                            productID: "00000000-0000-0000-0000-000000000000",
-                            favoriteID: elem
-                        };
-                        $.post("/api/user/updateUserFavorite", post)
-                            .done(function (res) {
-                                if (res.type == "error") {
+                        var confirmDialog = alertify.confirm();
+                        confirmDialog.setting('labels', { ok: "Evet", cancel: "Hayır" });
+                        confirmDialog.setting('transition', 'zoom');
+                        confirmDialog.setting('movable', true);
+                        confirmDialog.setting('closable', false);
+                        confirmDialog.setting('pinnable', true);
+                        confirmDialog.setting('title', "İşlem Onay Penceresi");
+                        confirmDialog.setting('message', "<i class=\"fa fa-exclamation-triangle text-danger\" aria-hidden=\"true\"></i> Favorilerden Çıkarmak İstediğinizden Eminmisiniz?");
+                        confirmDialog.show();
+                        confirmDialog.set('onok', function () {
+                            vba.root.changeLoading(true);
+                            var post = {
+                                productID: "00000000-0000-0000-0000-000000000000",
+                                favoriteID: elem
+                            };
+                            $.post("/api/user/updateUserFavorite", post)
+                                .done(function (res) {
+                                    if (res.type == "error") {
+                                        vba.alert({
+                                            message: res.message == '' ? "İşlem Başarısız" : res.message,
+                                            classes: 'alert-danger'
+                                        });
+                                        vba.root.changeLoading(false);
+                                    } else {
+                                        vba.alert({
+                                            message: res.message == '' ? "İşlem Başarılı" : res.message,
+                                            classes: "alert-success"
+                                        });
+                                        vba.route.ccnt.funcs.getItems();
+                                    }
+                                })
+                                .fail(function () {
                                     vba.alert({
-                                        message: res.message == '' ? "İşlem Başarısız" : res.message,
+                                        message: "İşlem başarısız",
                                         classes: 'alert-danger'
                                     });
                                     vba.root.changeLoading(false);
-                                } else {
-                                    vba.alert({
-                                        message: res.message == '' ? "İşlem Başarılı" : res.message,
-                                        classes: "alert-success"
-                                    });
-                                    vba.route.ccnt.funcs.getItems();
-                                }
-                            })
-                            .fail(function () {
-                                vba.alert({
-                                    message: "İşlem başarısız",
-                                    classes: 'alert-danger'
                                 });
-                                vba.root.changeLoading(false);
-                            });
-                    }).set('oncancel', function () {
-                        vba.alert({
-                            message: "Favori Çıkarmaktan Vazgeçildi.",
-                            classes: 'alert-danger'
-                        });
-                    });
-                }
-                vba.route.ccnt.funcs.getItems = function () {
-                    vba.root.changeLoading(true);
-                    $("#pages_placeholder .dataContainer").html("");
-                    vba.route.ccnt.items.dataLoading = true;
-
-                    var post = {
-                        listSorting: vba.route.ccnt.items.filterForm.listSorting,
-                        search: $("#searchForm input[type='text']").val(),
-                        page: vba.route.ccnt.items.filterForm.page,
-                        itemsPerPage: vba.route.ccnt.items.filterForm.itemsPerPage,
-                        userID: vba.route.ccnt.items.filterForm.id
-                    };
-
-                    $.post("/api/user/getUserFavorite", post).done(function (res) {
-                        if (res.type == "error") {
+                        }).set('oncancel', function () {
                             vba.alert({
-                                message: res.message == '' ? "İşlem başarısız" : res.message,
-                                classes: 'alert-danger',
-                                duration: 5000
+                                message: "Favori Çıkarmaktan Vazgeçildi.",
+                                classes: 'alert-danger'
                             });
-                            vba.root.checkLogin();
-                        }
-                        else {
-                            if (res.data.length > 0) {
-                                var tmpl = "binditems";
-                                $("#pages_placeholder .dataContainer").append(vba.compileTemp(vba.route.ccnt.items[tmpl], res.data));
-
-                                $(".product-item").each(function (index, element) { // son kaydın altındaki HR kaldırıyor.
-                                    if (index === $(".product-item").length - 1) { 
-                                        $(element).find('.hrStyle-seven').addClass('d-none'); 
-                                    }
-                                });
-                            } else {
-                                $("#pages_placeholder .dataContainer").html(" <div class='col-lg-12 mb-3'> <div class='row g-0 bg-light py-4'><div class='col-md-12 d-flex align-items-center justify-content-center'> 😔 Üzgünüm, talebinizle eşleşen birşey bulamadık 😔</div></div></div>").hide();
-                                $("#pages_placeholder .dataContainer").fadeIn(500);
-                            }
-
-                            $(".total-products").html("Toplam <b><u>" + res.c + "</u></b> Ürün Var");
-                            $(".showingTotalProducts").html("Toplam <b><u>" + res.c + "</u></b> Üründen <b><u>" + res.data.length + "</u></b> Adet Gösteriliyor");
-                            vba.route.ccnt.items.filterForm.totalItems = res.c;
-                            vba.pagination();
-                        }
-                        vba.route.ccnt.items.dataLoading = false;
-                        vba.root.changeLoading(false);
-                    }).fail(function () {
-                        vba.route.ccnt.items.dataLoading = false;
+                        });
+                    }
+                    vba.route.ccnt.funcs.getItems = function () {
+                        vba.root.changeLoading(true);
                         $("#pages_placeholder .dataContainer").html("");
+                        vba.route.ccnt.items.dataLoading = true;
+
+                        var post = {
+                            listSorting: vba.route.ccnt.items.filterForm.listSorting,
+                            search: $("#searchForm input[type='text']").val(),
+                            page: vba.route.ccnt.items.filterForm.page,
+                            itemsPerPage: vba.route.ccnt.items.filterForm.itemsPerPage,
+                            userID: vba.route.ccnt.items.filterForm.id
+                        };
+
+                        $.post("/api/user/getUserFavorite", post).done(function (res) {
+                            if (res.type == "error") {
+                                vba.alert({
+                                    message: res.message == '' ? "İşlem başarısız" : res.message,
+                                    classes: 'alert-danger',
+                                    duration: 5000
+                                });
+                                vba.root.checkLogin();
+                            }
+                            else {
+                                if (res.data.length > 0) {
+                                    var tmpl = "binditems";
+                                    $("#pages_placeholder .dataContainer").append(vba.compileTemp(vba.route.ccnt.items[tmpl], res.data));
+
+                                    $(".product-item").each(function (index, element) { // son kaydın altındaki HR kaldırıyor.
+                                        if (index === $(".product-item").length - 1) {
+                                            $(element).find('.hrStyle-seven').addClass('d-none');
+                                        }
+                                    });
+                                } else {
+                                    $("#pages_placeholder .dataContainer").html(" <div class='col-lg-12 mb-3'> <div class='row g-0 bg-light py-4'><div class='col-md-12 d-flex align-items-center justify-content-center'> 😔 Üzgünüm, talebinizle eşleşen birşey bulamadık 😔</div></div></div>").hide();
+                                    $("#pages_placeholder .dataContainer").fadeIn(500);
+                                }
+
+                                $(".total-products").html("Toplam <b><u>" + res.c + "</u></b> Ürün Var");
+                                $(".showingTotalProducts").html("Toplam <b><u>" + res.c + "</u></b> Üründen <b><u>" + res.data.length + "</u></b> Adet Gösteriliyor");
+                                vba.route.ccnt.items.filterForm.totalItems = res.c;
+                                vba.pagination();
+                            }
+                            vba.route.ccnt.items.dataLoading = false;
+                            vba.root.changeLoading(false);
+                        }).fail(function () {
+                            vba.route.ccnt.items.dataLoading = false;
+                            $("#pages_placeholder .dataContainer").html("");
+                        });
+                        vba.root.changeLoading(false);
+                    }
+                    vba.route.ccnt.funcs.getItems();
+
+                    //----------------Filter-------------------// 
+                    $('#listSorting').change(function () {
+                        vba.route.ccnt.items.filterForm.listSorting = this.value;
+                        vba.route.ccnt.items.filterForm.page = 1;
+                        vba.route.ccnt.funcs.getItems();
                     });
+                    //----------------end Filter-------------------//
+
                     vba.root.changeLoading(false);
                 }
-                vba.route.ccnt.funcs.getItems();
-
-                //----------------Filter-------------------// 
-                $('#listSorting').change(function () {
-                    vba.route.ccnt.items.filterForm.listSorting = this.value;
-                    vba.route.ccnt.items.filterForm.page = 1;
-                    vba.route.ccnt.funcs.getItems();
-                });
-                //----------------end Filter-------------------//
-
-                vba.root.changeLoading(false);
             }
         },
         "/user/login": {
@@ -947,12 +1045,12 @@ var vba = {
                             vba.route.ccnt.items.filterForm.Data.salePrice,
                             vba.route.ccnt.items.filterForm.Data.stock,
                             vba.route.ccnt.items.filterForm.Data.shippingAmount,
-                            quantity); 
+                            quantity);
                     }
                     else {
                         vba.alert({
                             message: "Ürün Stokta Yok.",
-                            classes: 'alert-danger' 
+                            classes: 'alert-danger'
                         });
                     }
                 }
@@ -1326,8 +1424,6 @@ var vba = {
         },
         "/search": {
             load: function () {
-               
-                    console.log("ok");
                 vba.route.ccnt.items.filterForm = {};
                 vba.route.ccnt.items.filterForm.id = vba.settings.staticID;
                 vba.route.ccnt.items.filterForm.page = 1;
@@ -1482,7 +1578,7 @@ var vba = {
             }
         }
         return ratingHtml;
-    }, 
+    },
     pagination: function () {
         $("#pages_placeholder .pagination ul").hide();
         $("#pages_placeholder .pagination ul .nav-page").remove();

@@ -7,6 +7,9 @@ using System.Reflection;
 using Newtonsoft.Json;
 using eticaret.Services.logServices;
 using eticaret.Services.logServices.Dto;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace eticaret.Web.Controllers.api
 {
@@ -38,7 +41,7 @@ namespace eticaret.Web.Controllers.api
         }
 
         [HttpPost, Route("[action]")]
-        public IActionResult login([FromForm] string email, [FromForm] string password)
+        public async Task<IActionResult> login([FromForm] string email, [FromForm] string password)
         {
             if (HttpContext.Session.GetString("login") == "true")
             {
@@ -61,7 +64,9 @@ namespace eticaret.Web.Controllers.api
                     #endregion
                     HttpContext.Session.SetString("id", selUser.id.ToString());
                     HttpContext.Session.SetString("login", "true");
-                    var setData = refreshAndGetLogin(HttpContext, selUser);
+                    veriyoneticisi.isLogin = true;
+                    veriyoneticisi.userID = selUser.id;
+                    var setData = await refreshAndGetLoginAsync(HttpContext); 
                     if (setData != null)
                     {
                         return Ok(new { message = "İşlem başarılı! Hoşgeldiniz.", type = "success" });
@@ -79,29 +84,63 @@ namespace eticaret.Web.Controllers.api
             }
 
         }
-        public static dynamic refreshAndGetLogin(HttpContext context, userDto user)
+        public static async Task<dynamic> refreshAndGetLoginAsync(HttpContext context)
         {
-            if (!string.IsNullOrEmpty(context.Session.GetString("login")))
+            try
             {
-                Guid userID = Guid.Parse(context.Session.GetString("id"));
-                if (user.id != Guid.Empty & userID != Guid.Empty)
+                if (!string.IsNullOrEmpty(context.Session.GetString("login")))
                 {
-                    if (user.isActive == true)
+                    Guid userID = Guid.Parse(context.Session.GetString("id"));
+                    string apiUrl = veriyoneticisi.projectSettings["siteUrl"] + "/api/user/getUserProfile";
+                    using (HttpClient client = new HttpClient())
                     {
-                        foreach (PropertyInfo pi in user.GetType().GetProperties())
+                        var formValues = new Dictionary<string, string> { { "", "" } };
+                        var formContent = new FormUrlEncodedContent(formValues);
+                        HttpResponseMessage response = await client.PostAsync(apiUrl, formContent);
+                        string responseContent = await response.Content.ReadAsStringAsync();
+                        dynamic responseObject = JsonConvert.DeserializeObject(responseContent);
+                        userDto user = JsonConvert.DeserializeObject<userDto>(responseObject.data.ToString());
+
+                        if(responseObject.type != "inActive")
                         {
-                            context.Session.SetString(pi.Name, Convert.ToString(pi.GetValue(user, null)));
-                        }
-                        return user;
+                            if (user.id != Guid.Empty & userID != Guid.Empty)
+                            {
+                                if (user.isActive == true)
+                                {
+                                    foreach (PropertyInfo pi in user.GetType().GetProperties())
+                                    {
+                                        context.Session.SetString(pi.Name, Convert.ToString(pi.GetValue(user, null)));
+                                    }
+                                    return user;
+                                }
+                            }
+                        }  
                     }
-                }
+                } 
             }
-            if (string.IsNullOrEmpty(context.Session.GetString("ga")))
-            {
-                context.Session.Clear();
-            }
+            catch { }
             return null;
         }
+
+        [Route("check")]
+        [HttpPost]
+        public async Task<IActionResult> check()
+        {
+            if (HttpContext.Session.GetString("login") == "true")
+            {
+                dynamic response = await refreshAndGetLoginAsync(this.HttpContext);
+                if (response != null)
+                {
+                    if (response.isActive)
+                    {
+                        return Ok(new { message = "", type = "success", data = response });
+                    }
+                }
+                HttpContext.Session.Clear();
+            }
+            return Ok(new { message = "", type = "error" });
+        }
+
         [Route("[action]")]
         public IActionResult logout()
         {
@@ -125,10 +164,10 @@ namespace eticaret.Web.Controllers.api
         [HttpPost, Route("[action]")]
         public IActionResult getUserProfile()
         {
-            if (HttpContext.Session.GetString("login") == "true" && !string.IsNullOrEmpty(HttpContext.Session.GetString("id")))
-            {
-                Guid userID = Guid.Parse(HttpContext.Session.GetString("id"));
-                var response = _IuserService.getUserProfile(userID);
+           
+            if ((HttpContext.Session.GetString("login") == "true" && !string.IsNullOrEmpty(HttpContext.Session.GetString("id"))) || (veriyoneticisi.isLogin && veriyoneticisi.userID != Guid.Empty))
+            { 
+                var response = _IuserService.getUserProfile(veriyoneticisi.userID);
                 var data = response["data"];
                 var type = response["type"];
                 var message = response["message"];
@@ -195,11 +234,11 @@ namespace eticaret.Web.Controllers.api
             if (HttpContext.Session.GetString("login") == "true" && !string.IsNullOrEmpty(HttpContext.Session.GetString("id")))
             {
                 Guid userID = Guid.Empty;
-                if(productID != Guid.Empty)
+                if (productID != Guid.Empty)
                 {
                     userID = Guid.Parse(HttpContext.Session.GetString("id"));
                 }
-               
+
                 var response = _IuserService.updateUserFavorite(userID, productID, favoriteID);
                 var type = response["type"];
                 var message = response["message"];
