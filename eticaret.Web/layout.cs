@@ -10,7 +10,7 @@ public class layout
     public static async Task<string> settingsAsync(string data)
     {
         var reqest = "";
-        if (string.IsNullOrEmpty(veriyoneticisi.setting.title))
+        //if (string.IsNullOrEmpty(veriyoneticisi.setting.title))
         {
             string apiUrl = veriyoneticisi.projectSettings["siteUrl"] + "/api/default/getSettings";
             using (HttpClient client = new HttpClient())
@@ -22,6 +22,7 @@ public class layout
                 dynamic responseObject = JsonConvert.DeserializeObject(responseContent);
                 List<Setting> settingsList = responseObject.data.ToObject<List<Setting>>();
                 veriyoneticisi.setting = settingsList.FirstOrDefault();
+                veriyoneticisi.isActive = veriyoneticisi.setting.isActive;
             }
         }
 

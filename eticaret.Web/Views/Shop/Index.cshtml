@@ -1,6 +1,6 @@
 ﻿    <!-- Breadcrumb -->
 <div id="breadcrumb" class="breadcrumbShopPage">
-    <div class="container"> 
+    <div class="container">
         <img src="" class="titleIMG" />
         <h2 class="title mt-5">...</h2>
 
@@ -15,110 +15,242 @@
     <div class="row">
         <!-- Page Content -->
         <div id="center-column" class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-            <div class="product-category-page">
-                <!-- Nav Bar -->
-                <div class="products-bar">
-                    <div class="row">
-                        <div class="col-md-6 col-xs-6">
-                            <div class="gridlist-toggle" role="tablist">
-                                <ul class="nav nav-tabs">
-                                    <li class="active" id="listProductButton"><a href="javascript:;" onclick=""><i class="fa fa-th-large"></i></a></li>
-                                </ul>
-                            </div>
-
-                            <div class="total-products">0 ÜRÜN VAR</div>
-                        </div>
-
-                        <div class="col-md-6 col-xs-6">
-                            <div class="filter-bar">
-                                <form action="#" class="pull-right">
-                                    <div class="select">
-                                        <select class="form-control" id="listSorting">
-                                            <option value="0">Önerilen Sıralama</option>
-                                            <option value="1">Fiyat: Önce en düşük</option>
-                                            <option value="2">Fiyat: Önce en yüksek</option>
-                                            <option value="3">Ürün Adı: A'dan Z'ye</option>
-                                            <option value="4">Ürün Adı: Z'den A'ya</option>
-                                            <option value="5">Stokta var</option>
-                                        </select>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
+            <div class="container">
+                <div class="panel panel-default">
+                    <div class="panel-heading panel-heading-nav">
+                        <ul class="nav nav-tabs d-flex justify-content-center">
+                            <li role="presentation" class="active">
+                                <a href="#one" aria-controls="one" role="tab" data-toggle="tab">
+                                    <i class="fa fa-bars" aria-hidden="true"></i>
+                                    <b>Ürünler</b>
+                                </a>
+                            </li>
+                            <li role="presentation">
+                                <a href="#two" aria-controls="two" role="tab" data-toggle="tab">
+                                    <i class="fa fa-camera-retro" aria-hidden="true"></i>
+                                    <b>Paylaşımlar</b>
+                                </a>
+                            </li>
+                            <li role="presentation">
+                                <a href="#three" aria-controls="three" role="tab" data-toggle="tab">
+                                    <i class="fa fa-building-o" aria-hidden="true"></i>
+                                    <b>Hakkında</b>
+                                </a>
+                            </li>
+                        </ul>
                     </div>
-                </div>
+                    <div class="panel-body">
+                        <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane fade in active" id="one">
+                                <div class="product-category-page">
+                                    <!-- Nav Bar -->
+                                    <div class="products-bar">
+                                        <div class="row">
+                                            <div class="col-md-6 col-xs-6">
+                                                <div class="gridlist-toggle" role="tablist">
+                                                    <ul class="nav nav-tabs">
+                                                        <li class="active" id="listProductButton"><a href="javascript:;" onclick=""><i class="fa fa-bars"></i></a></li>
+                                                    </ul>
+                                                </div>
 
-                <div class="tab-content">
-                    <!-- Products Grid -->
-                    <div class="tab-pane active" id="products-grid">
-                        <div class="products-block">
-                            <div class="row dataContainer">
-                                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" data-repeat="items">
-                                    <div class="product-item">
-                                        <div class="product-image">
-                                            <a href="/products/{{item.product.id}}">
-                                                <img src="/img/kurdale.png" alt="kurdale" class="kurdale">
-                                                <img class="img-responsive" src="/uploads/products/{{item.product.image}}" alt="Product Image">
-                                            </a>
+                                                <div class="total-products">0 ÜRÜN VAR</div>
+                                            </div>
+
+                                            <div class="col-md-6 col-xs-6">
+                                                <div class="filter-bar">
+                                                    <form action="#" class="pull-right">
+                                                        <div class="select">
+                                                            <select class="form-control" id="listSorting">
+                                                                <option value="0">Önerilen Sıralama</option>
+                                                                <option value="1">Fiyat: Önce en düşük</option>
+                                                                <option value="2">Fiyat: Önce en yüksek</option>
+                                                                <option value="3">Ürün Adı: A'dan Z'ye</option>
+                                                                <option value="4">Ürün Adı: Z'den A'ya</option>
+                                                                <option value="5">Stokta var</option>
+                                                            </select>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
                                         </div>
+                                    </div>
 
-                                        <div class="product-title">
-                                            <a href="/products/{{item.product.id}}">
-                                                {{item.product.name}}
-                                            </a>
+                                    <div class="tab-content">
+                                        <!-- Products Grid -->
+                                        <div class="tab-pane active" id="products-grid">
+                                            <div class="products-block">
+                                                <div class="row dataContainer">
+                                                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" data-repeat="items">
+                                                        <div class="product-item">
+                                                            <div class="product-image">
+                                                                <a href="/products/{{item.product.id}}">
+                                                                    <img src="/img/kurdale.png" alt="kurdale" class="kurdale">
+                                                                    <img class="img-responsive" src="/uploads/products/{{item.product.image}}" alt="Product Image">
+                                                                </a>
+                                                            </div>
+
+                                                            <div class="product-title">
+                                                                <a href="/products/{{item.product.id}}">
+                                                                    {{item.product.name}}
+                                                                </a>
+                                                            </div>
+
+                                                            <div class="product-rating">
+                                                                {{vba.ratingChange(item.averageRating)}}
+                                                            </div>
+                                                            <span class="review-count">({{item.commentCount}})</span>
+
+                                                            <div class="product-price">
+                                                                <span class="sale-price">{{item.product.salePrice}} &#x20BA;</span>
+                                                                <span class="base-price">{{item.product.basePrice}} &#x20BA;</span>
+                                                            </div>
+
+                                                            <div class="product-buttons">
+                                                                <a class="add-to-cart {{item.product.stock > 0?'':'d-none'}}" href="javascript:;" onclick="{{item.product.stock > 0 ? 'vba.root.addBasket(\''+item.product.id+'\',\''+item.product.name+'\',\''+item.product.image+'\',\''+item.product.salePrice+'\',\''+item.product.stock+'\',\''+item.product.shippingAmount+'\',1);' : ''}}">
+                                                                    <i class="fa fa-shopping-basket" aria-hidden="true"></i>
+                                                                </a>
+
+                                                                <a class="add-wishlist" href="javascript:;" onclick="vba.route.ccnt.funcs.updateUserFavorite('{{item.product.id}}');">
+                                                                    <i class="fa fa-heart" aria-hidden="true"></i>
+                                                                </a>
+
+                                                                <a class="quickview" href="/products/{{item.product.id}}">
+                                                                    <i class="fa fa-eye" aria-hidden="true"></i>
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
+                                    </div>
 
-                                        <div class="product-rating">
-                                            {{vba.ratingChange(item.averageRating)}}
-                                        </div>
-                                        <span class="review-count">({{item.commentCount}})</span>
+                                    <!-- Pagination Bar -->
+                                    <div class="pagination-bar">
+                                        <div class="row">
+                                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                                <div class="text showingTotalProducts">Toplam 0 Üründen 0 Adet Gösteriliyor</div>
+                                            </div>
 
-                                        <div class="product-price">
-                                            <span class="sale-price">{{item.product.salePrice}} &#x20BA;</span>
-                                            <span class="base-price">{{item.product.basePrice}} &#x20BA;</span>
-                                        </div>
-
-                                        <div class="product-buttons">
-                                            <a class="add-to-cart" href="javascript:;" onclick="vba.root.addBasket('{{item.product.id}}','{{item.product.name}}','{{item.product.image}}','{{item.product.salePrice}}','{{item.product.stock}}',1);">
-                                                <i class="fa fa-shopping-basket" aria-hidden="true"></i>
-                                            </a>
-
-                                            <a class="add-wishlist" href="javascript:;" onclick="vba.route.ccnt.funcs.updateUserFavorite('{{item.product.id}}');">
-                                                <i class="fa fa-heart" aria-hidden="true"></i>
-                                            </a>
-
-                                            <a class="quickview" href="/products/{{item.product.id}}">
-                                                <i class="fa fa-eye" aria-hidden="true"></i>
-                                            </a>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <div class="pagination">
+                                                    <ul class="page-list" id="pagination">
+                                                        <li><a href="javascript:;" onclick="vba.route.ccnt.items.filterForm.page = 1; vba.route.ccnt.funcs.getItems(); return false;" class="prev"><span class="fa fa-angle-double-left" aria-hidden="true"></span></a></li>
+                                                        <li><a href="javascript:;" onclick="if (vba.route.ccnt.items.filterForm.page != 1) { vba.route.ccnt.items.filterForm.page -= 1; } vba.route.ccnt.funcs.getItems(); return false;" class="prev"><span class="fa fa-angle-left" aria-hidden="true"></span></a></li>
+                                                        <li class="nav-page"><a href="#" class="current">0</a></li>
+                                                        <li><a onclick="if (vba.route.ccnt.items.filterForm.page != vba.route.ccnt.items.filterForm.totalPage) { vba.route.ccnt.items.filterForm.page += 1; } vba.route.ccnt.funcs.getItems(); return false;" class="next">  <span class="fa fa-angle-right" aria-hidden="true"></span></a></li>
+                                                        <li><a href="javascript:;" onclick="vba.route.ccnt.items.filterForm.page = vba.route.ccnt.items.filterForm.totalPage; vba.route.ccnt.funcs.getItems(); return false;" class="next"><span class="fa fa-angle-double-right" aria-hidden="true"></span></a></li>
+                                                    </ul>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
+                            <div role="tabpanel" class="tab-pane fade" id="two">
+                                <div data-slide="slide" class="stori-slide">
+                                    <div class="stori-slide-items">
+                                        <img src="/img/product/13.jpg" alt="Img 1">
+                                        <img src="/img/product/14.jpg" alt="Img 2">
+                                        <img src="/img/product/16.jpg" alt="Img 3">
+                                        <img src="/img/product/18.jpg" alt="Img 4">
+                                    </div>
+                                    <nav class="stori-slide-nav">
+                                        <div class="stori-slide-thumb"></div>
+                                        <button class="stori-slide-prev">Anterior</button>
+                                        <button class="stori-slide-next">Próximo</button>
+                                    </nav>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="thumbnail">
+                                            <img src="https://via.placeholder.com/300x300" alt="Image">
+                                            <div class="caption">
+                                                <h3>This is a caption</h3>
+                                                <p>This is a description of the image.</p>
+                                                <a href="#">Like</a>
+                                                <a href="#">Comment</a>
+                                                <a href="#">Share</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="thumbnail">
+                                            <img src="https://via.placeholder.com/300x300" alt="Image">
+                                            <div class="caption">
+                                                <h3>This is a caption</h3>
+                                                <p>This is a description of the image.</p>
+                                                <a href="#">Like</a>
+                                                <a href="#">Comment</a>
+                                                <a href="#">Share</a>
+                                            </div>
+                                        </div>
+                                    </div>                                    
+                                    <div class="col-md-4">
+                                        <div class="thumbnail">
+                                            <img src="https://via.placeholder.com/300x300" alt="Image">
+                                            <div class="caption">
+                                                <h3>This is a caption</h3>
+                                                <p>This is a description of the image.</p>
+                                                <a href="#">Like</a>
+                                                <a href="#">Comment</a>
+                                                <a href="#">Share</a>
+                                            </div>
+                                        </div>
+                                    </div>                                    
+                                    <div class="col-md-4">
+                                        <div class="thumbnail">
+                                            <img src="https://via.placeholder.com/300x300" alt="Image">
+                                            <div class="caption">
+                                                <h3>This is a caption</h3>
+                                                <p>This is a description of the image.</p>
+                                                <a href="#">Like</a>
+                                                <a href="#">Comment</a>
+                                                <a href="#">Share</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div role="tabpanel" class="tab-pane p-5 fade " id="three">
+                                <img src="https://via.placeholder.com/300x300" alt="Image" class="titleIMG">
+                                <h2 class="title">Mağaza Başlığı</h2>
+                                <p>Adres: Hatay Antakya.</p>
+                                <p>Telefon 1: 03xxxxxxx</p>
+                                <p>Telefon 2: 05xxxxxxx</p>
+                                <p>
+                                    <br /><br /><strong> Hoş Geldiniz Konç Ticaret'e! </strong><br />
 
-                <!-- Pagination Bar -->
-                <div class="pagination-bar">
-                    <div class="row">
-                        <div class="col-md-4 col-sm-4 col-xs-12">
-                            <div class="text showingTotalProducts">Toplam 0 Üründen 0 Adet Gösteriliyor</div>
-                        </div>
+                                    Konç Ticaret, yöresel lezzetleri ve el yapımı ürünleri sizlerle buluşturan bir online mağazadır. Yıllardır süregelen tecrübemiz ve tutkumuzla, en kaliteli ve özenle seçilmiş ürünleri sizinle buluşturuyoruz.
 
-                        <div class="col-md-8 col-sm-8 col-xs-12">
-                            <div class="pagination">
-                                <ul class="page-list" id="pagination">
-                                    <li><a href="javascript:;" onclick="vba.route.ccnt.items.filterForm.page = 1; vba.route.ccnt.funcs.getItems(); return false;" class="prev"><span class="fa fa-angle-double-left" aria-hidden="true"></span></a></li>
-                                    <li><a href="javascript:;" onclick="if (vba.route.ccnt.items.filterForm.page != 1) { vba.route.ccnt.items.filterForm.page -= 1; } vba.route.ccnt.funcs.getItems(); return false;" class="prev"><span class="fa fa-angle-left" aria-hidden="true"></span></a></li>
-                                    <li class="nav-page"><a href="#" class="current">0</a></li>
-                                    <li><a onclick="if (vba.route.ccnt.items.filterForm.page != vba.route.ccnt.items.filterForm.totalPage) { vba.route.ccnt.items.filterForm.page += 1; } vba.route.ccnt.funcs.getItems(); return false;" class="next">  <span class="fa fa-angle-right" aria-hidden="true"></span></a></li>
-                                    <li><a href="javascript:;" onclick="vba.route.ccnt.items.filterForm.page = vba.route.ccnt.items.filterForm.totalPage; vba.route.ccnt.funcs.getItems(); return false;" class="next"><span class="fa fa-angle-double-right" aria-hidden="true"></span></a></li>
-                                </ul>
+                                    <br /><br /><strong>Yöresel Lezzetler</strong><br />
+
+                                    Türkiye'nin dört bir yanından özenle seçtiğimiz yöresel ürünlerle sofralarınıza renk katıyoruz. Yerel üreticilerin el emeği ürünlerini sizlerle buluşturarak, geleneksel tatları yaşatıyoruz.
+
+                                    <br /><br /><strong>El Yapımı Ürünler</strong><br />
+
+                                    Konç Ticaret olarak, el emeği ürünlerin değerini biliyor ve destekliyoruz. El yapımı tekstil ürünleri, ev dekorasyonu ürünleri, takılar ve daha fazlası mağazamızda sizleri bekliyor.
+
+                                    <br /><br /><strong>Kalite ve Güven</strong><br />
+
+                                    Müşteri memnuniyeti ve kalite odaklı hizmet anlayışımızla, her ürünü özenle seçiyor ve sizlere sunuyoruz. Ürünlerimizin tamamı güvenilir kaynaklardan temin edilmekte olup, sizlere en taze ve kaliteli ürünleri sunmayı hedefliyoruz.
+
+                                    <br /><br /><strong>Müşteri Desteği</strong><br />
+
+                                    Konç Ticaret olarak, müşteri memnuniyeti önceliğimizdir. Her türlü soru, öneri ve talepleriniz için müşteri destek ekibimiz her zaman yanınızdadır. Sizlere en iyi alışveriş deneyimini sunmak için buradayız.
+
+                                    Siz de geleneksel lezzetleri yaşamak ve el emeği ürünlerle tanışmak isterseniz, Konç Ticaret'e hoş geldiniz! Mağazamızı ziyaret ederek kaliteli ürünleri inceleyebilir, alışveriş keyfini yaşayabilirsiniz.
+
+                                    <br /><br /><strong>Teşekkür ederiz,</strong><br />
+                                    <strong>Konç Ticaret Ailesi</strong><br />
+                                </p>
+                               
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 </div>

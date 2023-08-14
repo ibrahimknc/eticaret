@@ -15259,3 +15259,117 @@ input {
 .products-list .kurdale {
     margin-left: 13px !important;
 }
+
+.panel-heading-nav {
+    border-bottom: 0;
+    padding: 10px 0 0;
+}
+
+    .panel-heading-nav .nav {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+.p-5{
+    padding:10px !important;
+}
+ 
+
+/*-----------------Stori Slider Start-------------------------*/
+
+.stori-slide-items img {
+    /*  max-width: 100%;
+    display: block;*/
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* or object-fit: cover; */
+    min-height: 500px;
+    max-height: 500px; 
+}
+    .stori-slide-items img::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5); /* Arka plandaki rengi ayarlayabilirsiniz */
+        backdrop-filter: blur(5px); /* Blurluğu ayarlayabilirsiniz */
+        z-index: -1;
+    }
+
+  
+
+.stori-slide {
+    max-width: 380px;
+    margin: 20px auto;
+    display: grid;
+    box-shadow: 0 4px 20px 2px rgba(0, 0, 0, 0.4);
+    border-radius: 5px;
+}
+
+.stori-slide-items {
+    position: relative;
+    grid-area: 1/1;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.stori-slide-nav {
+    grid-area: 1/1;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr;
+}
+
+    .stori-slide-nav button {
+        -webkit-appearance: none;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        opacity: 0;
+    }
+
+.stori-slide-items > * {
+    position: absolute;
+    top: 0px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.stori-slide-items > .active {
+    position: relative;
+    opacity: 1;
+    pointer-events: initial;
+}
+
+.stori-slide-thumb {
+    display: flex;
+    grid-column: 1 / 3;
+}
+
+    .stori-slide-thumb > span {
+        flex: 1;
+        display: block;
+        height: 3px;
+        background: rgba(0, 0, 0, 0.4);
+        margin: 5px;
+        border-radius: 3px;
+        overflow: hidden;
+    }
+
+        .stori-slide-thumb > span.active::after {
+            content: '';
+            display: block;
+            height: inherit;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 3px;
+            transform: translateX(-100%);
+            animation: thumb 5s forwards linear;
+        }
+
+@keyframes thumb {
+    to {
+        transform: initial;
+    }
+}
+
+/*-----------------Stori Slider End-------------------------*/

@@ -170,9 +170,6 @@ namespace eticaret.Data.Migrations
                         .HasColumnType("uuid")
                         .HasDefaultValueSql("uuid_generate_v4()");
 
-                    b.Property<Guid?>("ProductCheckoutid")
-                        .HasColumnType("uuid");
-
                     b.Property<decimal?>("basePrice")
                         .HasPrecision(18, 2)
                         .HasColumnType("numeric(18,2)");
@@ -226,13 +223,66 @@ namespace eticaret.Data.Migrations
 
                     b.HasKey("id");
 
-                    b.HasIndex("ProductCheckoutid");
-
                     b.HasIndex("categoriID");
 
                     b.HasIndex("shopID");
 
                     b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("eticaret.Domain.Entities.ProductBasket", b =>
+                {
+                    b.Property<Guid>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("uuid_generate_v4()");
+
+                    b.Property<Guid>("ProductCheckoutID")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("ProductCheckoutid")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("creatingTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("image")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("isActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("name")
+                        .HasColumnType("text");
+
+                    b.Property<decimal>("price")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<Guid>("productID")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("quantity")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal?>("shippingAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<decimal?>("stock")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<DateTime?>("updatedTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("ProductCheckoutID");
+
+                    b.HasIndex("ProductCheckoutid");
+
+                    b.ToTable("ProductBasket");
                 });
 
             modelBuilder.Entity("eticaret.Domain.Entities.ProductCheckout", b =>
@@ -269,16 +319,10 @@ namespace eticaret.Data.Migrations
                     b.Property<bool?>("isPayment")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("quantity")
-                        .HasColumnType("integer");
-
                     b.Property<string>("shippingAddress")
                         .HasColumnType("text");
 
                     b.Property<string>("shippingCity")
-                        .HasColumnType("text");
-
-                    b.Property<string>("shippingCompanyName")
                         .HasColumnType("text");
 
                     b.Property<string>("shippingCountry")
@@ -290,12 +334,18 @@ namespace eticaret.Data.Migrations
                     b.Property<string>("shippingLastName")
                         .HasColumnType("text");
 
+                    b.Property<string>("shippingTitle")
+                        .HasColumnType("text");
+
                     b.Property<int>("status")
                         .HasColumnType("integer");
 
                     b.Property<decimal?>("totalPayment")
                         .HasPrecision(18, 2)
                         .HasColumnType("numeric(18,2)");
+
+                    b.Property<int>("totalQuantity")
+                        .HasColumnType("integer");
 
                     b.Property<decimal?>("totalshippingAmount")
                         .HasColumnType("numeric");
@@ -596,10 +646,6 @@ namespace eticaret.Data.Migrations
 
             modelBuilder.Entity("eticaret.Domain.Entities.Product", b =>
                 {
-                    b.HasOne("eticaret.Domain.Entities.ProductCheckout", null)
-                        .WithMany("Products")
-                        .HasForeignKey("ProductCheckoutid");
-
                     b.HasOne("eticaret.Domain.Entities.Category", "Category")
                         .WithMany()
                         .HasForeignKey("categoriID")
@@ -615,6 +661,21 @@ namespace eticaret.Data.Migrations
                     b.Navigation("Category");
 
                     b.Navigation("Shop");
+                });
+
+            modelBuilder.Entity("eticaret.Domain.Entities.ProductBasket", b =>
+                {
+                    b.HasOne("eticaret.Domain.Entities.ProductCheckout", "ProductCheckout")
+                        .WithMany()
+                        .HasForeignKey("ProductCheckoutID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("eticaret.Domain.Entities.ProductCheckout", null)
+                        .WithMany("Products")
+                        .HasForeignKey("ProductCheckoutid");
+
+                    b.Navigation("ProductCheckout");
                 });
 
             modelBuilder.Entity("eticaret.Domain.Entities.ProductCheckout", b =>

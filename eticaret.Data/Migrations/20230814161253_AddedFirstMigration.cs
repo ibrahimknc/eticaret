@@ -172,6 +172,7 @@ namespace eticaret.Data.Migrations
                     image = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     salePrice = table.Column<decimal>(type: "numeric(18,2)", precision: 18, scale: 2, nullable: false),
                     basePrice = table.Column<decimal>(type: "numeric(18,2)", precision: 18, scale: 2, nullable: true),
+                    shippingAmount = table.Column<decimal>(type: "numeric(18,2)", precision: 18, scale: 2, nullable: true),
                     details = table.Column<string>(type: "text", nullable: true),
                     stock = table.Column<decimal>(type: "numeric(18,2)", precision: 18, scale: 2, nullable: true),
                     tags = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
@@ -196,6 +197,46 @@ namespace eticaret.Data.Migrations
                         column: x => x.shopID,
                         principalSchema: "EticaretSchemas",
                         principalTable: "Shops",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProductCheckout",
+                schema: "EticaretSchemas",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "uuid_generate_v4()"),
+                    userID = table.Column<Guid>(type: "uuid", nullable: false),
+                    billingCountry = table.Column<string>(type: "text", nullable: true),
+                    billingFirstName = table.Column<string>(type: "text", nullable: true),
+                    billingLastName = table.Column<string>(type: "text", nullable: true),
+                    billingCompanyName = table.Column<string>(type: "text", nullable: true),
+                    billingAddress = table.Column<string>(type: "text", nullable: true),
+                    billingCity = table.Column<string>(type: "text", nullable: true),
+                    shippingCountry = table.Column<string>(type: "text", nullable: true),
+                    shippingFirstName = table.Column<string>(type: "text", nullable: true),
+                    shippingLastName = table.Column<string>(type: "text", nullable: true),
+                    shippingTitle = table.Column<string>(type: "text", nullable: true),
+                    shippingAddress = table.Column<string>(type: "text", nullable: true),
+                    shippingCity = table.Column<string>(type: "text", nullable: true),
+                    isPayment = table.Column<bool>(type: "boolean", nullable: true),
+                    totalPayment = table.Column<decimal>(type: "numeric(18,2)", precision: 18, scale: 2, nullable: true),
+                    totalshippingAmount = table.Column<decimal>(type: "numeric", nullable: true),
+                    totalQuantity = table.Column<int>(type: "integer", nullable: false),
+                    status = table.Column<int>(type: "integer", nullable: false),
+                    isActive = table.Column<bool>(type: "boolean", nullable: false),
+                    creatingTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    updatedTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductCheckout", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_ProductCheckout_Users_userID",
+                        column: x => x.userID,
+                        principalSchema: "EticaretSchemas",
+                        principalTable: "Users",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -331,6 +372,12 @@ namespace eticaret.Data.Migrations
                 column: "type");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ProductCheckout_userID",
+                schema: "EticaretSchemas",
+                table: "ProductCheckout",
+                column: "userID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ProductIMG_productID",
                 schema: "EticaretSchemas",
                 table: "ProductIMG",
@@ -379,6 +426,10 @@ namespace eticaret.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Log",
+                schema: "EticaretSchemas");
+
+            migrationBuilder.DropTable(
+                name: "ProductCheckout",
                 schema: "EticaretSchemas");
 
             migrationBuilder.DropTable(

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 
 namespace eticaret.Web.Controllers
-{
+{ 
     public class defaultController : Controller
     {
         [Route("[action]"), Route("ajax/[action]")]

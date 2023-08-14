@@ -25,7 +25,9 @@ namespace eticaret.Data
             modelBuilder.ApplyConfiguration(new commentConfiguration());
             modelBuilder.ApplyConfiguration(new productViewsConfiguration());
             modelBuilder.ApplyConfiguration(new shopConfiguration());
-            modelBuilder.ApplyConfiguration(new productCheckoutConfiguration());
+            modelBuilder.ApplyConfiguration(new productCheckoutConfiguration()); 
+            modelBuilder.ApplyConfiguration(new ProductBasketConfiguration());
+
 
             #region Log ForeignKey
             modelBuilder.Entity<Log>()
@@ -83,13 +85,19 @@ namespace eticaret.Data
           .WithMany()
           .HasForeignKey(l => l.productID);
             #endregion
-
-            #region Product Checkout ForeignKey
-            
+             
+            #region Product Checkout ForeignKey 
             modelBuilder.Entity<ProductCheckout>()
             .HasOne(l => l.User)
             .WithMany()
             .HasForeignKey(l => l.userID);
+            #endregion
+
+            #region Product Basket ForeignKey 
+            modelBuilder.Entity<ProductBasket>()
+            .HasOne(l => l.ProductCheckout)
+            .WithMany()
+            .HasForeignKey(l => l.ProductCheckoutID);
             #endregion
         }
 
@@ -108,6 +116,7 @@ namespace eticaret.Data
         public DbSet<ProductViews> productViews { get; set; }
         public DbSet<Shop> shops { get; set; }
         public DbSet<ProductCheckout> productCheckouts { get; set; }
+        public DbSet<ProductBasket> productBaskets { get; set; }
 
     }
 }

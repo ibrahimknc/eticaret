@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System; 
 
-namespace eticaret.Domain.Entities
+namespace eticaret.Services.productCheckoutServices.Dto
 {
-    public partial class ProductCheckout : BaseEntitiy
+    public class productCheckoutDto
     {
         public Guid userID { get; set; }
         #region billing (Fatura Adresi)
@@ -22,16 +20,6 @@ namespace eticaret.Domain.Entities
         public string shippingTitle { get; set; }
         public string shippingAddress { get; set; }
         public string shippingCity { get; set; }
-        #endregion
-        public bool? isPayment { get; set; } // Ödeme Yapıldımı
-        public decimal? totalPayment { get; set; } // Toplam Ödeme Miktarı 
-        public decimal? totalshippingAmount { get; set; } // Toplam Kargo Ödeme Miktarı 
-        public int totalQuantity { get; set; }
-        public int status { get; set; } // 0=Ödeme Alındı, 1=Hazırlanıyor, 2=Kargoya Verildi, 3=Teslim Edildi
-        public User User { get; set; } 
-        public ICollection<ProductBasket> Products { get; set; } 
-    }
-
-     
+        #endregion 
+    } 
 }
-

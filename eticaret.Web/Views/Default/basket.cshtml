@@ -35,7 +35,7 @@
         <div class="checkout-btn d-none">
             @if (!string.IsNullOrEmpty(Context.Session.GetString("id")) && (Context.Session.GetString("login") == "true"))
             {
-                <a href="product-checkout.html" class="btn btn-primary pull-right" title="Proceed to checkout">
+                <a href="/productCheckout" class="btn btn-primary pull-right" title="Proceed to checkout">
                     <span>Sepeti Onayla</span>
                     <i class="fa fa-angle-right ml-xs"></i>
                 </a>

@@ -39,7 +39,7 @@ var vba = {
                 );
         },
         checkLogin: function () {
-            alert("checkLogin Kontrol edildi.");
+            //alert("checkLogin Kontrol edildi.");
             if (vba.root.user != null) {
                 $.post("/api/user/check", {})
                     .done(function (res) {
@@ -110,8 +110,10 @@ var vba = {
             };
 
             var basket = [];
-            if ($.cookie('basket')) {
-                basket = JSON.parse($.cookie('basket'));
+            var yeniSaat = 24; // Yeni çerezin 24 saat boyunca geçerli olması için 
+            var getCookie = vba.cookie.getCookie('basket');
+            if (getCookie) {
+                basket = JSON.parse(getCookie);
             }
 
             var existingProductIndex = basket.findIndex(function (product) {
@@ -139,21 +141,24 @@ var vba = {
                     classes: "alert-success"
                 });
             }
+            vba.cookie.setCookie('basket', JSON.stringify(basket), yeniSaat);
 
-            $.cookie('basket', JSON.stringify(basket));
+            //$.cookie('basket', JSON.stringify(basket)); 
             vba.root.getBasket();
         },
-        getBasket: function () {
-            var basket = [];
-            if ($.cookie('basket')) {
-                basket = JSON.parse($.cookie('basket'));
-            }
-            $(".basketCard").empty();
+        getBasket: function () { 
+
+            var storedProductJSON = vba.cookie.getCookie('basket'); // Çerezdeki JSON veriyi al
             var totalPrice = 0;
-            // Sepetteki ürünleri listeleyin
-            for (var i = 0; i < basket.length; i++) {
-                totalPrice += basket[i].quantity * basket[i].price;
-                $(".basketCard").append(` 
+            var basket = [];
+            $(".basketCard").empty();
+
+            if (storedProductJSON) {
+                basket = JSON.parse(storedProductJSON); // JSON verisini JavaScript nesnesine çevir  
+                // Sepetteki ürünleri listeleyin
+                for (var i = 0; i < basket.length; i++) {
+                    totalPrice += basket[i].quantity * basket[i].price;
+                    $(".basketCard").append(` 
                 <tr>
                     <td class="product-image">
                         <a href="/products/${basket[i].id}">
@@ -177,8 +182,10 @@ var vba = {
                     </td>
                 </tr>
                `);
+                }
             }
-
+            var loginURL = "/user/login";
+            var productCheckoutURL = "/productCheckout";
             $(".basketCard").append(` 
             <tr class="total">
                 <td>Toplam:</td>
@@ -190,26 +197,30 @@ var vba = {
                     
                    ${basket.length > 0 ? `
                    <a class="btn btn-primary" href="/basket" title="View Cart">Sepete Git</a>
-                   <a class="btn btn-primary" href="/productCheckout" title="Checkout">Siparişi Tamamla</a>`
+                   <a class="btn btn-primary" href="${vba.root.user == null ? loginURL : productCheckoutURL}" title="Checkout">Siparişi Tamamla</a>`
                     : `Sepette Ürün Bulunmamaktadır.`}
                 </td>
             </tr>`);
+
+           
 
             $(".cart-count").text(basket.length);
             if (window.location.href.includes("basket")) { vba.controller["/basket"].load(); } //sepet sayfasında ise sepeti güncelle
             if (window.location.href.includes("productCheckout")) { vba.controller["/productCheckout"].load(); } //sepet sayfasında ise sepeti güncelle
         },
         delBasket: function (id) {
+            var yeniSaat = 24; // Yeni çerezin 24 saat boyunca geçerli olması için 
             var basket = [];
-            if ($.cookie('basket')) {
-                basket = JSON.parse($.cookie('basket'));
+            var getCookie = vba.cookie.getCookie('basket');
+            if (getCookie) {
+                basket = JSON.parse(getCookie);
             }
             var updatedBasket = basket.filter(function (product) {
                 return product.id !== id;
             });
 
             // Güncellenmiş çerezi kaydet
-            $.cookie('basket', JSON.stringify(updatedBasket));
+            vba.cookie.setCookie('basket', JSON.stringify(updatedBasket), yeniSaat);
 
             vba.alert({
                 message: "Ürün Sepetten Silindi.",
@@ -227,7 +238,6 @@ var vba = {
         }
     },
     load: function () {
-        vba.root.getBasket();
         $("#pages_placeholder [data-repeat]").each(function () {
             var verName = $(this).attr("data-repeat");
             $(this).removeAttr("data-repeat");
@@ -246,6 +256,7 @@ var vba = {
         setInterval(function () {
             vba.settings.serverDate.setMilliseconds(vba.settings.serverDate.getMilliseconds() + 1000);
         }, 1000);
+        vba.root.getBasket();
     },
     ready: function () {
         vba.route.load();
@@ -356,6 +367,7 @@ var vba = {
 
         },
         load: function () {
+
             $("a:not(.redirect)").click(function () {
                 var href = $(this).attr('href');
                 if (href && href.length && href[0] == '/' && href[1] != '#' && href[0] != '#' && href.indexOf(".") == -1) {
@@ -430,8 +442,9 @@ var vba = {
             load: function () {
                 vba.route.ccnt.funcs.getItems = function () {
                     var basket = [];
-                    if ($.cookie('basket')) {
-                        basket = JSON.parse($.cookie('basket'));
+                    var getCookie = vba.cookie.getCookie('basket');
+                    if (getCookie) {
+                        basket = JSON.parse(getCookie);
                     }
                     $(".basketBody").empty();
                     $(".basketFoot").empty();
@@ -507,14 +520,47 @@ var vba = {
         },
         "/productCheckout": {
             load: function () {
-                if (!vba.root.user.isActive) {
+                if (vba.root.user == null) {
                     vba.route.getController("/user/login");
                 }
                 else { 
+                    vba.route.ccnt.funcs.updateItem = function (form) {
+                        var basket = [];
+                        var getCookie = vba.cookie.getCookie('basket');
+                        if (getCookie) {
+                            basket = JSON.parse(getCookie);
+                        }
+
+                        var serializedData = $(form).serialize();
+                        serializedData += "&basket=" + encodeURIComponent(JSON.stringify(basket)); 
+
+                        $.post("/api/default/updatePayment", serializedData
+                        ).done(function (res) {
+                            if (res.type == "error") {
+                                vba.alert({
+                                    message: res.message == '' ? "İşlem Başarısız" : res.message,
+                                    classes: 'alert-danger'
+                                });
+                                vba.root.changeLoading(false);
+                            } else {
+                                vba.alert({
+                                    message: res.message == '' ? "İşlem Başarılı" : res.message,
+                                    classes: "alert-success"
+                                }); 
+                            }
+                        }).fail(function () {
+                            vba.alert({
+                                message: "İşlem başarısız",
+                                classes: 'alert-danger'
+                            });
+                        });
+                    }
+                     
                     vba.route.ccnt.funcs.getItems = function () {
                         var basket = [];
-                        if ($.cookie('basket')) {
-                            basket = JSON.parse($.cookie('basket'));
+                        var getCookie = vba.cookie.getCookie('basket');
+                        if (getCookie) {
+                            basket = JSON.parse(getCookie);
                         }
                         $(".productBody").empty();
                         $(".totalBody").empty();
@@ -581,12 +627,12 @@ var vba = {
                             `);
                         }
                         else {
-                            
+
                             vba.route.getController("/basket", "/basket");
                         }
                         vba.root.changeLoading(false);
                     }
-                    vba.route.ccnt.funcs.getItems();
+                    vba.route.ccnt.funcs.getItems(); 
 
                     vba.root.changeLoading(false);
                 }
@@ -1419,6 +1465,8 @@ var vba = {
                     vba.route.ccnt.funcs.getItems();
                 });
                 //----------------end Filter-------------------//
+
+                $.getScript("/js/slide-stories.js", function () { }); //Template CSS
                 vba.root.changeLoading(false);
             }
         },

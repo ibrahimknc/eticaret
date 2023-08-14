@@ -3,6 +3,7 @@ using eticaret.Data;
 using eticaret.Services.categoriesServices;
 using eticaret.Services.logServices; 
 using eticaret.Services.Mapping;
+using eticaret.Services.productCheckoutServices;
 using eticaret.Services.productsServices;
 using eticaret.Services.searchService;
 using eticaret.Services.searchServices;
@@ -33,6 +34,7 @@ namespace eticaret.Web
             services.AddScoped<IproductsService, productsService>();
             services.AddScoped<IshopService, shopService>();
             services.AddScoped<IsearchService, searchService>();
+            services.AddScoped<IproductCheckoutService, productCheckoutService>();
 
             services.AddAutoMapper(typeof(Startup));
             var mapperConfig = new MapperConfiguration(mc =>
@@ -40,8 +42,7 @@ namespace eticaret.Web
                 mc.AddProfile(new MappingProfile());
             });
             IMapper mapper = mapperConfig.CreateMapper();
-            services.AddSingleton(mapper);
-
+            services.AddSingleton(mapper); 
         }
     }
 }
