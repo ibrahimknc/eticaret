@@ -2,13 +2,9 @@
 using eticaret.Domain.Entities;
 using eticaret.Services.productCheckoutServices.Dto;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Xml.Linq;
-using static System.Net.Mime.MediaTypeNames;
+using System; 
+using System.Collections.Generic; 
+using System.Linq; 
 
 namespace eticaret.Services.productCheckoutServices
 {
@@ -102,7 +98,10 @@ namespace eticaret.Services.productCheckoutServices
                         isActive = true,
                         creatingTime = DateTime.UtcNow
                     }; 
-                    _dbeticaretContext.productBaskets.Add(pb);
+                    _dbeticaretContext.productBaskets.Add(pb); 
+
+                    var clProduct = _dbeticaretContext.products.AsQueryable().FirstOrDefault(x => x.id == item.productID);
+                    clProduct.stock -= item.quantity;
                 } 
                 _dbeticaretContext.SaveChanges();
                 response["type"] = "success"; response["message"] = "✔Sipariş Başarılı.";
