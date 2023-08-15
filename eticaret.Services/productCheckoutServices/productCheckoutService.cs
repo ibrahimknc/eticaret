@@ -1,10 +1,13 @@
 ﻿using eticaret.Data;
 using eticaret.Domain.Entities;
 using eticaret.Services.productCheckoutServices.Dto;
+using Iyzipay;
+using Iyzipay.Model;
+using Iyzipay.Request;
 using Microsoft.EntityFrameworkCore;
-using System; 
-using System.Collections.Generic; 
-using System.Linq; 
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace eticaret.Services.productCheckoutServices
 {
@@ -23,20 +26,27 @@ namespace eticaret.Services.productCheckoutServices
                 { "data", null}
             };
 
-        public Dictionary<string, object> updatePayment(productCheckoutDto productCheckoutDto, List<ProductBasket> basket)
+        public Dictionary<string, object> updatePayment(productCheckoutDto productCheckoutDto, List<ProductBasket> basket, string IP)
         {
             try
             {
+                var selUser = _dbeticaretContext.users.AsSingleQuery().FirstOrDefault(x => x.id == productCheckoutDto.userID);
                 int totalQuantity = 0;
                 decimal? totalshippingAmount = 0;
                 decimal? totalPayment = 0;
                 foreach (var item in basket)
                 {
+                    if (selUser.isActive == false)
+                    {
+                        response["type"] = "error"; response["message"] = "Hesabının Banlanmıştır Alışveriş Yapamazsınız.";
+                        return response;
+                    }
+
                     var product = _dbeticaretContext.products.Include(c => c.Category).Include(c => c.Shop).AsQueryable().FirstOrDefault(x => x.id == item.productID);
 
                     if (product.isActive == false || product.Category.isActive == false || product.Shop.isActive == false)
                     {
-                        response["type"] = "error"; response["message"] = "<b>" + product.name + "</b> Ürününü Satıştan Kalkmıştır. Lütfen Sepetten Çıkarınız.";
+                        response["type"] = "error"; response["message"] = "<b>" + product.name + "</b> Ürünü Satıştan Kalkmıştır. Lütfen Sepetten Çıkarınız.";
                         return response;
                     }
                     if (product.stock < Convert.ToDecimal(item.quantity))
@@ -52,7 +62,7 @@ namespace eticaret.Services.productCheckoutServices
 
                     totalQuantity += item.quantity;
                     totalshippingAmount += item.shippingAmount;
-                    totalPayment += item.price;
+                    totalPayment += (item.price * (item.quantity));
                 }
                 ProductCheckout data = new ProductCheckout()
                 {
@@ -73,38 +83,127 @@ namespace eticaret.Services.productCheckoutServices
 
                     totalQuantity = totalQuantity,
                     totalshippingAmount = totalshippingAmount,
-                    isPayment = true,
+                    isPayment = false,
                     totalPayment = totalPayment,
                     status = 0
                 };
                 _dbeticaretContext.productCheckouts.Add(data);
                 _dbeticaretContext.SaveChanges();
 
-                List<ProductBasket> ProductBasket = new List<ProductBasket>();
+                #region IyziPay 
+                CreateCheckoutFormInitializeRequest request = new CreateCheckoutFormInitializeRequest();
+                request.Locale = Locale.TR.ToString();
+                request.ConversationId = data.id.ToString();
+                request.Price = (data.totalPayment).ToString().Replace(",", ".");
+                request.PaidPrice = (data.totalPayment + data.totalshippingAmount).ToString().Replace(",", "."); //İndirim, vergi gibi değerlerin dahil edildiği, vade farkı öncesi tutar değeri.
+                request.Currency = Currency.TRY.ToString();
+                request.BasketId = data.id.ToString();
+                request.PaymentGroup = PaymentGroup.PRODUCT.ToString();
+                request.CallbackUrl =  veriyoneticisi.projectSettings["siteUrl"] + "/myorders";
+
+
+                #region Taksit işlemleri
+                //List<int> enabledInstallments = new List<int>();
+                //enabledInstallments.Add(2);
+                //enabledInstallments.Add(3);
+                //enabledInstallments.Add(6);
+                //enabledInstallments.Add(9);
+                //request.EnabledInstallments = enabledInstallments;
+                #endregion
+
+                #region Müşteri Bilgisi 
+                Buyer buyer = new Buyer();
+                buyer.Id = selUser.id.ToString();
+                buyer.Name = selUser.firstName;
+                buyer.Surname = selUser.lastName;
+                buyer.GsmNumber = selUser.phone;
+                buyer.Email = selUser.email;
+                buyer.IdentityNumber = "00000000000";
+                buyer.LastLoginDate = selUser.lastLoginDate?.ToString("yyyy-MM-dd HH:mm:ss");
+                buyer.RegistrationDate = selUser.creatingTime.ToString("yyyy-MM-dd HH:mm:ss");
+                buyer.RegistrationAddress = selUser.address == null ? "Null" : selUser.address;
+                buyer.Ip = IP;
+                buyer.City = "Null";
+                buyer.Country = "Null";
+                buyer.ZipCode = "Null";
+                request.Buyer = buyer;
+                #endregion
+
+                #region Nakliye-Gönderi Adresi
+                Address shippingAddress = new Address();
+                shippingAddress.ContactName = data.shippingLastName + " " + data.shippingFirstName;
+                shippingAddress.City = data.shippingCity;
+                shippingAddress.Country = data.shippingCountry;
+                shippingAddress.Description = data.shippingAddress;
+                shippingAddress.ZipCode = "00000";
+                request.ShippingAddress = shippingAddress;
+                #endregion
+
+                #region Fatura Adresi
+                Address billingAddress = new Address();
+                billingAddress.ContactName = data.billingFirstName + " " + data.billingLastName;
+                billingAddress.City = data.billingCity;
+                billingAddress.Country = data.billingCountry;
+                billingAddress.Description = data.billingAddress;
+                billingAddress.ZipCode = "00000";
+                request.BillingAddress = billingAddress;
+                #endregion
+
+                #region Sepetteki ürün Listesi
+                List<BasketItem> basketItems = new List<BasketItem>();
 
                 foreach (var item in basket)
                 {
-                    ProductBasket pb = new ProductBasket()
-                    {
-                        ProductCheckoutID = data.id,
-                        productID = item.productID,
-                        name = item.name,
-                        image = item.image,
-                        price = item.price,
-                        stock = item.stock,
-                        shippingAmount = item.shippingAmount,
-                        quantity = item.quantity,
-                        ProductCheckout = data,
-                        isActive = true,
-                        creatingTime = DateTime.UtcNow
-                    }; 
-                    _dbeticaretContext.productBaskets.Add(pb); 
+                    var product = _dbeticaretContext.products.Include(c => c.Category).Include(s => s.Shop).AsQueryable().FirstOrDefault(x => x.id == item.productID);
+                    BasketItem basketItem = new BasketItem();
+                    basketItem.Id = product.id.ToString();
+                    basketItem.Name = item.name + "( " + item.quantity + " )";
+                    basketItem.Category1 = product.Shop.name;
+                    basketItem.Category2 = product.Category.name;
+                    basketItem.ItemType = BasketItemType.PHYSICAL.ToString(); //BasketItemType.VIRTUAL.ToString(sanal ürün)
+                    basketItem.Price = (item.price * item.quantity).ToString();
+                    basketItems.Add(basketItem);
+                }
+                request.BasketItems = basketItems;
+                #endregion
+                 
+                CheckoutFormInitialize checkoutFormInitialize = CheckoutFormInitialize.Create(request, veriyoneticisi.GetOptionsForPaymentMethod("iyzipay"));
+                string respStr = checkoutFormInitialize.CheckoutFormContent;
+                #endregion
 
-                    var clProduct = _dbeticaretContext.products.AsQueryable().FirstOrDefault(x => x.id == item.productID);
-                    clProduct.stock -= item.quantity;
-                } 
-                _dbeticaretContext.SaveChanges();
-                response["type"] = "success"; response["message"] = "✔Sipariş Başarılı.";
+                response["type"] = "success"; response["data"] = respStr;
+
+                //bool isPayment = false;
+                //if (isPayment)
+                //{ 
+                //    foreach (var item in basket)
+                //    {
+                //        ProductBasket pb = new ProductBasket()
+                //        {
+                //            ProductCheckoutID = data.id,
+                //            productID = item.productID,
+                //            name = item.name,
+                //            image = item.image,
+                //            price = item.price,
+                //            stock = item.stock,
+                //            shippingAmount = item.shippingAmount,
+                //            quantity = item.quantity,
+                //            ProductCheckout = data,
+                //            isActive = true,
+                //            creatingTime = DateTime.UtcNow
+                //        };
+                //        _dbeticaretContext.productBaskets.Add(pb);
+
+                //        var clProduct = _dbeticaretContext.products.AsQueryable().FirstOrDefault(x => x.id == item.productID);
+                //        clProduct.stock -= item.quantity;
+                //    }
+                //    _dbeticaretContext.SaveChanges();
+                //    response["type"] = "success"; response["message"] = "✔Sipariş Başarılı.";
+                //}
+                //else
+                //{
+                //    response["type"] = "error"; response["message"] = "Ödeme Başarısız.";
+                //}
             }
             catch
             {
@@ -112,5 +211,7 @@ namespace eticaret.Services.productCheckoutServices
             }
             return response;
         }
+
+
     }
 }

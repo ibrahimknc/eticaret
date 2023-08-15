@@ -310,7 +310,7 @@ var vba = {
                 return pathName + "/";
             else return "";
         },
-        getController: function (href, hrefp) { 
+        getController: function (href, hrefp) {
             $('#searchForm input[name="data"]').val('');//search input emty
             var r = Math.random();
             if (vba.controller.hasOwnProperty(hrefp)) {
@@ -367,7 +367,7 @@ var vba = {
             });
 
         },
-        load: function () { 
+        load: function () {
             $("a:not(.redirect)").click(function () {
                 var href = $(this).attr('href');
                 if (href && href.length && href[0] == '/' && href[1] != '#' && href[0] != '#' && href.indexOf(".") == -1) {
@@ -534,6 +534,22 @@ var vba = {
                     vba.route.getController("/user/login");
                 }
                 else {
+
+                    vba.route.ccnt.funcs.iyziPay = function (data) {
+                        vba.modal.init();
+                        if (vba.modal.name != "recommendsInfo") {
+                            vba.modal.resetFuncs();
+                            vba.modal.funcs.load = function () {
+                                var html = vba.compileTemp(vba.modal.html, [{}]);
+                                vba.modal.bind(html);
+                            };
+                            $.get("/modals/iyzipay?data=" + data).done(function (res) {
+                                vba.modal.html = res;
+                                vba.modal.funcs.load();
+                            });
+                        }
+
+                    }
                     vba.route.ccnt.funcs.updateItem = function (form) {
                         var basket = [];
                         var getCookie = vba.cookie.getCookie('basket');
@@ -553,13 +569,14 @@ var vba = {
                                 });
                                 vba.root.changeLoading(false);
                             } else {
-                                vba.alert({
-                                    message: res.message == '' ? "İşlem Başarılı" : res.message,
-                                    classes: "alert-success"
-                                });
-                                vba.cookie.deleteCookie('basket'); 
-                                vba.route.getController("/myorders", "/myorders");
-                                vba.root.getBasket(); 
+                                //vba.alert({
+                                //    message: res.message == '' ? "İşlem Başarılı" : res.message,
+                                //    classes: "alert-success"
+                                //});
+                                 vba.route.ccnt.funcs.iyziPay(res.data);
+                                //vba.cookie.deleteCookie('basket'); 
+                                //vba.route.getController("/myorders", "/myorders");
+                                //vba.root.getBasket(); 
                             }
                         }).fail(function () {
                             vba.alert({
@@ -568,7 +585,6 @@ var vba = {
                             });
                         });
                     }
-
                     vba.route.ccnt.funcs.getItems = function () {
                         var basket = [];
                         var getCookie = vba.cookie.getCookie('basket');

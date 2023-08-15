@@ -1,9 +1,11 @@
 ﻿using eticaret.Domain.Entities;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic; 
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using Iyzipay;
 
 public class veriyoneticisi
 {
@@ -46,12 +48,34 @@ public class veriyoneticisi
                     { "author", "ibrahim KONÇ"},
 					{ "logo", "/uploads/logo/logo.png"},
                     { "favicon", "/uploads/logo/favicon.png"},
-                    { "siteUrl", "https://eticaret.com" },
-                    { "adminUrl", "https://admin.eticaret.com" },
+                    { "siteUrl", "https://localhost:5001" },
+                    { "adminUrl", "https://localhost:5001" },
                     { "BotApi", "5517710931:AAHpUPbMVcdbmozyjVcfFTEhE2nrw76-6bk"},
             };
         }
     }
+
+    public static Iyzipay.Options GetOptionsForPaymentMethod(string paymentMethod)
+    {
+        Iyzipay.Options options = new Iyzipay.Options();
+
+        if (paymentMethod == "iyzipay")
+        {
+            options.ApiKey = "sandbox-mmnHVN63RvYLMeZl3r53QIb2up2m5QOw";
+            options.SecretKey = "4vlq8WSFfVttxgSz3iw1C4ul9M66h5oZ";
+            options.BaseUrl = "https://sandbox-api.iyzipay.com";
+        }
+        else if (paymentMethod == "bank_transfer")
+        {
+            options.ApiKey = "sandbox-another-api-key";
+            options.SecretKey = "sandbox-another-secret-key";
+            options.BaseUrl = "https://sandbox-api-another.iyzipay.com";
+        }
+        // Eğer daha fazla ödeme yöntemi eklemek isterseniz buraya yeni şartlar ekleyebilirsiniz.
+
+        return options;
+    }
+
     public static string ratingChange(double rating)
     {
         var ratingHtml = "";

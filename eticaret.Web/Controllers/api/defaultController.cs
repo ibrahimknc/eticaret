@@ -97,7 +97,13 @@ namespace eticaret.Web.Controllers.api
                     shippingCity = shippingCity,
                     shippingAddress = shippingAddress,
                 };
-                var response = _IproductCheckoutService.updatePayment(productCheckoutData, basketData);
+                string userip = "";
+                try
+                {
+                    userip = HttpContext.Request.Headers.ContainsKey("CF-CONNECTING-IP") ? HttpContext.Request.Headers["CF-CONNECTING-IP"] : HttpContext.Connection.RemoteIpAddress.ToString();
+                }
+                catch { }
+                var response = _IproductCheckoutService.updatePayment(productCheckoutData, basketData, userip);
                 var respData = response["data"];
                 var type = response["type"];
                 var message = response["message"];

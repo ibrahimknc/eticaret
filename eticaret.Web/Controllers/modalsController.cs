@@ -1,4 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc; 
+﻿using Iyzipay;
+using Iyzipay.Model;
+using Iyzipay.Request;
+using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Security.Policy;
 
 namespace eticaret.Web.Controllers
 {
@@ -12,6 +17,18 @@ namespace eticaret.Web.Controllers
             { 
                 ViewBag.url = url; 
                 ViewBag.title = title;
+                return PartialView();
+            }
+            catch { }
+            return NotFound();
+        }
+
+        [Route("[action]")]
+        public IActionResult iyzipay([FromQuery] string data)
+        {
+            try
+            {
+                ViewBag.data = data;
                 return PartialView();
             }
             catch { }
