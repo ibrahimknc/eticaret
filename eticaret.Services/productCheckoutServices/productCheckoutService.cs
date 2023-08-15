@@ -87,19 +87,17 @@ namespace eticaret.Services.productCheckoutServices
                     totalPayment = totalPayment,
                     status = 0
                 };
-                _dbeticaretContext.productCheckouts.Add(data);
-                _dbeticaretContext.SaveChanges();
-
+                
                 #region IyziPay 
                 CreateCheckoutFormInitializeRequest request = new CreateCheckoutFormInitializeRequest();
-                request.Locale = Locale.TR.ToString();
+                request.Locale = Locale.EN.ToString();
                 request.ConversationId = data.id.ToString();
                 request.Price = (data.totalPayment).ToString().Replace(",", ".");
                 request.PaidPrice = (data.totalPayment + data.totalshippingAmount).ToString().Replace(",", "."); //İndirim, vergi gibi değerlerin dahil edildiği, vade farkı öncesi tutar değeri.
                 request.Currency = Currency.TRY.ToString();
                 request.BasketId = data.id.ToString();
                 request.PaymentGroup = PaymentGroup.PRODUCT.ToString();
-                request.CallbackUrl =  veriyoneticisi.projectSettings["siteUrl"] + "/myorders";
+                request.CallbackUrl =  veriyoneticisi.projectSettings["siteUrl"] + "/response";
 
 
                 #region Taksit işlemleri
@@ -171,6 +169,11 @@ namespace eticaret.Services.productCheckoutServices
                 string respStr = checkoutFormInitialize.CheckoutFormContent;
                 #endregion
 
+                if(respStr !=null)
+                {
+                    _dbeticaretContext.productCheckouts.Add(data);
+                    _dbeticaretContext.SaveChanges();
+                }
                 response["type"] = "success"; response["data"] = respStr;
 
                 //bool isPayment = false;

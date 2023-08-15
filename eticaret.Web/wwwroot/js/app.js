@@ -528,6 +528,11 @@ var vba = {
                 }
             }
         },
+        "/response": {
+            load: function () {
+                vba.root.changeLoading(false);
+            }
+        },
         "/productCheckout": {
             load: function () {
                 if (vba.root.user == null) {
