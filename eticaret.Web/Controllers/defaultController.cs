@@ -102,5 +102,28 @@ namespace eticaret.Web.Controllers
                 return Redirect("/underConstruction");
             }
         }
+
+        [Route("[action]"), Route("ajax/[action]")]
+        public IActionResult myorders()
+        {
+            if (veriyoneticisi.isActive == true)
+            {
+                if (HttpContext.Session.GetString("login") == "true" && !string.IsNullOrEmpty(HttpContext.Session.GetString("id")))
+                {
+                    if (!Request.Path.Value.Contains("/ajax/"))
+                        return View();
+                    else
+                        return PartialView();
+                }
+                else
+                {
+                    return Redirect("/user/login");
+                }
+            }
+            else
+            {
+                return Redirect("/underConstruction");
+            }
+        }
     }
 }

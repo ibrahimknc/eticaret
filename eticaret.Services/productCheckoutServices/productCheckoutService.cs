@@ -32,7 +32,7 @@ namespace eticaret.Services.productCheckoutServices
                 decimal? totalPayment = 0;
                 foreach (var item in basket)
                 {
-                    var product = _dbeticaretContext.products.Include(c => c.Category).Include(c => c.Shop).AsQueryable().FirstOrDefault(x => x.id == item.id);
+                    var product = _dbeticaretContext.products.Include(c => c.Category).Include(c => c.Shop).AsQueryable().FirstOrDefault(x => x.id == item.productID);
 
                     if (product.isActive == false || product.Category.isActive == false || product.Shop.isActive == false)
                     {
