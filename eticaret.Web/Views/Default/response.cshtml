@@ -13,15 +13,10 @@
 <div class="container">
     <div class="page-checkout">
         <div class="row">
-            <center>
-                <h2 class="text-success">
-                    <i class="fa fa-certificate" aria-hidden="true"></i>
-                    Ödeme Başarılı. Siparişiniz Alınmıştır.
-                </h2>
-                <br />
-                <br />
-                Sipariş listesini görmek istiyorsanız <a href="/myorders"><b>Siparişlerim</b></a>  sayfasına göztınız.
-            </center>
+            <span class="paymentControl"></span> 
+            <input type="hidden" name="token" value="@ViewBag.token" />
         </div>
     </div>
 </div>
+
+ 

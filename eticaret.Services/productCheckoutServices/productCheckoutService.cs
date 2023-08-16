@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace eticaret.Services.productCheckoutServices
 {
@@ -87,7 +88,7 @@ namespace eticaret.Services.productCheckoutServices
                     totalPayment = totalPayment,
                     status = 0
                 };
-                
+
                 #region IyziPay 
                 CreateCheckoutFormInitializeRequest request = new CreateCheckoutFormInitializeRequest();
                 request.Locale = Locale.EN.ToString();
@@ -97,7 +98,7 @@ namespace eticaret.Services.productCheckoutServices
                 request.Currency = Currency.TRY.ToString();
                 request.BasketId = data.id.ToString();
                 request.PaymentGroup = PaymentGroup.PRODUCT.ToString();
-                request.CallbackUrl =  veriyoneticisi.projectSettings["siteUrl"] + "/response";
+                request.CallbackUrl = veriyoneticisi.projectSettings["siteUrl"] + "/response";
 
 
                 #region Taksit işlemleri
@@ -164,49 +165,25 @@ namespace eticaret.Services.productCheckoutServices
                 }
                 request.BasketItems = basketItems;
                 #endregion
-                 
+
                 CheckoutFormInitialize checkoutFormInitialize = CheckoutFormInitialize.Create(request, veriyoneticisi.GetOptionsForPaymentMethod("iyzipay"));
                 string respStr = checkoutFormInitialize.CheckoutFormContent;
                 #endregion
 
-                if(respStr !=null)
+                if (respStr != null)
                 {
+                    string pattern = @"token:""([^""]+)"""; // Token değerini yakalayacak desen
+                    Match match = Regex.Match(respStr, pattern);
+
+                    if (match.Success)
+                    {
+                        data.token = match.Groups[1].Value;
+                    }
                     _dbeticaretContext.productCheckouts.Add(data);
                     _dbeticaretContext.SaveChanges();
+
+                    response["type"] = "success"; response["data"] = respStr;
                 }
-                response["type"] = "success"; response["data"] = respStr;
-
-                //bool isPayment = false;
-                //if (isPayment)
-                //{ 
-                //    foreach (var item in basket)
-                //    {
-                //        ProductBasket pb = new ProductBasket()
-                //        {
-                //            ProductCheckoutID = data.id,
-                //            productID = item.productID,
-                //            name = item.name,
-                //            image = item.image,
-                //            price = item.price,
-                //            stock = item.stock,
-                //            shippingAmount = item.shippingAmount,
-                //            quantity = item.quantity,
-                //            ProductCheckout = data,
-                //            isActive = true,
-                //            creatingTime = DateTime.UtcNow
-                //        };
-                //        _dbeticaretContext.productBaskets.Add(pb);
-
-                //        var clProduct = _dbeticaretContext.products.AsQueryable().FirstOrDefault(x => x.id == item.productID);
-                //        clProduct.stock -= item.quantity;
-                //    }
-                //    _dbeticaretContext.SaveChanges();
-                //    response["type"] = "success"; response["message"] = "✔Sipariş Başarılı.";
-                //}
-                //else
-                //{
-                //    response["type"] = "error"; response["message"] = "Ödeme Başarısız.";
-                //}
             }
             catch
             {
@@ -215,6 +192,51 @@ namespace eticaret.Services.productCheckoutServices
             return response;
         }
 
+        public Dictionary<string, object> responseCheck(string token)
+        {
+            try
+            {
+                RetrieveCheckoutFormRequest request = new RetrieveCheckoutFormRequest();
+                request.Token = token;
+                CheckoutForm checkoutForm = CheckoutForm.Retrieve(request, veriyoneticisi.GetOptionsForPaymentMethod("iyzipay"));
+                if (checkoutForm.PaymentStatus == "SUCCESS")
+                {
 
+                    //    foreach (var item in basket)
+                    //    {
+                    //        ProductBasket pb = new ProductBasket()
+                    //        {
+                    //            ProductCheckoutID = data.id,
+                    //            productID = item.productID,
+                    //            name = item.name,
+                    //            image = item.image,
+                    //            price = item.price,
+                    //            stock = item.stock,
+                    //            shippingAmount = item.shippingAmount,
+                    //            quantity = item.quantity,
+                    //            ProductCheckout = data,
+                    //            isActive = true,
+                    //            creatingTime = DateTime.UtcNow
+                    //        };
+                    //        _dbeticaretContext.productBaskets.Add(pb);
+
+                    //        var clProduct = _dbeticaretContext.products.AsQueryable().FirstOrDefault(x => x.id == item.productID);
+                    //        clProduct.stock -= item.quantity;
+                    //    }
+                    //    _dbeticaretContext.SaveChanges();
+                      response["type"] = "success"; response["message"] = "✔ Ödeme Başarılı.";
+
+                }
+                else
+                {
+                    response["type"] = "error"; response["message"] = "✘ Ödeme Başarısız.";
+                } 
+            }
+            catch
+            {
+                response["type"] = "error"; response["message"] = "";
+            }
+            return response;
+        }
     }
 }

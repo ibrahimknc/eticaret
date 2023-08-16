@@ -7,5 +7,6 @@ namespace eticaret.Services.productCheckoutServices
     public interface IproductCheckoutService
     {
         public Dictionary<string, object> updatePayment(productCheckoutDto productCheckoutDto, List<ProductBasket> ProductBasket, string IP);
+        public Dictionary<string, object> responseCheck(string token);
     }
 }

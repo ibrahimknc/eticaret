@@ -7,7 +7,7 @@ using eticaret.Services.sliderServices;
 using eticaret.Services.viewCategoryServices;
 using eticaret.Services.viewsFavoriteServices;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc; 
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -77,9 +77,9 @@ namespace eticaret.Web.Controllers.api
         public IActionResult updatePayment([FromForm] string billingFirstName, [FromForm] string billingLastName, [FromForm] string billingCompanyName, [FromForm] string billingCountry, [FromForm] string billingCity, [FromForm] string billingAddress, [FromForm] string shippingTitle, [FromForm] string shippingFirstName, [FromForm] string shippingLastName, [FromForm] string shippingCountry, [FromForm] string shippingCity, [FromForm] string shippingAddress, [FromForm] string basket)
         {
             if (HttpContext.Session.GetString("login") == "true" && !string.IsNullOrEmpty(HttpContext.Session.GetString("id")))
-            { 
+            {
                 var basketData = JsonConvert.DeserializeObject<List<ProductBasket>>(basket);
-                 
+
                 Guid userID = Guid.Parse(HttpContext.Session.GetString("id"));
                 productCheckoutDto productCheckoutData = new productCheckoutDto()
                 {
@@ -113,6 +113,16 @@ namespace eticaret.Web.Controllers.api
             {
                 return Ok(new { message = "Yetkisiz işlem.", type = "error" });
             }
+        }
+
+        [Route("[action]"), HttpPost]
+        public IActionResult responseCheck([FromForm] string token)
+        { 
+            var response = _IproductCheckoutService.responseCheck(token);
+            var respData = response["data"];
+            var type = response["type"];
+            var message = response["message"];
+            return Ok(new { type = type, message = message, data = respData }); 
         }
     }
 }

@@ -127,10 +127,11 @@ namespace eticaret.Web.Controllers
         }
 
         [Route("[action]"), Route("ajax/[action]")]
-        public IActionResult response()
+        public IActionResult response(string token)
         {
             if (veriyoneticisi.isActive == true)
             {
+                ViewBag.token = token;
                 if (!Request.Path.Value.Contains("/ajax/"))
                     return View();
                 else

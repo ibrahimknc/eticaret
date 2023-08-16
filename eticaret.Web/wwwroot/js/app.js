@@ -530,6 +530,57 @@ var vba = {
         },
         "/response": {
             load: function () {
+                vba.route.ccnt.items.filterForm = {};
+                vba.route.ccnt.items.filterForm.token = $("input[name='token']").val();;
+               
+                vba.route.ccnt.funcs.getItems = function () {
+                    vba.root.changeLoading(true);
+                    var form = {
+                        token: vba.route.ccnt.items.filterForm.token
+                    }
+                    $.post("/api/default/responseCheck", form).done(function (res) {
+                        if (res.type == "error") {
+                            vba.alert({
+                                message: res.message == '' ? "İşlem başarısız" : res.message,
+                                classes: 'alert-danger',
+                                duration: 5000
+                            });
+                            $("#pages_placeholder .paymentControl").html(`
+                            <center>
+                            <div class="alert alert-danger" role="alert">
+                                <h2 class="text-danger">
+                                    <i class="fa fa-times" aria-hidden="true"></i> 
+                                     Ödeme Başarısız. Siparişiniz Alınamadı.
+                                </h2> 
+                            </div>
+                            </center>`);
+                        } 
+                        else {
+                            vba.alert({
+                                message: res.message == '' ? "İşlem Başarılı" : res.message,
+                                classes: 'alert-success',
+                                duration: 5000
+                            });
+                            $("#pages_placeholder .paymentControl").html(`
+                            <center>
+                            <div class="alert alert-success" role="alert">
+                                <h2 class="text-success">
+                                    <i class="fa fa-certificate" aria-hidden="true"></i>
+                                    Ödeme Başarılı. Siparişiniz Alınmıştır.
+                                </h2>
+                            </div>
+                                <br />
+                                <br />
+                                Sipariş listesini görmek istiyorsanız <a href="/myorders"><b>Siparişlerim</b></a>  sayfasına gözatın.
+                            </center>`);
+                        }
+                    }).fail(function () {
+                        vba.route.ccnt.items.dataLoading = false;
+                        $("#pages_placeholder .paymentControl").html(" <div class='col-lg-12 mb-3'> <div class='row g-0 bg-light py-4'><div class='col-md-12 d-flex align-items-center justify-content-center'> 😔 Üzgünüm, talebinizle eşleşen birşey bulamadık 😔</div></div></div>");
+                    });
+                    vba.root.changeLoading(false);
+                }
+                vba.route.ccnt.funcs.getItems();
                 vba.root.changeLoading(false);
             }
         },
@@ -538,8 +589,7 @@ var vba = {
                 if (vba.root.user == null) {
                     vba.route.getController("/user/login");
                 }
-                else {
-
+                else { 
                     vba.route.ccnt.funcs.iyziPay = function (data) {
                         vba.modal.init();
                         if (vba.modal.name != "recommendsInfo") {

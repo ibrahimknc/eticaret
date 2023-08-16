@@ -23,6 +23,7 @@ namespace eticaret.Domain.Entities
         public string shippingAddress { get; set; }
         public string shippingCity { get; set; }
         #endregion
+        public string token { get; set; } // İşlem Numarası
         public bool? isPayment { get; set; } // Ödeme Yapıldımı
         public decimal? totalPayment { get; set; } // Toplam Ödeme Miktarı 
         public decimal? totalshippingAmount { get; set; } // Toplam Kargo Ödeme Miktarı 
