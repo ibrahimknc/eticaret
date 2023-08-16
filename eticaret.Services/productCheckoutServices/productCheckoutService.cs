@@ -179,6 +179,24 @@ namespace eticaret.Services.productCheckoutServices
                     {
                         data.token = match.Groups[1].Value;
                     }
+                    foreach (var item in basket)
+                    {
+                        ProductBasket pb = new ProductBasket()
+                        {
+                            ProductCheckoutID = data.id,
+                            productID = item.productID,
+                            name = item.name,
+                            image = item.image,
+                            price = item.price,
+                            stock = item.stock,
+                            shippingAmount = item.shippingAmount,
+                            quantity = item.quantity,
+                            ProductCheckout = data,
+                            isActive = false,
+                            creatingTime = DateTime.UtcNow
+                        };
+                        _dbeticaretContext.productBaskets.Add(pb);
+                    }
                     _dbeticaretContext.productCheckouts.Add(data);
                     _dbeticaretContext.SaveChanges();
 
@@ -194,45 +212,37 @@ namespace eticaret.Services.productCheckoutServices
 
         public Dictionary<string, object> responseCheck(string token)
         {
-            try
+           try
             {
                 RetrieveCheckoutFormRequest request = new RetrieveCheckoutFormRequest();
                 request.Token = token;
                 CheckoutForm checkoutForm = CheckoutForm.Retrieve(request, veriyoneticisi.GetOptionsForPaymentMethod("iyzipay"));
                 if (checkoutForm.PaymentStatus == "SUCCESS")
                 {
+                    var selProductCheckout = _dbeticaretContext.productCheckouts.AsQueryable().FirstOrDefault(x => x.token == token);
+                    var selProductBasket = _dbeticaretContext.productBaskets.AsQueryable().Where(x => x.ProductCheckoutID == selProductCheckout.id && x.isActive == false).ToList();
 
-                    //    foreach (var item in basket)
-                    //    {
-                    //        ProductBasket pb = new ProductBasket()
-                    //        {
-                    //            ProductCheckoutID = data.id,
-                    //            productID = item.productID,
-                    //            name = item.name,
-                    //            image = item.image,
-                    //            price = item.price,
-                    //            stock = item.stock,
-                    //            shippingAmount = item.shippingAmount,
-                    //            quantity = item.quantity,
-                    //            ProductCheckout = data,
-                    //            isActive = true,
-                    //            creatingTime = DateTime.UtcNow
-                    //        };
-                    //        _dbeticaretContext.productBaskets.Add(pb);
+                    foreach (var item in selProductBasket)
+                    {
+                        var selProductBasketIsActive = _dbeticaretContext.productBaskets.AsQueryable().FirstOrDefault(x => x.id == item.id);
+                        if (item.isActive == false)
+                        {
+                            var clProduct = _dbeticaretContext.products.AsQueryable().FirstOrDefault(x => x.id == item.productID);
+                            clProduct.stock -= item.quantity;
+                            selProductBasketIsActive.isActive = true; 
+                        } 
+                    } 
 
-                    //        var clProduct = _dbeticaretContext.products.AsQueryable().FirstOrDefault(x => x.id == item.productID);
-                    //        clProduct.stock -= item.quantity;
-                    //    }
-                    //    _dbeticaretContext.SaveChanges();
-                      response["type"] = "success"; response["message"] = "✔ Ödeme Başarılı.";
+                    _dbeticaretContext.SaveChanges();
+                    response["type"] = "success"; response["message"] = "✔ Ödeme Başarılı.";
 
                 }
                 else
                 {
                     response["type"] = "error"; response["message"] = "✘ Ödeme Başarısız.";
-                } 
+                }
             }
-            catch
+             catch
             {
                 response["type"] = "error"; response["message"] = "";
             }
