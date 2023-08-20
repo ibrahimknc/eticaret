@@ -145,6 +145,8 @@ var vba = {
 
             //$.cookie('basket', JSON.stringify(basket)); 
             vba.root.getBasket();
+            if (window.location.href.includes("basket")) { vba.controller["/basket"].load(); } //sepet sayfasında ise sepeti güncelle
+            if (window.location.href.includes("productCheckout")) { vba.controller["/productCheckout"].load(); } //sepet sayfasında ise sepeti güncelle
         },
         getBasket: function () {
 
@@ -201,12 +203,8 @@ var vba = {
                     : `Sepette Ürün Bulunmamaktadır.`}
                 </td>
             </tr>`);
-
-
-
-            $(".cart-count").text(basket.length);
-            if (window.location.href.includes("basket")) { vba.controller["/basket"].load(); } //sepet sayfasında ise sepeti güncelle
-            if (window.location.href.includes("productCheckout")) { vba.controller["/productCheckout"].load(); } //sepet sayfasında ise sepeti güncelle
+             
+            $(".cart-count").text(basket.length); 
         },
         delBasket: function (productID) {
             var yeniSaat = 24; // Yeni çerezin 24 saat boyunca geçerli olması için 
@@ -227,6 +225,8 @@ var vba = {
                 classes: "alert-success"
             });
             vba.root.getBasket();
+            if (window.location.href.includes("basket")) { vba.controller["/basket"].load(); } //sepet sayfasında ise sepeti güncelle
+            if (window.location.href.includes("productCheckout")) { vba.controller["/productCheckout"].load(); } //sepet sayfasında ise sepeti güncelle
         },
         qtyChange: function (productID, name, image, price, stock, shippingAmount, elem) {
             var inputQty = "u" + elem.value;
@@ -532,7 +532,7 @@ var vba = {
             load: function () {
                 vba.route.ccnt.items.filterForm = {};
                 vba.route.ccnt.items.filterForm.token = $("input[name='token']").val();;
-               
+
                 vba.route.ccnt.funcs.getItems = function () {
                     vba.root.changeLoading(true);
                     var form = {
@@ -554,7 +554,7 @@ var vba = {
                                 </h2> 
                             </div>
                             </center>`);
-                        } 
+                        }
                         else {
                             vba.alert({
                                 message: res.message == '' ? "İşlem Başarılı" : res.message,
@@ -589,7 +589,48 @@ var vba = {
                 if (vba.root.user == null) {
                     vba.route.getController("/user/login");
                 }
-                else { 
+                else {
+                    vba.route.ccnt.items.filterForm = {};
+                    vba.route.ccnt.items.filterForm.UserAddress = [];
+                    vba.route.ccnt.funcs.modalAddress = function () {
+                        vba.modal.init();
+                        if (vba.modal.name != "recommendsInfo") {
+                            vba.modal.resetFuncs();
+                            vba.modal.funcs.load = function () {
+                                var html = vba.compileTemp(vba.modal.html, [{}]);
+                                vba.modal.bind(html);
+                            };
+                            $.get("/modals/address").done(function (res) {
+                                vba.modal.html = res;
+                                vba.modal.funcs.load();
+                            });
+                        }
+                    }
+                    vba.route.ccnt.funcs.updateItemAddress = function (form) {
+                        var serializedData = $(form).serialize();
+                        $.post("/api/default/updateAddress", serializedData
+                        ).done(function (res) {
+                            if (res.type == "error") {
+                                vba.alert({
+                                    message: res.message == '' ? "İşlem Başarısız" : res.message,
+                                    classes: 'alert-danger'
+                                });
+                                vba.root.changeLoading(false);
+                            } else {
+                                vba.alert({
+                                    message: res.message == '' ? "İşlem Başarılı" : res.message,
+                                    classes: "alert-success"
+                                });
+                                vba.modal.close();
+                                vba.route.ccnt.funcs.getUserAddress();
+                            }
+                        }).fail(function () {
+                            vba.alert({
+                                message: "İşlem başarısız",
+                                classes: 'alert-danger'
+                            });
+                        });
+                    } 
                     vba.route.ccnt.funcs.iyziPay = function (data) {
                         vba.modal.init();
                         if (vba.modal.name != "recommendsInfo") {
@@ -628,7 +669,7 @@ var vba = {
                                 //    message: res.message == '' ? "İşlem Başarılı" : res.message,
                                 //    classes: "alert-success"
                                 //});
-                                 vba.route.ccnt.funcs.iyziPay(res.data);
+                                vba.route.ccnt.funcs.iyziPay(res.data);
                                 //vba.cookie.deleteCookie('basket'); 
                                 //vba.route.getController("/myorders", "/myorders");
                                 //vba.root.getBasket(); 
@@ -716,8 +757,53 @@ var vba = {
                         }
                         vba.root.changeLoading(false);
                     }
-                    vba.route.ccnt.funcs.getItems();
+                    vba.route.ccnt.funcs.getItems(); 
+                    vba.route.ccnt.funcs.getUserAddress = function () {  
+                        $.post("/api/default/getUserAddress", {}).done(function (res) {
+                            if (res.type == "error") {
+                                vba.alert({
+                                    message: res.message == '' ? "İşlem başarısız" : res.message,
+                                    classes: 'alert-danger',
+                                    duration: 5000
+                                });
+                                vba.root.checkLogin();
+                            }
+                            else { 
+                                if (res.data != null) {
+                                    vba.route.ccnt.items.filterForm.UserAddress = res.data;
+                                    res.data.forEach(item => {
+                                        $('#pages_placeholder select[name="billingUserAddress"]').append(`<option value="${item.id}">${item.title}</option>`);
+                                        $('#pages_placeholder select[name="shippingUserAddress"]').append(`<option value="${item.id}">${item.title}</option>`);
+                                    });
+                                }
+                            }
+                        }).fail(function () {
+                            vba.alert({
+                                message: res.message == '' ? "İşlem başarısız" : res.message,
+                                classes: 'alert-danger',
+                                duration: 5000
+                            });
+                        }); 
+                    } 
+                    vba.route.ccnt.funcs.getUserAddress(); 
+                    vba.route.ccnt.funcs.changeUserAddress = function (data) {
+                        var selectedValue = $(data).val();
+                        if (selectedValue) {
+                            var selectedAddress = vba.route.ccnt.items.filterForm.UserAddress.find(function (address) {
+                                return address.id === selectedValue;
+                            });
 
+                            if (selectedAddress) {
+                                var selectDiv = $(data).closest('.panel-body'); 
+                                selectDiv.find('div:eq(2)').find('input:eq(0)').val(selectedAddress.title);
+                                selectDiv.find('div:eq(4)').find('input:eq(0)').val(selectedAddress.firstName);
+                                selectDiv.find('div:eq(4)').find('input:eq(1)').val(selectedAddress.lastName);
+                                selectDiv.find('div:eq(7)').find('select:eq(0)').val(selectedAddress.country);
+                                selectDiv.find('div:eq(9)').find('input:eq(0)').val(selectedAddress.city);
+                                selectDiv.find('div:eq(11)').find('textarea:eq(0)').val(selectedAddress.address); 
+                            }
+                        }
+                    }
                     vba.root.changeLoading(false);
                 }
             }

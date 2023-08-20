@@ -34,5 +34,16 @@ namespace eticaret.Web.Controllers
             catch { }
             return NotFound();
         }
+
+        [Route("[action]")]
+        public IActionResult address()
+        {
+            try
+            { 
+                return PartialView();
+            }
+            catch { }
+            return NotFound();
+        }
     }
 }

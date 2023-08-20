@@ -1,12 +1,12 @@
 ﻿using eticaret.Data;
 using eticaret.Domain.Entities;
 using eticaret.Services.productCheckoutServices.Dto;
-using Iyzipay;
 using Iyzipay.Model;
 using Iyzipay.Request;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -30,7 +30,13 @@ namespace eticaret.Services.productCheckoutServices
         public Dictionary<string, object> updatePayment(productCheckoutDto productCheckoutDto, List<ProductBasket> basket, string IP)
         {
             try
-            {
+            { 
+                if (string.IsNullOrEmpty(productCheckoutDto.billingCountry) || string.IsNullOrEmpty(productCheckoutDto.billingFirstName) || string.IsNullOrEmpty(productCheckoutDto.billingLastName) || string.IsNullOrEmpty(productCheckoutDto.billingCompanyName) || string.IsNullOrEmpty(productCheckoutDto.billingAddress) || string.IsNullOrEmpty(productCheckoutDto.billingCity) || string.IsNullOrEmpty(productCheckoutDto.shippingCountry) || string.IsNullOrEmpty(productCheckoutDto.shippingFirstName) || string.IsNullOrEmpty(productCheckoutDto.shippingLastName) || string.IsNullOrEmpty(productCheckoutDto.shippingTitle) || string.IsNullOrEmpty(productCheckoutDto.shippingAddress) || string.IsNullOrEmpty(productCheckoutDto.shippingCity) || productCheckoutDto.userID == Guid.Empty)
+                {
+                    response["type"] = "error"; response["message"] = "Lütfen Boş Bırakmayınız.";
+                    return response;
+                }
+
                 var selUser = _dbeticaretContext.users.AsSingleQuery().FirstOrDefault(x => x.id == productCheckoutDto.userID);
                 int totalQuantity = 0;
                 decimal? totalshippingAmount = 0;
@@ -99,7 +105,6 @@ namespace eticaret.Services.productCheckoutServices
                 request.BasketId = data.id.ToString();
                 request.PaymentGroup = PaymentGroup.PRODUCT.ToString();
                 request.CallbackUrl = veriyoneticisi.projectSettings["siteUrl"] + "/response";
-
 
                 #region Taksit işlemleri
                 //List<int> enabledInstallments = new List<int>();
@@ -212,7 +217,7 @@ namespace eticaret.Services.productCheckoutServices
 
         public Dictionary<string, object> responseCheck(string token)
         {
-           try
+            try
             {
                 RetrieveCheckoutFormRequest request = new RetrieveCheckoutFormRequest();
                 request.Token = token;
@@ -229,9 +234,10 @@ namespace eticaret.Services.productCheckoutServices
                         {
                             var clProduct = _dbeticaretContext.products.AsQueryable().FirstOrDefault(x => x.id == item.productID);
                             clProduct.stock -= item.quantity;
-                            selProductBasketIsActive.isActive = true; 
-                        } 
-                    } 
+                            selProductBasketIsActive.isActive = true;
+                        }
+                    }
+                    selProductCheckout.isPayment = true;
 
                     _dbeticaretContext.SaveChanges();
                     response["type"] = "success"; response["message"] = "✔ Ödeme Başarılı.";
@@ -242,7 +248,54 @@ namespace eticaret.Services.productCheckoutServices
                     response["type"] = "error"; response["message"] = "✘ Ödeme Başarısız.";
                 }
             }
-             catch
+            catch
+            {
+                response["type"] = "error"; response["message"] = "";
+            }
+            return response;
+        }
+
+        public Dictionary<string, object> updateAddress(UserAddress userAddress)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(userAddress.title) || string.IsNullOrEmpty(userAddress.firstName) || string.IsNullOrEmpty(userAddress.lastName) || string.IsNullOrEmpty(userAddress.address) || string.IsNullOrEmpty(userAddress.country) || string.IsNullOrEmpty(userAddress.city) || userAddress.userID == Guid.Empty)
+                {
+                    response["type"] = "error"; response["message"] = "Lütfen Boş Bırakmayınız.";
+                    return response;
+                }
+                var clUserAddress = _dbeticaretContext.userAddresses;
+                UserAddress uA = new UserAddress()
+                {
+                    userID = userAddress.userID,
+                    title = userAddress.title,
+                    firstName = userAddress.firstName,
+                    lastName = userAddress.lastName,
+                    country = userAddress.country,
+                    city = userAddress.city,
+                    address = userAddress.address,
+                    isActive = true,
+                    updatedTime = DateTime.UtcNow
+                };
+                clUserAddress.Add(uA);
+                _dbeticaretContext.SaveChanges();
+                response["type"] = "success"; response["message"] = "✔ Adres Kayıt Başarılı.";
+            }
+            catch
+            {
+                response["type"] = "error"; response["message"] = "";
+            }
+            return response;
+        }
+
+        public Dictionary<string, object> getUserAddress(Guid userID)
+        {
+            try
+            {
+                var selUserAddress = _dbeticaretContext.userAddresses.Where(x => x.isActive == true && x.userID == userID).ToList();
+                response["type"] = "success"; response["data"] = selUserAddress;
+            }
+            catch
             {
                 response["type"] = "error"; response["message"] = "";
             }

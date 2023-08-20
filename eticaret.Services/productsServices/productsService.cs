@@ -1,6 +1,5 @@
 ﻿using eticaret.Data;
-using eticaret.Domain.Entities;
-using eticaret.Services.productsServices.Dto;
+using eticaret.Domain.Entities; 
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

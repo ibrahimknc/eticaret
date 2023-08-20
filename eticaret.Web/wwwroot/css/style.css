@@ -15373,3 +15373,11 @@ input {
 }
 
 /*-----------------Stori Slider End-------------------------*/
+
+#myModal {
+    z-index: 9999; 
+}
+
+.text-light {
+    color: #f8f9fa !important;
+}

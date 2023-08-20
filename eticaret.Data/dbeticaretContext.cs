@@ -27,6 +27,7 @@ namespace eticaret.Data
             modelBuilder.ApplyConfiguration(new shopConfiguration());
             modelBuilder.ApplyConfiguration(new productCheckoutConfiguration()); 
             modelBuilder.ApplyConfiguration(new ProductBasketConfiguration());
+            modelBuilder.ApplyConfiguration(new userAddressConfiguration());
 
 
             #region Log ForeignKey
@@ -99,6 +100,13 @@ namespace eticaret.Data
             .WithMany()
             .HasForeignKey(l => l.ProductCheckoutID);
             #endregion
+
+            #region UserAddress ForeignKey 
+            modelBuilder.Entity<UserAddress>()
+            .HasOne(l => l.User)
+            .WithMany()
+            .HasForeignKey(l => l.userID);
+            #endregion
         }
 
 
@@ -117,6 +125,7 @@ namespace eticaret.Data
         public DbSet<Shop> shops { get; set; }
         public DbSet<ProductCheckout> productCheckouts { get; set; }
         public DbSet<ProductBasket> productBaskets { get; set; }
+        public DbSet<UserAddress> userAddresses { get; set; }
 
     }
 }

@@ -117,12 +117,58 @@ namespace eticaret.Web.Controllers.api
 
         [Route("[action]"), HttpPost]
         public IActionResult responseCheck([FromForm] string token)
-        { 
+        {
             var response = _IproductCheckoutService.responseCheck(token);
             var respData = response["data"];
             var type = response["type"];
             var message = response["message"];
-            return Ok(new { type = type, message = message, data = respData }); 
+            return Ok(new { type = type, message = message, data = respData });
+        }
+
+        [Route("[action]"), HttpPost]
+        public IActionResult updateAddress([FromForm] string title, [FromForm] string firstName, [FromForm] string lastName, [FromForm] string country, [FromForm] string city, [FromForm] string address)
+        {
+            if (HttpContext.Session.GetString("login") == "true" && !string.IsNullOrEmpty(HttpContext.Session.GetString("id")))
+            {
+                Guid userID = Guid.Parse(HttpContext.Session.GetString("id"));
+                UserAddress uA = new UserAddress()
+                {
+                    userID = userID, 
+                    title = title,
+                    firstName = firstName,
+                    lastName = lastName,
+                    country = country,
+                    city = city,
+                    address = address,  
+                };
+                var response = _IproductCheckoutService.updateAddress(uA);
+                var respData = response["data"];
+                var type = response["type"];
+                var message = response["message"];
+                return Ok(new {type = type, message = message, data = respData });
+            }
+            else
+            {
+                return Ok(new { message = "Yetkisiz işlem.", type = "error" });
+            }
+        }
+
+        [Route("[action]"), HttpPost]
+        public IActionResult getUserAddress()
+        {
+            if (HttpContext.Session.GetString("login") == "true" && !string.IsNullOrEmpty(HttpContext.Session.GetString("id")))
+            {
+                Guid userID = Guid.Parse(HttpContext.Session.GetString("id")); 
+                var response = _IproductCheckoutService.getUserAddress(userID);
+                var respData = response["data"];
+                var type = response["type"];
+                var message = response["message"];
+                return Ok(new { type = type, message = message, data = respData });
+            }
+            else
+            {
+                return Ok(new { message = "Yetkisiz işlem.", type = "error" });
+            }
         }
     }
 }

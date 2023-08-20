@@ -14,19 +14,41 @@
     <div class="page-checkout">
         <div class="row">
             <form method="post" onsubmit="vba.route.ccnt.funcs.updateItem(this);return false" enctype="multipart/form-data">
-
                 <div class="checkout-left col-lg-9 col-md-9 col-sm-9 col-xs-12">
+                    <div class="d-flex justify-content-end">
+                        <a href="javascript:;" onclick="vba.route.ccnt.funcs.modalAddress();" class="btn btn-primary">
+                            <i class="fa fa-map-marker" aria-hidden="true"></i> &nbsp;&nbsp; Adres Ekle
+                        </a>
+                    </div>
                     <div class="panel-group" id="accordion">
                         <div class="panel panel-default">
                             <div class="panel-heading">
                                 <h4 class="panel-title">
                                     <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                                        <i class="fa fa-address-card" aria-hidden="true"></i> 
+                                        <i class="fa fa-map" aria-hidden="true"></i>
                                         Fatura Adresi
                                     </a>
                                 </h4>
                             </div>
                             <div id="collapseOne" class="accordion-body collapse" style="height: 0px;">
                                 <div class="panel-body">
+                                    <div class="form-group">
+                                        <div class="col-md-12">
+                                            <label>Kayıtlı Adres Seçiniz</label>
+                                            <select class="form-control" name="billingUserAddress" onchange="vba.route.ccnt.funcs.changeUserAddress(this);return false">
+                                                <option value="">Adres Seçin</option> 
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="col-md-12">
+                                            <label>Firma Adı</label>
+                                            <input type="text" value="" name="billingCompanyName" class="form-control">
+                                        </div>
+                                    </div>
+                                 
                                     <div class="form-group">
                                         <div class="col-md-6">
                                             <label>Adı</label>
@@ -37,12 +59,7 @@
                                             <input type="text" value="" name="billingLastName" class="form-control">
                                         </div>
                                     </div>
-                                    <div class="form-group">
-                                        <div class="col-md-12">
-                                            <label>Firma Adı</label>
-                                            <input type="text" value="" name="billingCompanyName" class="form-control">
-                                        </div>
-                                    </div>
+                                   
                                     <div class="form-group">
                                         <div class="col-md-12">
                                             <label>Ülke</label>
@@ -61,8 +78,8 @@
                                     </div>
                                     <div class="form-group">
                                         <div class="col-md-12">
-                                            <label>Açık Adres</label>
-                                            <input type="text" value="" name="billingAddress" class="form-control">
+                                            <label>Açık Adres</label> 
+                                            <textarea class="form-control textareaResize-vertical" name="billingAddress" rows="4" placeholder="Adresiniz"></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -73,13 +90,21 @@
                             <div class="panel-heading">
                                 <h4 class="panel-title">
                                     <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+                                        <i class="fa fa-location-arrow" aria-hidden="true"></i> 
                                         Nakliye Adresi
                                     </a>
                                 </h4>
                             </div>
                             <div id="collapseTwo" class="accordion-body collapse" style="height: 0px;">
                                 <div class="panel-body">
-
+                                    <div class="form-group">
+                                        <div class="col-md-12">
+                                            <label>Kayıtlı Adres Seçiniz</label>
+                                            <select class="form-control" name="shippingUserAddress" onchange="vba.route.ccnt.funcs.changeUserAddress(this);return false">
+                                                <option value="">Adres Seçin</option>
+                                            </select>
+                                        </div>
+                                    </div>
                                     <div class="form-group">
                                         <div class="col-md-12">
                                             <label>Adres Başlığı</label>
@@ -114,8 +139,9 @@
                                     </div>
                                     <div class="form-group">
                                         <div class="col-md-12">
-                                            <label>Açık Adres</label>
-                                            <input type="text" value="" name="shippingAddress" class="form-control">
+                                            <label>Açık Adres</label> 
+                                            <textarea class="form-control textareaResize-vertical" name="shippingAddress" rows="4" placeholder="Adresiniz"></textarea>
+
                                         </div>
                                     </div>
 
@@ -127,6 +153,7 @@
                             <div class="panel-heading">
                                 <h4 class="panel-title">
                                     <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+                                        <i class="fa fa-shopping-basket" aria-hidden="true"></i>
                                         Ürünler
                                     </a>
                                 </h4>
@@ -171,7 +198,7 @@
                     <div class="d-flex justify-content-center align-items-center">
                         <input type="submit" value="Sipariş Ver (Ödeme Yap)" name="proceed" class="btn btn-primary">
                     </div>
-                </div> 
+                </div>
 
             </form>
         </div>
