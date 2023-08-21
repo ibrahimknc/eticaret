@@ -3,6 +3,7 @@ using eticaret.Data;
 using eticaret.Services.categoriesServices;
 using eticaret.Services.logServices; 
 using eticaret.Services.Mapping;
+using eticaret.Services.myordersServices;
 using eticaret.Services.productCheckoutServices;
 using eticaret.Services.productsServices;
 using eticaret.Services.searchService;
@@ -35,6 +36,7 @@ namespace eticaret.Web
             services.AddScoped<IshopService, shopService>();
             services.AddScoped<IsearchService, searchService>();
             services.AddScoped<IproductCheckoutService, productCheckoutService>();
+            services.AddScoped<ImyordersService, myordersService>();
 
             services.AddAutoMapper(typeof(Startup));
             var mapperConfig = new MapperConfiguration(mc =>

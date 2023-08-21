@@ -91,6 +91,7 @@ namespace eticaret.Services.productCheckoutServices
                     totalQuantity = totalQuantity,
                     totalshippingAmount = totalshippingAmount,
                     isPayment = false,
+                    isActive = false,
                     totalPayment = totalPayment,
                     status = 0
                 };
@@ -197,7 +198,7 @@ namespace eticaret.Services.productCheckoutServices
                             shippingAmount = item.shippingAmount,
                             quantity = item.quantity,
                             ProductCheckout = data,
-                            isActive = false,
+                            isActive = false ,
                             creatingTime = DateTime.UtcNow
                         };
                         _dbeticaretContext.productBaskets.Add(pb);
@@ -238,10 +239,11 @@ namespace eticaret.Services.productCheckoutServices
                         }
                     }
                     selProductCheckout.isPayment = true;
+                    selProductCheckout.isActive = true;
+                    selProductCheckout.updatedTime = DateTime.UtcNow;
 
                     _dbeticaretContext.SaveChanges();
-                    response["type"] = "success"; response["message"] = "✔ Ödeme Başarılı.";
-
+                    response["type"] = "success"; response["message"] = "✔ Ödeme Başarılı."; 
                 }
                 else
                 {

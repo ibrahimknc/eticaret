@@ -11,20 +11,93 @@
 </div>
 
 <div class="container">
-    <div class="contact-page">
-        <div class="contact-info">
-            <div class="row">
-                <center><b>----------------------------------------------------------</b></center>
-                <center><b>----------------------------------------------------------</b></center>
-                <center><b>----------------------------------------------------------</b></center>
-                <center><b>----------------------------------------------------------</b></center>
-                <center><b>----------------------------------------------------------</b></center>
-                <center><b>Sipariş Listesi</b></center>
-                <center><b>----------------------------------------------------------</b></center>
-                <center><b>----------------------------------------------------------</b></center>
-                <center><b>----------------------------------------------------------</b></center>
-                <center><b>----------------------------------------------------------</b></center>
-                <center><b>----------------------------------------------------------</b></center>
+    <div class="row">
+        <!-- Page Content -->
+        <div id="center-column" class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="product-category-page">
+                <!-- Nav Bar -->
+                <div class="products-bar">
+                    <div class="row">
+                        <div class="col-md-6 col-xs-6">
+                            <div class="gridlist-toggle" role="tablist">
+                                <ul class="nav nav-tabs">
+                                    <li class="active" id="listProductButton"><a href="javascript:;" onclick=""><i class="fa fa-bars"></i></a></li>
+                                </ul>
+                            </div>
+
+                            <div class="total-products">0 SİPARİŞ VAR</div>
+                        </div>
+
+                        <div class="col-md-6 col-xs-6">
+                            <div class="filter-bar">
+                                <form action="#" class="pull-right">
+                                    <div class="select">
+                                        <select class="form-control" id="listSorting">
+                                            <option value="0">Önerilen Sıralama</option>
+                                            <option value="1">Fiyat: Önce en düşük</option>
+                                            <option value="2">Fiyat: Önce en yüksek</option>
+                                            <option value="3">Ürün Adı: A'dan Z'ye</option>
+                                            <option value="4">Ürün Adı: Z'den A'ya</option>
+                                            <option value="5">Stokta var</option>
+                                        </select>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content">
+                    <!-- Products List -->
+                    <div class="tab-pane active" id="products-list">
+                        <div class="products-block layout-5 dataContainer">
+
+                            <div class="product-item products-list" data-repeat="items">
+                                <div class="row">
+                                    <a href="javascript:;" class="col-md-1">
+                                        <i class="fa fa-caret-square-o-down f-size-15" aria-hidden="true"></i>
+                                    </a>
+                                    <div class="col-md-3">{{item.id}}</div>
+                                    <div class="col-md-3">{{item.creatingTime}} - {{item.updatedTime}}</div>
+                                    <div class="col-md-2"><strong>{{item.totalPayment + item.totalshippingAmount}} ₺</strong></div>
+                                    <div class="col-md-3">{{item.status==0?'<span class="border border-secondary p-5 rounded-myorders-Status"><strong>Bekleniyor</strong></span>':item.status==1?'<span class="border border-warning p-5 rounded-myorders-Status"><strong>Hazırlanıyor</strong></span>':item.status==2?'<span class="border border-primary p-5 rounded-myorders-Status"><strong>Kargoya Verildi</strong></span>':item.status==3?'<span class="border border-info p-5 rounded-myorders-Status"><strong>Teslim Edildi</strong></span>':'Null'}}</div>
+                                </div>
+                                 
+                                <div class="d-none border border-secondary p-5 mt-30">
+                                    <div class="row">
+                                        <div class="col-md-3">..........</div>
+                                        <div class="col-md-3">..........</div>
+                                        <div class="col-md-3">..........</div>
+                                        <div class="col-md-3">..........</div>
+                                    </div>
+                                </div>
+                                <br /> <hr class="hrStyle-seven">
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pagination Bar -->
+                <div class="pagination-bar">
+                    <div class="row">
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="text showingTotalProducts">Toplam 0 Siparişten 0 Adet Gösteriliyor</div>
+                        </div>
+
+                        <div class="col-md-8 col-sm-8 col-xs-12">
+                            <div class="pagination">
+                                <ul class="page-list" id="pagination">
+                                    <li><a href="javascript:;" onclick="vba.route.ccnt.items.filterForm.page = 1; vba.route.ccnt.funcs.getItems(); return false;" class="prev"><span class="fa fa-angle-double-left" aria-hidden="true"></span></a></li>
+                                    <li><a href="javascript:;" onclick="if (vba.route.ccnt.items.filterForm.page != 1) { vba.route.ccnt.items.filterForm.page -= 1; } vba.route.ccnt.funcs.getItems(); return false;" class="prev"><span class="fa fa-angle-left" aria-hidden="true"></span></a></li>
+                                    <li class="nav-page"><a href="#" class="current">0</a></li>
+                                    <li><a onclick="if (vba.route.ccnt.items.filterForm.page != vba.route.ccnt.items.filterForm.totalPage) { vba.route.ccnt.items.filterForm.page += 1; } vba.route.ccnt.funcs.getItems(); return false;" class="next">  <span class="fa fa-angle-right" aria-hidden="true"></span></a></li>
+                                    <li><a href="javascript:;" onclick="vba.route.ccnt.items.filterForm.page = vba.route.ccnt.items.filterForm.totalPage; vba.route.ccnt.funcs.getItems(); return false;" class="next"><span class="fa fa-angle-double-right" aria-hidden="true"></span></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

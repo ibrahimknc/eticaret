@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using eticaret.Data;
@@ -9,9 +10,10 @@ using eticaret.Data;
 namespace eticaret.Data.Migrations
 {
     [DbContext(typeof(dbeticaretContext))]
-    partial class dbeticaretContextModelSnapshot : ModelSnapshot
+    [Migration("20230821134403_UpdateTableProductCheckout")]
+    partial class UpdateTableProductCheckout
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -15252,13 +15252,13 @@ input {
     display: none !important;
 }
 
-.products-list { 
+.products-list {
     margin: 0px !important;
 }
 
-.products-list .kurdale {
-    margin-left: 13px !important;
-}
+    .products-list .kurdale {
+        margin-left: 13px !important;
+    }
 
 .panel-heading-nav {
     border-bottom: 0;
@@ -15269,10 +15269,11 @@ input {
         padding-left: 10px;
         padding-right: 10px;
     }
-.p-5{
-    padding:10px !important;
+
+.p-5 {
+    padding: 10px !important;
 }
- 
+
 
 /*-----------------Stori Slider Start-------------------------*/
 
@@ -15283,8 +15284,9 @@ input {
     height: 100%;
     object-fit: contain; /* or object-fit: cover; */
     min-height: 500px;
-    max-height: 500px; 
+    max-height: 500px;
 }
+
     .stori-slide-items img::before {
         content: "";
         position: absolute;
@@ -15297,7 +15299,7 @@ input {
         z-index: -1;
     }
 
-  
+
 
 .stori-slide {
     max-width: 380px;
@@ -15375,9 +15377,62 @@ input {
 /*-----------------Stori Slider End-------------------------*/
 
 #myModal {
-    z-index: 9999; 
+    z-index: 9999;
 }
 
 .text-light {
     color: #f8f9fa !important;
+}
+
+.f-size-15 {
+    font-size: 15px;
+}
+
+.border {
+    border: 1px solid #dee2e6 !important;
+}
+
+.border-primary {
+    border-color: #007bff !important;
+}
+
+.border-secondary {
+    border-color: #6c757d !important;
+}
+
+.border-success {
+    border-color: #28a745 !important;
+}
+
+.border-info {
+    border-color: #17a2b8 !important;
+}
+
+.border-warning {
+    border-color: #ffc107 !important;
+}
+
+.border-danger {
+    border-color: #dc3545 !important;
+}
+
+.border-light {
+    border-color: #f8f9fa !important;
+}
+
+.border-dark {
+    border-color: #343a40 !important;
+}
+
+.border-white {
+    border-color: #fff !important;
+}
+
+.rounded-myorders-Status {
+    border-top-right-radius: 20px;
+    border-bottom-left-radius: 20px;
+}
+
+.mt-30 {
+    margin-top: 30px;
 }

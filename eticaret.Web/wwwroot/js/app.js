@@ -38,8 +38,7 @@ var vba = {
                 }
                 );
         },
-        checkLogin: function () {
-            //alert("checkLogin Kontrol edildi.");
+        checkLogin: function () { 
             if (vba.root.user != null) {
                 $.post("/api/user/check", {})
                     .done(function (res) {
@@ -70,12 +69,10 @@ var vba = {
         changeLoading: function (obj, overlay) {
             if (obj != null) { vba.loading = obj; }
             if (vba.loading) {
-                $("#page-preloader").fadeIn(500);
-                //$("#page-preloader").show();
+                $("#page-preloader").fadeIn(500); 
             }
             else {
-                $("#page-preloader").fadeOut(500);
-                //$("#page-preloader").hide();
+                $("#page-preloader").fadeOut(500); 
             }
         },
         scrollTop: function () {
@@ -396,8 +393,7 @@ var vba = {
         "/": {
             load: function () {
                 vba.root.checkLogin();
-                $.getScript("/js/main.js", function () { }); //Template CSS
-
+                $.getScript("/js/main.js", function () { }); //Template CSS 
                 vba.route.ccnt.funcs.updateUserFavorite = function (elem) {
                     vba.root.changeLoading(true);
                     var post = {
@@ -423,8 +419,7 @@ var vba = {
                         });
                     });
                     vba.root.changeLoading(false);
-                }
-
+                } 
                 vba.root.changeLoading(false);
             }
         },
@@ -520,10 +515,84 @@ var vba = {
         },
         "/myorders": {
             load: function () {
-                if (vba.root.user == null) {
-                    vba.route.getController("/user/login");
+                if (!vba.root.user.isActive) {
+                    vba.route.getController("/user/login", "/user/login");
                 }
                 else {
+                    vba.route.ccnt.items.filterForm = {}; 
+                    vba.route.ccnt.items.filterForm.page = 1;
+                    vba.route.ccnt.items.filterForm.itemsPerPage = 3;
+                    vba.route.ccnt.items.filterForm.totalItems = 0;
+                    vba.route.ccnt.items.filterForm.listSorting = 0;
+                    
+                    vba.route.ccnt.funcs.getItems = function () {
+                        vba.root.changeLoading(true);
+                        $("#pages_placeholder .dataContainer").html("");
+                        vba.route.ccnt.items.dataLoading = true;
+
+                        var post = {
+                            listSorting: vba.route.ccnt.items.filterForm.listSorting,
+                            search: $("#searchForm input[type='text']").val(),
+                            page: vba.route.ccnt.items.filterForm.page,
+                            itemsPerPage: vba.route.ccnt.items.filterForm.itemsPerPage 
+                        }; 
+                        $.post("/api/default/getMyorders", post).done(function (res) {
+                            if (res.type == "error") {
+                                vba.alert({
+                                    message: res.message == '' ? "İşlem başarısız" : res.message,
+                                    classes: 'alert-danger',
+                                    duration: 5000
+                                });
+                                vba.root.checkLogin();
+                            }
+                            else {
+                                if (res.data.length > 0) {
+                                    var tmpl = "binditems";
+                                    $("#pages_placeholder .dataContainer").append(vba.compileTemp(vba.route.ccnt.items[tmpl], res.data));
+
+                                    $(".product-item").each(function (index, element) { // son kaydın altındaki HR kaldırıyor.
+                                        if (index === $(".product-item").length - 1) {
+                                            $(element).find('.hrStyle-seven').addClass('d-none');
+                                        }
+                                    });
+
+                                    $(".dataContainer").prepend(`<div class="product-item products-list" data-repeat="items">
+								                                <div class="row f-size-15"> 
+									                                <div class="col-md-3"><strong>Sipariş No</strong></div>
+									                                <div class="col-md-3"><strong>Sipariş Tarihi - Güncellenme Tarihi</strong></div>
+									                                <div class="col-md-3"><strong>Ödeme</strong></div>
+									                                <div class="col-md-3"><strong>Durum</strong></div>
+								                                </div>
+								                                 <hr class="hrStyle-seven">
+							                                </div>`);
+                                } else {
+                                    $("#pages_placeholder .dataContainer").html(" <div class='col-lg-12 mb-3'> <div class='row g-0 bg-light py-4'><div class='col-md-12 d-flex align-items-center justify-content-center'> 😔 Üzgünüm, Siparişiniz Bulunmamaktadır 😔</div></div></div>").hide();
+                                    $("#pages_placeholder .dataContainer").fadeIn(500);
+                                }
+
+                                $(".total-products").html("Toplam <b><u>" + res.c + "</u></b> Sipariş Var");
+                                $(".showingTotalProducts").html("Toplam <b><u>" + res.c + "</u></b> Siparişten <b><u>" + res.data.length + "</u></b> Adet Gösteriliyor");
+                                vba.route.ccnt.items.filterForm.totalItems = res.c;
+                                vba.pagination();
+                            }
+                            vba.route.ccnt.items.dataLoading = false;
+                            vba.root.changeLoading(false);
+                        }).fail(function () {
+                            vba.route.ccnt.items.dataLoading = false;
+                            $("#pages_placeholder .dataContainer").html("");
+                        });
+                        vba.root.changeLoading(false);
+                    }
+                    vba.route.ccnt.funcs.getItems();
+
+                    //----------------Filter-------------------// 
+                    $('#listSorting').change(function () {
+                        vba.route.ccnt.items.filterForm.listSorting = this.value;
+                        vba.route.ccnt.items.filterForm.page = 1;
+                        vba.route.ccnt.funcs.getItems();
+                    });
+                    //----------------end Filter-------------------//
+
                     vba.root.changeLoading(false);
                 }
             }
@@ -587,7 +656,7 @@ var vba = {
         "/productCheckout": {
             load: function () {
                 if (vba.root.user == null) {
-                    vba.route.getController("/user/login");
+                    vba.route.getController("/user/login", "/user/login");
                 }
                 else {
                     vba.route.ccnt.items.filterForm = {};
@@ -811,7 +880,7 @@ var vba = {
         "/user/profile": {
             load: function () {
                 if (!vba.root.user.isActive) {
-                    vba.route.getController("/user/login");
+                    vba.route.getController("/user/login", "/user/login");
                 }
                 else {
                     vba.route.ccnt.funcs.updateItemProfile = function (form) {
@@ -926,7 +995,7 @@ var vba = {
         "/user/favorites": {
             load: function () {
                 if (!vba.root.user.isActive) {
-                    vba.route.getController("/user/login");
+                    vba.route.getController("/user/login", "/user/login");
                 }
                 else {
                     vba.route.ccnt.items.filterForm = {};

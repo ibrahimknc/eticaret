@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="myordersServices\Dto\" />
     <Folder Include="searchServices\Dto\" />
     <Folder Include="shopServices\Dto\" />
   </ItemGroup>

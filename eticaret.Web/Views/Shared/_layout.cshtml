@@ -218,10 +218,8 @@
                 </div>
             </div>
         </header>
-
-
-        <!-- Main Content -->
-
+         
+        <!-- Main Content --> 
         <div id="content" class="site-content">
             <div id="pages_placeholder">
                                 @RenderBody()
@@ -364,8 +362,7 @@
             </div>
         </div>
     </div>
-
-
+     
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content" style="overflow: auto">
@@ -394,9 +391,7 @@
         var binderObj = [];
         binderObj.push(function () {
             vba.settings.serverDate = new Date(@Html.Raw(Json.Serialize(DateTimeOffset.UtcNow)));
-            vba.settings.offset = @(
-                TimeZoneInfo.Local.GetUtcOffset(DateTime.UtcNow).TotalMinutes
-                );
+            vba.settings.offset = @(TimeZoneInfo.Local.GetUtcOffset(DateTime.UtcNow).TotalMinutes);
             vba.render = function (item) { return function (tok, i) { if (i % 2 && tok.length) { var val = ""; try { tok = tok.split("&gt;").join(">"); val = eval(tok); } catch (e) { } return val; } else { return tok; }; }; };
             vba.root.user = @Html.Raw((string)Newtonsoft.Json.JsonConvert.SerializeObject(await eticaret.Web.Controllers.api.userController.refreshAndGetLoginAsync(this.Context)));
         });
@@ -404,6 +399,5 @@
     <script src="/js/app.js?v=0.01"></script>
     <!-- Template CSS -->
     <script src="/js/main.js"></script>
-</body>
-
+</body> 
 </html>

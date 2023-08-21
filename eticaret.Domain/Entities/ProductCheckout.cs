@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace eticaret.Domain.Entities
 {
@@ -28,11 +27,9 @@ namespace eticaret.Domain.Entities
         public decimal? totalPayment { get; set; } // Toplam Ödeme Miktarı 
         public decimal? totalshippingAmount { get; set; } // Toplam Kargo Ödeme Miktarı 
         public int totalQuantity { get; set; }
-        public int status { get; set; } // 0=Ödeme Alındı, 1=Hazırlanıyor, 2=Kargoya Verildi, 3=Teslim Edildi
+        public int status { get; set; } // 0=Bekleniyor, 1=Hazırlanıyor, 2=Kargoya Verildi, 3=Teslim Edildi
         public User User { get; set; } 
-        public ICollection<ProductBasket> Products { get; set; } 
-    }
-
-     
+        public ICollection<ProductBasket> ProductBasket { get; set; } 
+    } 
 }
 

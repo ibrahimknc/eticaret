@@ -1,4 +1,5 @@
 ﻿using eticaret.Domain.Entities;
+using eticaret.Services.myordersServices;
 using eticaret.Services.productCheckoutServices;
 using eticaret.Services.productCheckoutServices.Dto;
 using eticaret.Services.searchService;
@@ -19,12 +20,13 @@ namespace eticaret.Web.Controllers.api
     public class defaultController : ControllerBase
     {
         readonly IsettingsService _IsettingsService;
+        readonly ImyordersService _ImyordersService;
         readonly IsearchService _IsearchService;
         readonly IviewsFavoriteService _IviewsFavoriteService;
         readonly IsliderService _IsliderService;
         readonly IviewCategoryService _IviewCategoryService;
         readonly IproductCheckoutService _IproductCheckoutService;
-        public defaultController(IsettingsService IsettingsService, IviewsFavoriteService IviewsFavoriteService, IsliderService IsliderService, IviewCategoryService IviewCategoryService, IsearchService IsearchService, IproductCheckoutService IproductCheckoutService)
+        public defaultController(IsettingsService IsettingsService, IviewsFavoriteService IviewsFavoriteService, IsliderService IsliderService, IviewCategoryService IviewCategoryService, IsearchService IsearchService, IproductCheckoutService IproductCheckoutService, ImyordersService ImyordersService)
         {
             _IsettingsService = IsettingsService;
             _IviewsFavoriteService = IviewsFavoriteService;
@@ -32,6 +34,7 @@ namespace eticaret.Web.Controllers.api
             _IviewCategoryService = IviewCategoryService;
             _IsearchService = IsearchService;
             _IproductCheckoutService = IproductCheckoutService;
+            _ImyordersService = ImyordersService;
         }
         [Route("[action]")]
         public IActionResult getSettings()
@@ -164,6 +167,25 @@ namespace eticaret.Web.Controllers.api
                 var type = response["type"];
                 var message = response["message"];
                 return Ok(new { type = type, message = message, data = respData });
+            }
+            else
+            {
+                return Ok(new { message = "Yetkisiz işlem.", type = "error" });
+            }
+        }
+
+        [HttpPost, Route("[action]")]
+        public IActionResult getMyorders([FromForm] int page, [FromForm] int itemsPerPage, [FromForm] string search, [FromForm] int listSorting)
+        {
+            if (HttpContext.Session.GetString("login") == "true" && !string.IsNullOrEmpty(HttpContext.Session.GetString("id")))
+            {
+                Guid userID = Guid.Parse(HttpContext.Session.GetString("id"));
+                var response = _ImyordersService.getMyorders(userID, page, itemsPerPage, search, listSorting);
+                var data = response["data"];
+                var type = response["type"];
+                var message = response["message"];
+                var c = response["c"];
+                return Ok(new { type = type, message = message, data = data, c = c });
             }
             else
             {
