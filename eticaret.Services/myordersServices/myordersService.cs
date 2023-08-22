@@ -3,6 +3,7 @@ using eticaret.Data;
 using eticaret.Domain.Entities;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace eticaret.Services.myordersServices
 {
@@ -35,7 +36,7 @@ namespace eticaret.Services.myordersServices
 
                 var productCheckoutIds = selProductCheckouts.Select(y => y.id).ToList();
 
-                var productBaskets = _dbeticaretContext.productBaskets
+                var productBaskets = _dbeticaretContext.productBaskets.Include(x => x.Product).Include(x => x.Product.Shop)
                     .Where(basket => productCheckoutIds.Contains(basket.ProductCheckoutID))
                     .ToList();
 

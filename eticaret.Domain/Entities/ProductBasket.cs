@@ -14,5 +14,6 @@ namespace eticaret.Domain.Entities
         public int quantity { get; set; }
 
         public ProductCheckout ProductCheckout { get; set; }
-}
+        public Product Product { get; set; }
+    }
 }

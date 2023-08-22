@@ -64,7 +64,7 @@
                 </div>
 
                 <!-- Product - Flash Deals -->
-                <div class="section products-block nav-color flash-deals layout-4">
+              @*  <div class="section products-block nav-color flash-deals layout-4">
                     <div class="block-title">
                         <h2 class="title">Flash Deals</h2>
                     </div>
@@ -160,7 +160,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div>*@
 
 
                 <!-- Payment Intro -->
@@ -187,10 +187,10 @@
                 </div>
 
 
-                <!-- Testimonial -->
+                <!-- Son Yorumlar -->
                 <div class="section testimonial">
                     <div class="block-title">
-                        <h2 class="title">Testimonial</h2>
+                        <h2 class="title">Son Yorumlar</h2>
                     </div>
 
                     <div class="block-content">
@@ -402,12 +402,11 @@
 
                 <!-- Newsletter -->
                 <div class="section newsletter">
-                    <h2 class="block-title">BÜLTEN</h2>
-
+                    <h2 class="block-title">BÜLTEN</h2> 
                     <div class="block-content">
                         <p class="description"><span>@await layout.settingsAsync("title")</span> ürünleri hakkında özel teklifler ve özel haberler almak için bültene kaydolun</p>
-                        <form action="#" method="post">
-                            <input type="text" placeholder="E-postanızı Giriniz">
+                        <form ethod="post" onsubmit="vba.route.ccnt.funcs.updateBulletin(this);return false">
+                            <input type="text" name="email" placeholder="E-postanızı Giriniz">
                             <button type="submit" class="btn btn-primary">Abone Ol</button>
                         </form>
                     </div>

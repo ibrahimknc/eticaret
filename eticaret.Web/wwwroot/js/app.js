@@ -393,7 +393,32 @@ var vba = {
     controller: {
         "/": {
             load: function () {
-                vba.root.checkLogin();
+                vba.root.checkLogin(); 
+                vba.route.ccnt.funcs.updateBulletin = function (form) {
+                    $.post("/api/default/updateBulletin", $(form).serialize()
+                    ).done(function (res) {
+                        if (res.type == "error") {
+                            vba.alert({
+                                message: res.message == '' ? "İşlem Başarısız" : res.message,
+                                classes: 'alert-danger'
+                            });
+                            vba.root.changeLoading(false);
+                        } else {
+                            vba.alert({
+                                message: res.message == '' ? "İşlem Başarılı" : res.message,
+                                classes: "alert-success"
+                            }); 
+                            form.reset();
+                        }
+                    }).fail(function () {
+                        vba.alert({
+                            message: "İşlem başarısız",
+                            classes: 'alert-danger'
+                        });
+                        vba.root.changeLoading(false);
+                    });
+                }
+
                 $.getScript("/js/main.js", function () { }); //Template CSS 
                 vba.route.ccnt.funcs.updateUserFavorite = function (elem) {
                     vba.root.changeLoading(true);
@@ -592,7 +617,7 @@ var vba = {
                     vba.route.ccnt.funcs.getItems();
 
                     vba.route.ccnt.funcs.dropdawnBasketList = function (elem) {
-                        $(".basketDropdawn").not("#" + elem).slideUp(1000, function () {
+                        $(".basketDropdawn").not("#" + elem).slideUp(500, function () {
                             $(this).addClass("d-none");
                         });
 
@@ -604,10 +629,13 @@ var vba = {
                             $("#" + elem.id).prepend(` 
                                                 <div class="row">
 								                    <div class="row f-size-15">  
-									                    <div class="col-xs-12 col-sm-6 col-md-3"><strong>Ürün Görseli</strong></div>
-									                    <div class="col-xs-12 col-sm-6 col-md-3"><strong>Ürün Adı</strong></div>
-									                    <div class="col-xs-12 col-sm-6 col-md-3"><strong>Ürün Adeti</strong></div>
-									                    <div class="col-xs-12 col-sm-6 col-md-3"><strong>Ürün Fiyatı</strong></div>
+									                    <div class="col-xs-12 col-sm-6 col-md-2"><strong>Mağaza</strong></div> 
+									                    <div class="col-xs-12 col-sm-6 col-md-2"><strong>Ürün Görseli</strong></div>
+									                    <div class="col-xs-12 col-sm-6 col-md-2"><strong>Ürün Adı</strong></div>
+									                    <div class="col-xs-12 col-sm-6 col-md-2"><strong>Ürün Adeti</strong></div>
+									                    <div class="col-xs-12 col-sm-6 col-md-1"><strong>Ürün Fiyatı</strong></div>
+									                    <div class="col-xs-12 col-sm-6 col-md-1"><strong>Kargo Fiyatı</strong></div>
+									                    <div class="col-xs-12 col-sm-6 col-md-2"><strong>Toplam</strong></div>
 								                    </div>
                                                 </div>
 								                        <hr class="hrStyle-seven">
@@ -615,12 +643,15 @@ var vba = {
                             elem.productBasket.forEach(function (item) { 
                                 $("#" + elem.id).append(` 
                                             <div class="row d-flex align-items-center">
-                                                <div class="col-xs-12 col-sm-6 col-md-3 d-flex justify-content-center"> <a href="/products/${item.productID}">
+                                                <div class="col-xs-12 col-sm-6 col-md-2"> <a href="/shop/${item.product.shop.id}" class="control-label magazaButton"><i class="fa fa-building-o" aria-hidden="true"></i> ${item.product.shop.name}</a>  </div>
+                                                <div class="col-xs-12 col-sm-6 col-md-2 d-flex justify-content-center"> <a href="/products/${item.productID}">
 								                        <img width="80" alt="Product Image" class="img-responsive" src="/uploads/products/${item.image}">
 							                        </a> </div>
-                                                <div class="col-xs-12 col-sm-6 col-md-3"> ${item.name} </div>
-                                                <div class="col-xs-12 col-sm-6 col-md-3"> ${item.quantity} </div>
-                                                <div class="col-xs-12 col-sm-6 col-md-3"> ${item.shippingAmount} ₺ </div> 
+                                                <div class="col-xs-12 col-sm-6 col-md-2"> ${item.name} </div>
+                                                <div class="col-xs-12 col-sm-6 col-md-2"> ${item.quantity} </div>
+                                                <div class="col-xs-12 col-sm-6 col-md-1"> ${item.price} ₺ </div> 
+                                                <div class="col-xs-12 col-sm-6 col-md-1"> ${item.shippingAmount} ₺ </div> 
+                                                <div class="col-xs-12 col-sm-6 col-md-2"> ${(item.quantity * item.price) + item.shippingAmount} ₺ </div> 
                                             </div>
                                  
                                  `);

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using eticaret.Data;
+using eticaret.Services.bulletinServices;
 using eticaret.Services.categoriesServices;
 using eticaret.Services.logServices; 
 using eticaret.Services.Mapping;
@@ -37,6 +38,7 @@ namespace eticaret.Web
             services.AddScoped<IsearchService, searchService>();
             services.AddScoped<IproductCheckoutService, productCheckoutService>();
             services.AddScoped<ImyordersService, myordersService>();
+            services.AddScoped<IbulletinService, bulletinService>();
 
             services.AddAutoMapper(typeof(Startup));
             var mapperConfig = new MapperConfiguration(mc =>

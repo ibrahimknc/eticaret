@@ -1,4 +1,5 @@
 ﻿using eticaret.Domain.Entities;
+using eticaret.Services.bulletinServices;
 using eticaret.Services.myordersServices;
 using eticaret.Services.productCheckoutServices;
 using eticaret.Services.productCheckoutServices.Dto;
@@ -26,7 +27,8 @@ namespace eticaret.Web.Controllers.api
         readonly IsliderService _IsliderService;
         readonly IviewCategoryService _IviewCategoryService;
         readonly IproductCheckoutService _IproductCheckoutService;
-        public defaultController(IsettingsService IsettingsService, IviewsFavoriteService IviewsFavoriteService, IsliderService IsliderService, IviewCategoryService IviewCategoryService, IsearchService IsearchService, IproductCheckoutService IproductCheckoutService, ImyordersService ImyordersService)
+        readonly IbulletinService _IbulletinService;
+        public defaultController(IsettingsService IsettingsService, IviewsFavoriteService IviewsFavoriteService, IsliderService IsliderService, IviewCategoryService IviewCategoryService, IsearchService IsearchService, IproductCheckoutService IproductCheckoutService, ImyordersService ImyordersService, IbulletinService IbulletinService)
         {
             _IsettingsService = IsettingsService;
             _IviewsFavoriteService = IviewsFavoriteService;
@@ -35,6 +37,7 @@ namespace eticaret.Web.Controllers.api
             _IsearchService = IsearchService;
             _IproductCheckoutService = IproductCheckoutService;
             _ImyordersService = ImyordersService;
+            _IbulletinService = IbulletinService;
         }
         [Route("[action]")]
         public IActionResult getSettings()
@@ -136,19 +139,19 @@ namespace eticaret.Web.Controllers.api
                 Guid userID = Guid.Parse(HttpContext.Session.GetString("id"));
                 UserAddress uA = new UserAddress()
                 {
-                    userID = userID, 
+                    userID = userID,
                     title = title,
                     firstName = firstName,
                     lastName = lastName,
                     country = country,
                     city = city,
-                    address = address,  
+                    address = address,
                 };
                 var response = _IproductCheckoutService.updateAddress(uA);
                 var respData = response["data"];
                 var type = response["type"];
                 var message = response["message"];
-                return Ok(new {type = type, message = message, data = respData });
+                return Ok(new { type = type, message = message, data = respData });
             }
             else
             {
@@ -161,7 +164,7 @@ namespace eticaret.Web.Controllers.api
         {
             if (HttpContext.Session.GetString("login") == "true" && !string.IsNullOrEmpty(HttpContext.Session.GetString("id")))
             {
-                Guid userID = Guid.Parse(HttpContext.Session.GetString("id")); 
+                Guid userID = Guid.Parse(HttpContext.Session.GetString("id"));
                 var response = _IproductCheckoutService.getUserAddress(userID);
                 var respData = response["data"];
                 var type = response["type"];
@@ -191,6 +194,16 @@ namespace eticaret.Web.Controllers.api
             {
                 return Ok(new { message = "Yetkisiz işlem.", type = "error" });
             }
+        }
+
+        [Route("[action]"), HttpPost]
+        public IActionResult updateBulletin([FromForm] string email)
+        {  
+            var response = _IbulletinService.updateBulletin(email);
+            var type = response["type"];
+            var message = response["message"];
+            return Ok(new { type = type, message = message });
+
         }
     }
 }
