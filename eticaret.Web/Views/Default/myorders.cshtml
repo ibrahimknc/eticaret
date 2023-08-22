@@ -34,11 +34,10 @@
                                     <div class="select">
                                         <select class="form-control" id="listSorting">
                                             <option value="0">Önerilen Sıralama</option>
-                                            <option value="1">Fiyat: Önce en düşük</option>
-                                            <option value="2">Fiyat: Önce en yüksek</option>
-                                            <option value="3">Ürün Adı: A'dan Z'ye</option>
-                                            <option value="4">Ürün Adı: Z'den A'ya</option>
-                                            <option value="5">Stokta var</option>
+                                            <option value="1">Bekliyor</option>
+                                            <option value="2">Hazırlanıyor</option>
+                                            <option value="3">Karrgoya Verildi</option>
+                                            <option value="4">Teslim Edildi</option> 
                                         </select>
                                     </div>
                                 </form>
@@ -54,22 +53,17 @@
 
                             <div class="product-item products-list" data-repeat="items">
                                 <div class="row">
-                                    <a href="javascript:;" class="col-md-1">
-                                        <i class="fa fa-caret-square-o-down f-size-15" aria-hidden="true"></i>
+                                    <a href="javascript:;" class="col-xs-12 col-sm-6 col-md-1" onclick="vba.route.ccnt.funcs.dropdawnBasketList('{{item.id}}')">
+                                        <i class="fa fa-caret-square-o-down f-size-20" aria-hidden="true"></i>
+                                        <span class="badge">{{item.productBasket.length}}</span>
                                     </a>
-                                    <div class="col-md-3">{{item.id}}</div>
-                                    <div class="col-md-3">{{item.creatingTime}} - {{item.updatedTime}}</div>
-                                    <div class="col-md-2"><strong>{{item.totalPayment + item.totalshippingAmount}} ₺</strong></div>
-                                    <div class="col-md-3">{{item.status==0?'<span class="border border-secondary p-5 rounded-myorders-Status"><strong>Bekleniyor</strong></span>':item.status==1?'<span class="border border-warning p-5 rounded-myorders-Status"><strong>Hazırlanıyor</strong></span>':item.status==2?'<span class="border border-primary p-5 rounded-myorders-Status"><strong>Kargoya Verildi</strong></span>':item.status==3?'<span class="border border-info p-5 rounded-myorders-Status"><strong>Teslim Edildi</strong></span>':'Null'}}</div>
+                                    <div class="col-xs-12 col-sm-6 col-md-3" title="{{item.id}}">{{item.id}}</div>
+                                    <div class="col-xs-12 col-sm-6 col-md-3">{{moment(item.creatingTime).utcOffset(vba.settings.offset).format("DD.MM.YYYY HH:mm")}} - {{moment(item.updatedTime).utcOffset(vba.settings.offset).format("DD.MM.YYYY HH:mm")}} </div>
+                                    <div class="col-xs-12 col-sm-6 col-md-2"><strong>{{item.totalPayment + item.totalshippingAmount}} ₺</strong></div>
+                                    <div class="col-xs-12 col-sm-6 col-md-3 mobile-mt-15">{{item.status==0?'<span class="border border-secondary p-5 rounded-myorders-Status"><strong>Bekleniyor</strong></span>':item.status==1?'<span class="border border-warning p-5 rounded-myorders-Status"><strong>Hazırlanıyor</strong></span>':item.status==2?'<span class="border border-primary p-5 rounded-myorders-Status"><strong>Kargoya Verildi</strong></span>':item.status==3?'<span class="border border-info p-5 rounded-myorders-Status"><strong>Teslim Edildi</strong></span>':'Null'}}</div>
                                 </div>
                                  
-                                <div class="d-none border border-secondary p-5 mt-30">
-                                    <div class="row">
-                                        <div class="col-md-3">..........</div>
-                                        <div class="col-md-3">..........</div>
-                                        <div class="col-md-3">..........</div>
-                                        <div class="col-md-3">..........</div>
-                                    </div>
+                                <div class="d-none basketDropdawn" id="{{item.id}}"> 
                                 </div>
                                 <br /> <hr class="hrStyle-seven">
                             </div>

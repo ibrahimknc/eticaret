@@ -6,7 +6,8 @@ var vba = {
     },
     settings: {
         serverDate: new Date(),
-        staticID: ""
+        staticID: "",
+        offset: new Date(),
     },
     loading: true,
     root: {
@@ -38,7 +39,7 @@ var vba = {
                 }
                 );
         },
-        checkLogin: function () { 
+        checkLogin: function () {
             if (vba.root.user != null) {
                 $.post("/api/user/check", {})
                     .done(function (res) {
@@ -69,10 +70,10 @@ var vba = {
         changeLoading: function (obj, overlay) {
             if (obj != null) { vba.loading = obj; }
             if (vba.loading) {
-                $("#page-preloader").fadeIn(500); 
+                $("#page-preloader").fadeIn(500);
             }
             else {
-                $("#page-preloader").fadeOut(500); 
+                $("#page-preloader").fadeOut(500);
             }
         },
         scrollTop: function () {
@@ -200,8 +201,8 @@ var vba = {
                     : `Sepette Ürün Bulunmamaktadır.`}
                 </td>
             </tr>`);
-             
-            $(".cart-count").text(basket.length); 
+
+            $(".cart-count").text(basket.length);
         },
         delBasket: function (productID) {
             var yeniSaat = 24; // Yeni çerezin 24 saat boyunca geçerli olması için 
@@ -419,7 +420,7 @@ var vba = {
                         });
                     });
                     vba.root.changeLoading(false);
-                } 
+                }
                 vba.root.changeLoading(false);
             }
         },
@@ -519,12 +520,13 @@ var vba = {
                     vba.route.getController("/user/login", "/user/login");
                 }
                 else {
-                    vba.route.ccnt.items.filterForm = {}; 
+                    vba.route.ccnt.items.filterForm = {};
+                    vba.route.ccnt.items.filterForm.data = [];
                     vba.route.ccnt.items.filterForm.page = 1;
                     vba.route.ccnt.items.filterForm.itemsPerPage = 3;
                     vba.route.ccnt.items.filterForm.totalItems = 0;
                     vba.route.ccnt.items.filterForm.listSorting = 0;
-                    
+
                     vba.route.ccnt.funcs.getItems = function () {
                         vba.root.changeLoading(true);
                         $("#pages_placeholder .dataContainer").html("");
@@ -534,8 +536,8 @@ var vba = {
                             listSorting: vba.route.ccnt.items.filterForm.listSorting,
                             search: $("#searchForm input[type='text']").val(),
                             page: vba.route.ccnt.items.filterForm.page,
-                            itemsPerPage: vba.route.ccnt.items.filterForm.itemsPerPage 
-                        }; 
+                            itemsPerPage: vba.route.ccnt.items.filterForm.itemsPerPage
+                        };
                         $.post("/api/default/getMyorders", post).done(function (res) {
                             if (res.type == "error") {
                                 vba.alert({
@@ -547,8 +549,9 @@ var vba = {
                             }
                             else {
                                 if (res.data.length > 0) {
+                                    vba.route.ccnt.items.filterForm.data = res.data;
                                     var tmpl = "binditems";
-                                    $("#pages_placeholder .dataContainer").append(vba.compileTemp(vba.route.ccnt.items[tmpl], res.data));
+                                    $("#pages_placeholder .dataContainer").append(vba.compileTemp(vba.route.ccnt.items[tmpl], vba.route.ccnt.items.filterForm.data));
 
                                     $(".product-item").each(function (index, element) { // son kaydın altındaki HR kaldırıyor.
                                         if (index === $(".product-item").length - 1) {
@@ -558,13 +561,15 @@ var vba = {
 
                                     $(".dataContainer").prepend(`<div class="product-item products-list" data-repeat="items">
 								                                <div class="row f-size-15"> 
-									                                <div class="col-md-3"><strong>Sipariş No</strong></div>
-									                                <div class="col-md-3"><strong>Sipariş Tarihi - Güncellenme Tarihi</strong></div>
-									                                <div class="col-md-3"><strong>Ödeme</strong></div>
-									                                <div class="col-md-3"><strong>Durum</strong></div>
+                                                                 <div class="col-md-1"></div>
+									                                <div class="col-xs-12 col-sm-6 col-md-3"><strong>Sipariş No</strong></div>
+									                                <div class="col-xs-12 col-sm-6 col-md-3"><strong>Sipariş Tarihi - Güncellenme Tarihi</strong></div>
+									                                <div class="col-xs-12 col-sm-6 col-md-2"><strong>Ödeme</strong></div>
+									                                <div class="col-xs-12 col-sm-6 col-md-3"><strong>Durum</strong></div>
 								                                </div>
 								                                 <hr class="hrStyle-seven">
 							                                </div>`);
+                                    vba.route.ccnt.funcs.ProductBasket();
                                 } else {
                                     $("#pages_placeholder .dataContainer").html(" <div class='col-lg-12 mb-3'> <div class='row g-0 bg-light py-4'><div class='col-md-12 d-flex align-items-center justify-content-center'> 😔 Üzgünüm, Siparişiniz Bulunmamaktadır 😔</div></div></div>").hide();
                                     $("#pages_placeholder .dataContainer").fadeIn(500);
@@ -572,6 +577,7 @@ var vba = {
 
                                 $(".total-products").html("Toplam <b><u>" + res.c + "</u></b> Sipariş Var");
                                 $(".showingTotalProducts").html("Toplam <b><u>" + res.c + "</u></b> Siparişten <b><u>" + res.data.length + "</u></b> Adet Gösteriliyor");
+
                                 vba.route.ccnt.items.filterForm.totalItems = res.c;
                                 vba.pagination();
                             }
@@ -585,6 +591,42 @@ var vba = {
                     }
                     vba.route.ccnt.funcs.getItems();
 
+                    vba.route.ccnt.funcs.dropdawnBasketList = function (elem) {
+                        $(".basketDropdawn").not("#" + elem).slideUp(1000, function () {
+                            $(this).addClass("d-none");
+                        });
+
+                        $("#" + elem).slideToggle(500).toggleClass("d-none");
+                       
+                    }
+                    vba.route.ccnt.funcs.ProductBasket = function () {
+                        vba.route.ccnt.items.filterForm.data.forEach(function (elem) {
+                            $("#" + elem.id).prepend(` 
+                                                <div class="row">
+								                    <div class="row f-size-15">  
+									                    <div class="col-xs-12 col-sm-6 col-md-3"><strong>Ürün Görseli</strong></div>
+									                    <div class="col-xs-12 col-sm-6 col-md-3"><strong>Ürün Adı</strong></div>
+									                    <div class="col-xs-12 col-sm-6 col-md-3"><strong>Ürün Adeti</strong></div>
+									                    <div class="col-xs-12 col-sm-6 col-md-3"><strong>Ürün Fiyatı</strong></div>
+								                    </div>
+                                                </div>
+								                        <hr class="hrStyle-seven">
+							                        `);
+                            elem.productBasket.forEach(function (item) { 
+                                $("#" + elem.id).append(` 
+                                            <div class="row d-flex align-items-center">
+                                                <div class="col-xs-12 col-sm-6 col-md-3 d-flex justify-content-center"> <a href="/products/${item.productID}">
+								                        <img width="80" alt="Product Image" class="img-responsive" src="/uploads/products/${item.image}">
+							                        </a> </div>
+                                                <div class="col-xs-12 col-sm-6 col-md-3"> ${item.name} </div>
+                                                <div class="col-xs-12 col-sm-6 col-md-3"> ${item.quantity} </div>
+                                                <div class="col-xs-12 col-sm-6 col-md-3"> ${item.shippingAmount} ₺ </div> 
+                                            </div>
+                                 
+                                 `);
+                            }); 
+                        }); 
+                    }
                     //----------------Filter-------------------// 
                     $('#listSorting').change(function () {
                         vba.route.ccnt.items.filterForm.listSorting = this.value;
@@ -642,6 +684,9 @@ var vba = {
                                 <br />
                                 Sipariş listesini görmek istiyorsanız <a href="/myorders"><b>Siparişlerim</b></a>  sayfasına gözatın.
                             </center>`);
+                            window.location.reload();
+                            vba.cookie.deleteCookie('basket');
+                            vba.root.getBasket();
                         }
                     }).fail(function () {
                         vba.route.ccnt.items.dataLoading = false;
@@ -699,7 +744,7 @@ var vba = {
                                 classes: 'alert-danger'
                             });
                         });
-                    } 
+                    }
                     vba.route.ccnt.funcs.iyziPay = function (data) {
                         vba.modal.init();
                         if (vba.modal.name != "recommendsInfo") {
@@ -734,14 +779,7 @@ var vba = {
                                 });
                                 vba.root.changeLoading(false);
                             } else {
-                                //vba.alert({
-                                //    message: res.message == '' ? "İşlem Başarılı" : res.message,
-                                //    classes: "alert-success"
-                                //});
                                 vba.route.ccnt.funcs.iyziPay(res.data);
-                                //vba.cookie.deleteCookie('basket'); 
-                                //vba.route.getController("/myorders", "/myorders");
-                                //vba.root.getBasket(); 
                             }
                         }).fail(function () {
                             vba.alert({
@@ -826,8 +864,8 @@ var vba = {
                         }
                         vba.root.changeLoading(false);
                     }
-                    vba.route.ccnt.funcs.getItems(); 
-                    vba.route.ccnt.funcs.getUserAddress = function () {  
+                    vba.route.ccnt.funcs.getItems();
+                    vba.route.ccnt.funcs.getUserAddress = function () {
                         $.post("/api/default/getUserAddress", {}).done(function (res) {
                             if (res.type == "error") {
                                 vba.alert({
@@ -837,7 +875,7 @@ var vba = {
                                 });
                                 vba.root.checkLogin();
                             }
-                            else { 
+                            else {
                                 if (res.data != null) {
                                     vba.route.ccnt.items.filterForm.UserAddress = res.data;
                                     res.data.forEach(item => {
@@ -852,9 +890,9 @@ var vba = {
                                 classes: 'alert-danger',
                                 duration: 5000
                             });
-                        }); 
-                    } 
-                    vba.route.ccnt.funcs.getUserAddress(); 
+                        });
+                    }
+                    vba.route.ccnt.funcs.getUserAddress();
                     vba.route.ccnt.funcs.changeUserAddress = function (data) {
                         var selectedValue = $(data).val();
                         if (selectedValue) {
@@ -863,13 +901,13 @@ var vba = {
                             });
 
                             if (selectedAddress) {
-                                var selectDiv = $(data).closest('.panel-body'); 
+                                var selectDiv = $(data).closest('.panel-body');
                                 selectDiv.find('div:eq(2)').find('input:eq(0)').val(selectedAddress.title);
                                 selectDiv.find('div:eq(4)').find('input:eq(0)').val(selectedAddress.firstName);
                                 selectDiv.find('div:eq(4)').find('input:eq(1)').val(selectedAddress.lastName);
                                 selectDiv.find('div:eq(7)').find('select:eq(0)').val(selectedAddress.country);
                                 selectDiv.find('div:eq(9)').find('input:eq(0)').val(selectedAddress.city);
-                                selectDiv.find('div:eq(11)').find('textarea:eq(0)').val(selectedAddress.address); 
+                                selectDiv.find('div:eq(11)').find('textarea:eq(0)').val(selectedAddress.address);
                             }
                         }
                     }

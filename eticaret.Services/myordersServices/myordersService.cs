@@ -1,8 +1,8 @@
 ﻿using System;
 using eticaret.Data;
-using eticaret.Domain.Entities; 
+using eticaret.Domain.Entities;
 using System.Collections.Generic;
-using System.Linq; 
+using System.Linq;
 
 namespace eticaret.Services.myordersServices
 {
@@ -26,6 +26,7 @@ namespace eticaret.Services.myordersServices
             {
                 var selProductCheckouts = _dbeticaretContext.productCheckouts
                     .Where(x =>
+                    (listSorting == 0 || (listSorting > 0 && listSorting - 1 == x.status)) &&
                         x.isActive == true &&
                         x.isPayment == true &&
                         x.userID == userID &&
@@ -70,11 +71,11 @@ namespace eticaret.Services.myordersServices
                     ProductBasket = productBaskets
                         .Where(basket => basket.ProductCheckoutID == productCheckout.id)
                         .ToList()
-                });
+                }).OrderByDescending(x => x.creatingTime);
 
                 var count = productCheckoutsWithProducts.Count();
                 var responseList = productCheckoutsWithProducts.Skip((page - 1) * itemsPerPage).Take(itemsPerPage).ToList();
-                 
+
                 response["type"] = "success"; response["data"] = responseList;
                 response["c"] = count;
             }
