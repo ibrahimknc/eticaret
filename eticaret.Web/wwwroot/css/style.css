@@ -15461,3 +15461,9 @@ input {
     padding: 2px 4px;
     font-size: 10px;
 }
+.defaultLastCommentsIMG{
+    width:25px !important; 
+    height:25px !important;
+    margin:auto;
+    margin-bottom:10px;
+}

@@ -1,7 +1,5 @@
-﻿using eticaret.Data;
-using eticaret.Domain.Entities;
-using eticaret.Services.viewsFavoriteServices.Dto;
-using Microsoft.EntityFrameworkCore;
+﻿using eticaret.Data; 
+using eticaret.Services.viewsFavoriteServices.Dto; 
 using System;
 using System.Collections.Generic;
 using System.Linq;

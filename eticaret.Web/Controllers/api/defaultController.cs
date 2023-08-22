@@ -1,5 +1,6 @@
 ﻿using eticaret.Domain.Entities;
 using eticaret.Services.bulletinServices;
+using eticaret.Services.defaultPageServices;
 using eticaret.Services.myordersServices;
 using eticaret.Services.productCheckoutServices;
 using eticaret.Services.productCheckoutServices.Dto;
@@ -28,7 +29,8 @@ namespace eticaret.Web.Controllers.api
         readonly IviewCategoryService _IviewCategoryService;
         readonly IproductCheckoutService _IproductCheckoutService;
         readonly IbulletinService _IbulletinService;
-        public defaultController(IsettingsService IsettingsService, IviewsFavoriteService IviewsFavoriteService, IsliderService IsliderService, IviewCategoryService IviewCategoryService, IsearchService IsearchService, IproductCheckoutService IproductCheckoutService, ImyordersService ImyordersService, IbulletinService IbulletinService)
+        readonly IdefaultPageService _IdefaultPageService;
+        public defaultController(IsettingsService IsettingsService, IviewsFavoriteService IviewsFavoriteService, IsliderService IsliderService, IviewCategoryService IviewCategoryService, IsearchService IsearchService, IproductCheckoutService IproductCheckoutService, ImyordersService ImyordersService, IbulletinService IbulletinService, IdefaultPageService IdefaultPageService)
         {
             _IsettingsService = IsettingsService;
             _IviewsFavoriteService = IviewsFavoriteService;
@@ -38,6 +40,7 @@ namespace eticaret.Web.Controllers.api
             _IproductCheckoutService = IproductCheckoutService;
             _ImyordersService = ImyordersService;
             _IbulletinService = IbulletinService;
+            _IdefaultPageService = IdefaultPageService;
         }
         [Route("[action]")]
         public IActionResult getSettings()
@@ -204,6 +207,20 @@ namespace eticaret.Web.Controllers.api
             var message = response["message"];
             return Ok(new { type = type, message = message });
 
+        }
+
+        [Route("[action]"), HttpPost]
+        public IActionResult getLastComments([FromForm] string number)
+        {
+            var response = _IdefaultPageService.getLastComments(number);
+            return Ok(new { type = "success", message = "", data = response });
+        }
+
+        [Route("[action]"), HttpPost]
+        public IActionResult getLastProducts([FromForm] string number)
+        {
+            var response = _IdefaultPageService.getLastProducts(number);
+            return Ok(new { type = "success", message = "", data = response });
         }
     }
 }
