@@ -393,7 +393,7 @@ var vba = {
     controller: {
         "/": {
             load: function () {
-                vba.root.checkLogin(); 
+                vba.root.checkLogin();
                 vba.route.ccnt.funcs.updateBulletin = function (form) {
                     $.post("/api/default/updateBulletin", $(form).serialize()
                     ).done(function (res) {
@@ -407,7 +407,7 @@ var vba = {
                             vba.alert({
                                 message: res.message == '' ? "İşlem Başarılı" : res.message,
                                 classes: "alert-success"
-                            }); 
+                            });
                             form.reset();
                         }
                     }).fail(function () {
@@ -622,7 +622,7 @@ var vba = {
                         });
 
                         $("#" + elem).slideToggle(500).toggleClass("d-none");
-                       
+
                     }
                     vba.route.ccnt.funcs.ProductBasket = function () {
                         vba.route.ccnt.items.filterForm.data.forEach(function (elem) {
@@ -640,7 +640,7 @@ var vba = {
                                                 </div>
 								                        <hr class="hrStyle-seven">
 							                        `);
-                            elem.productBasket.forEach(function (item) { 
+                            elem.productBasket.forEach(function (item) {
                                 $("#" + elem.id).append(` 
                                             <div class="row d-flex align-items-center">
                                                 <div class="col-xs-12 col-sm-6 col-md-2"> <a href="/shop/${item.product.shop.id}" class="control-label magazaButton"><i class="fa fa-building-o" aria-hidden="true"></i> ${item.product.shop.name}</a>  </div>
@@ -655,8 +655,8 @@ var vba = {
                                             </div>
                                  
                                  `);
-                            }); 
-                        }); 
+                            });
+                        });
                     }
                     //----------------Filter-------------------// 
                     $('#listSorting').change(function () {
@@ -1267,15 +1267,13 @@ var vba = {
                 vba.route.ccnt.items.filterForm.price = "";
                 vba.route.ccnt.items.filterForm.listSorting = 0;
                 vba.route.ccnt.items.filterForm.defaultProductsGrid = "";
+                vba.route.ccnt.items.filterForm.raiting = 0;
+                vba.route.ccnt.items.filterForm.raitingDisable = 0;
+                vba.route.ccnt.items.filterForm.isStock = 0;
 
                 vba.route.ccnt.funcs.getItems = function () {
                     vba.root.changeLoading(true);
                     $("#pages_placeholder .dataContainer").html("");
-                    vba.route.ccnt.items.dataLoading = true;
-
-                    //var url = new URLSearchParams(window.location.search);
-                    //var cid = url.get("id");
-                    //vba.route.ccnt.items.filterForm.id = cid;
 
                     var post = {
                         price: vba.route.ccnt.items.filterForm.price,
@@ -1283,6 +1281,8 @@ var vba = {
                         search: $("#searchForm input[type='text']").val(),
                         page: vba.route.ccnt.items.filterForm.page,
                         itemsPerPage: vba.route.ccnt.items.filterForm.itemsPerPage,
+                        isStock: vba.route.ccnt.items.filterForm.isStock,
+                        rating: vba.route.ccnt.items.filterForm.rating,
                         id: vba.route.ccnt.items.filterForm.id
                     };
 
@@ -1300,8 +1300,9 @@ var vba = {
                                 var tmpl = "binditems";
                                 $("#pages_placeholder .dataContainer").append(vba.compileTemp(vba.route.ccnt.items[tmpl], res.data));
 
+                                $("#tagsContainer").empty();
                                 $.each(res.tags, function (index, item) {
-                                    $("#tagsContainer").append("<li><a href=\"#\" title=\"" + item.split(",")[0] + "\">" + item.split(",")[0] + "</a></li> ")
+                                    $("#tagsContainer").append("<li><a href=\"/search/" + item.split(",")[0] + "\" title=\"" + item.split(",")[0] + "\">" + item.split(",")[0] + "</a></li> ")
                                 });
 
                             } else {
@@ -1351,8 +1352,26 @@ var vba = {
                 }
 
                 //----------------Filter-------------------//
-                vba.route.ccnt.funcs.filterOperations = function () {
-                    vba.route.ccnt.items.filterForm.price = $("#price-filter").val();
+
+                vba.route.ccnt.funcs.raitingDisable = function () {
+                    var form = vba.serializeForm($("#filterForm"));
+                    if (vba.route.ccnt.items.filterForm.raitingCheck > 0 && form.rating == 1) {
+                        vba.route.ccnt.items.filterForm.raitingCheck = 0;
+                        vba.route.ccnt.items.filterForm.rating = 0;
+                        $('input[name="rating"]').prop("checked", false);
+                        $("#ratingDisabled").css("color", "#cccccc");
+                    }
+                    else {
+                        vba.route.ccnt.items.filterForm.raitingCheck = form.rating;
+                        $("#ratingDisabled").css("color", "#ffc700");
+                    }
+
+                }
+                vba.route.ccnt.funcs.filterOperations = function (form) {
+                    var elem = vba.serializeForm(form);
+                    vba.route.ccnt.items.filterForm.price = elem.price;
+                    vba.route.ccnt.items.filterForm.rating = elem.rating;
+                    vba.route.ccnt.items.filterForm.isStock = elem.isStock;
                     vba.route.ccnt.funcs.getItems();
                 }
                 vba.route.ccnt.funcs.getProductsGrid = function () {

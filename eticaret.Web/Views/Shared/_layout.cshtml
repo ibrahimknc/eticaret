@@ -157,8 +157,11 @@
                                         <a href="/" title="Homepage">Ana Sayfa</a>
                                         <div class="dropdown-menu">
                                             <ul>
-                                                <li><a href="#productFavorite" title="todayFavorite">Günün Favoriler</a></li>
-
+                                                <li><a href="/#categories" title="categories">Kategoriler</a></li> 
+                                                <li><a href="/#productFavorite" title="todayFavorite">Günün Favoriler</a></li>
+                                                <li><a href="/#bulletin" title="bulletin">Bülten</a></li>
+                                                <li><a href="/#lastcomments" title="lastcomments">Son Yorumlar</a></li>
+                                                <li><a href="/#lastproducts" title="lastproducts">Son Eklenen Ürünler</a></li>
                                             </ul>
                                         </div>
                                     </li>
@@ -339,7 +342,7 @@
                         <img src="/img/payment.png" alt="Payment">
                     </div>
 
-                    <div class="copyright">Copyright &copy; 2023 <b><span class="text-success">@await layout.settingsAsync("title")</span></b> </div>
+                    <div class="copyright">Copyright &copy; 2023 <a href="/"><b><span class="text-success">@await layout.settingsAsync("title")</span></b></a> </div>
                 </div>
             </div>
         </footer>

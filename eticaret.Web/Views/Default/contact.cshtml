@@ -1,11 +1,11 @@
 ﻿	<!-- Breadcrumb -->
 <div id="breadcrumb">
 	<div class="container">
-		<h2 class="title">Contact</h2>
+		<h2 class="title">İleişime Geç</h2>
 
 		<ul class="breadcrumb">
-			<li><a href="#" title="Home">Home</a></li>
-			<li><span>Contact</span></li>
+			<li><a href="/" title="Home">Ana Sayfa</a></li>
+			<li><span>İletişim</span></li>
 		</ul>
 	</div>
 </div>
@@ -22,8 +22,8 @@
 						<div class="item-right d-flex">
 							<div class="title">Email:</div>
 							<div class="content">
-								<a href="mailto:support@domain.com">support@domain.com</a><br>
-								<a href="mailto:contact@domain.com">contact@domain.com</a>
+								<a href="mailto:@await layout.settingsAsync("email")"> @await layout.settingsAsync("email") </a><br />
+								<a href="mailto:@await layout.settingsAsync("email")"> @await layout.settingsAsync("email") </a>
 							</div>
 						</div>
 					</div>
@@ -35,9 +35,9 @@
 							<div class="icon"><i class="zmdi zmdi-home"></i></div>
 						</div>
 						<div class="item-right d-flex">
-							<div class="title">Address:</div>
+							<div class="title">Adres:</div>
 							<div class="content">
-								23 Suspendis matti, Visaosang Building VST<br> District, NY Accums, North American
+								@await layout.settingsAsync("address")
 							</div>
 						</div>
 					</div>
@@ -49,10 +49,10 @@
 							<div class="icon"><i class="zmdi zmdi-phone"></i></div>
 						</div>
 						<div class="item-right d-flex">
-							<div class="title">Holine:</div>
+							<div class="title">Telefon:</div>
 							<div class="content">
-								0123-456-78910<br>
-								0987-654-32100
+								<a href="tel:@await layout.settingsAsync("phone")">@await layout.settingsAsync("phone") </a><br>
+								<a href="tel:@await layout.settingsAsync("phone")">@await layout.settingsAsync("phone") </a>
 							</div>
 						</div>
 					</div>

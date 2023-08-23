@@ -24,7 +24,7 @@ namespace eticaret.Services.categoriesServices
                 { "tags", null }
             };
 
-        public Dictionary<string, object> getCategoriList(Guid id, int page, int itemsPerPage, string search, string price, int listSorting)
+        public Dictionary<string, object> getCategoriList(Guid id, int page, int itemsPerPage, string search, string price, int listSorting, int rating, int isStock)
         {
             try
             {
@@ -39,7 +39,7 @@ namespace eticaret.Services.categoriesServices
                 }
 
                 var query = _dbeticaretContext.products.Where(x =>
-                (listSorting <= 4 | (listSorting == 5 && x.stock > 0)) &
+                (isStock == 0 ||(isStock == 1 && x.stock <= 0) || (isStock == 2 && x.stock > 0) ) &
                 (filterPrice == false | (filterPrice == true & x.salePrice >= startingPrice & x.salePrice <= endPrice)) &
                 x.isActive == true &
                 x.categoriID == id &
@@ -55,7 +55,7 @@ namespace eticaret.Services.categoriesServices
                         averageRating = _dbeticaretContext.comments
                             .Where(c => c.productID == x.id)
                             .Average(c => (double?)c.rating) ?? 0
-                    });
+                    }).Where(x => rating == 0 || (rating > 0 && x.averageRating >= rating));
 
                 switch (listSorting)
                 {

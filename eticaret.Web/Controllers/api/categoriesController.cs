@@ -1,6 +1,6 @@
-﻿using eticaret.Services.categoriesServices; 
-using Microsoft.AspNetCore.Mvc; 
-using System; 
+﻿using eticaret.Services.categoriesServices;
+using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace eticaret.Web.Controllers.api
 {
@@ -15,9 +15,9 @@ namespace eticaret.Web.Controllers.api
         }
 
         [Route("[action]"), HttpPost]
-        public IActionResult getCategoriList([FromForm] Guid id, [FromForm] int page, [FromForm] int itemsPerPage, [FromForm] string search, [FromForm] string price, [FromForm] int listSorting)
+        public IActionResult getCategoriList([FromForm] Guid id, [FromForm] int page, [FromForm] int itemsPerPage, [FromForm] string search, [FromForm] string price, [FromForm] int listSorting, [FromForm] int rating, [FromForm] int isStock)
         {
-            var response = _IcategoriesService.getCategoriList(id, page, itemsPerPage, search, price, listSorting);
+            var response = _IcategoriesService.getCategoriList(id, page, itemsPerPage, search, price, listSorting, rating, isStock);
             var data = response["data"];
             var name = response["name"];
             var type = response["type"];

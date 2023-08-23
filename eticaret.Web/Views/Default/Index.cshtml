@@ -48,7 +48,7 @@
             <!-- Left Column -->
             <div class="col-20p col-md-3 left-column">
                 <!-- Product - Category -->
-                <div class="section product-categories">
+                <div class="section product-categories" id="categories">
                     <div class="block-title">
                         <h2 class="title">Kategoriler</h2>
                     </div>
@@ -187,7 +187,7 @@
                 </div>
 
                 <!-- Son Yorumlar -->
-                <div class="section testimonial">
+                <div class="section testimonial" id="lastcomments">
                     <div class="block-title">
                         <h2 class="title">Son Yorumlar</h2>
                     </div>
@@ -214,7 +214,7 @@
             <!-- Right Column body -->
             <div class="col-80p col-md-9 right-column">
                 <!-- Product - Category Tab -->
-                <div class="section products-block category-tab">
+                <div class="section products-block category-tab" id="productFavorite">
                     <div class="block-title">
                         <h2 class="title">Favoriler</h2>
                     </div>
@@ -242,7 +242,7 @@
                         </div>
 
                         <!-- Tab Content -->
-                        <div class="tab-content" id="productFavorite">
+                        <div class="tab-content" >
 
                             <!-- New Arrivals -->
                             <div role="tabpanel" class="tab-pane fade in active" id="new-arrivals">
@@ -392,7 +392,7 @@
 
 
                 <!-- Newsletter -->
-                <div class="section newsletter">
+                <div class="section newsletter" id="bulletin" >
                     <h2 class="block-title">BÜLTEN</h2>
                     <div class="block-content">
                         <p class="description"><span>@await layout.settingsAsync("title")</span> ürünleri hakkında özel teklifler ve özel haberler almak için bültene kaydolun</p>
@@ -698,12 +698,11 @@
 
 
                 <!-- Product - New Arrivals -->
-                <div class="section products-block new-arrivals layout-3">
+                <div class="section products-block new-arrivals layout-3" id="lastproducts">
                     <div class="block-title">
                         <h2 class="title">Son Eklenenler</h2>
-                    </div>
-
-                    <div class="block-content">
+                    </div> 
+                    <div class="block-content"  >
                         <div class="products owl-theme owl-carousel">
                             @foreach (var item in (List<lastProductsDto>)await response.getLastProducts("5"))
                             {

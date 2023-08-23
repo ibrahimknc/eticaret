@@ -20,152 +20,67 @@
                     <h3 class="block-title t-center">Ürün Filtrele</h3>
                     <hr class="hrStyle-seven" />
                     <div class="block-content">
-                        <div class="filter-item">
-                            <h3 class="filter-title">Categories</h3>
+                        <form method="post" onsubmit="vba.route.ccnt.funcs.filterOperations(this);return false" class="form-validate" id="filterForm">
 
-                            <div class="filter-content">
-                                <ul>
-                                    <li>
-                                        <label class="check">
-                                            <span class="custom-checkbox">
-                                                <input type="checkbox">
-                                                <span class="checkmark"></span>
-                                            </span>
-                                            <a>Tomato <span class="quantity">(20)</span></a>
-                                        </label>
-                                    </li>
-                                    <li>
-                                        <label class="check">
-                                            <span class="custom-checkbox">
-                                                <input type="checkbox">
-                                                <span class="checkmark"></span>
-                                            </span>
-                                            <a>Broccoli <span class="quantity">(14)</span></a>
-                                        </label>
-                                    </li>
-                                    <li>
-                                        <label class="check">
-                                            <span class="custom-checkbox">
-                                                <input type="checkbox">
-                                                <span class="checkmark"></span>
-                                            </span>
-                                            <a>Cabbage <span class="quantity">(8)</span></a>
-                                        </label>
-                                    </li>
-                                    <li>
-                                        <label class="check">
-                                            <span class="custom-checkbox">
-                                                <input type="checkbox">
-                                                <span class="checkmark"></span>
-                                            </span>
-                                            <a>Cucumber <span class="quantity">(12)</span></a>
-                                        </label>
-                                    </li>
-                                    <li>
-                                        <label class="check">
-                                            <span class="custom-checkbox">
-                                                <input type="checkbox">
-                                                <span class="checkmark"></span>
-                                            </span>
-                                            <a>Eggplant <span class="quantity">(15)</span></a>
-                                        </label>
-                                    </li>
-                                    <li>
-                                        <label class="check">
-                                            <span class="custom-checkbox">
-                                                <input type="checkbox">
-                                                <span class="checkmark"></span>
-                                            </span>
-                                            <a>Pea <span class="quantity">(22)</span></a>
-                                        </label>
-                                    </li>
-                                    <li>
-                                        <label class="check">
-                                            <span class="custom-checkbox">
-                                                <input type="checkbox">
-                                                <span class="checkmark"></span>
-                                            </span>
-                                            <a>Pineapple <span class="quantity">(20)</span></a>
-                                        </label>
-                                    </li>
-                                    <li>
-                                        <label class="check">
-                                            <span class="custom-checkbox">
-                                                <input type="checkbox">
-                                                <span class="checkmark"></span>
-                                            </span>
-                                            <a>Lettuce <span class="quantity">(10)</span></a>
-                                        </label>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
+                            <div class="filter-item">
+                                <h3 class="filter-title"> StOK DURUMU </h3>
+                                <div class="block-content">
+                                    <div class="select">
+                                        <select class="form-control" name="isStock">
+                                            <option value="0">Tümü</option>
+                                            <option value="1">Stok Yok</option>
+                                            <option value="2">Stok Var</option>
 
-                        <div class="filter-item">
-                            <h3 class="filter-title"> FİYATA GÖRE </h3>
-
-                            <div class="block-content">
-                                <div id="slider-range" class="tiva-filter">
-                                    <div class="filter-item price-filter">
-                                        <div class="layout-slider">
-                                            <input id="price-filter" name="price" value="0;10000" />
-                                        </div>
-                                        <div class="layout-slider-settings"></div>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                            
+                            <div class="filter-item">
+                                <h3 class="filter-title">Değerlendirme</h3>
 
-                        <div class="filter-item">
-                            <h3 class="filter-title">By Color</h3>
-
-                            <div class="block-content">
-                                <div class="filter-color">
-                                    <div class="left">
-                                        <div class="item">
-                                            <label class="color color-1"></label>
-                                            <span class="color-label">Blue</span>
-                                            <span>(3)</span>
-                                        </div>
-                                        <div class="item">
-                                            <label class="color color-3"></label>
-                                            <span class="color-label">Yellow</span>
-                                            <span>(2)</span>
-                                        </div>
-                                        <div class="item">
-                                            <label class="color color-5"></label>
-                                            <span class="color-label">Pink</span>
-                                            <span>(2)</span>
-                                        </div>
-                                    </div>
-                                    <div class="right">
-                                        <div class="item">
-                                            <label class="color color-2"></label>
-                                            <span class="color-label">Green</span>
-                                            <span>(1)</span>
-                                        </div>
-                                        <div class="item">
-                                            <label class="color color-4"></label>
-                                            <span class="color-label">Brown</span>
-                                            <span>(3)</span>
-                                        </div>
-                                        <div class="item">
-                                            <label class="color color-6"></label>
-                                            <span class="color-label">Red</span>
-                                            <span>(10)</span>
+                                <div class="filter-content">
+                                    <div class="product-rating d-flex justify-content-center">
+                                        <div class="rating">
+                                            <input type="radio" id="star5" name="rating" value="5" onclick="vba.route.ccnt.funcs.raitingDisable();" />
+                                            <label for="star5" title="5 yıldız">5 stars</label>
+                                            <input type="radio" id="star4" name="rating" value="4" onclick="vba.route.ccnt.funcs.raitingDisable();" />
+                                            <label for="star4" title="4 yıldız">4 stars</label>
+                                            <input type="radio" id="star3" name="rating" value="3" onclick="vba.route.ccnt.funcs.raitingDisable();" />
+                                            <label for="star3" title="3 yıldız">3 stars</label>
+                                            <input type="radio" id="star2" name="rating" value="2" onclick="vba.route.ccnt.funcs.raitingDisable();" />
+                                            <label for="star2" title="2 yıldız">2 stars</label>
+                                            <input type="radio" id="star1" name="rating" value="1" onclick="vba.route.ccnt.funcs.raitingDisable();" />
+                                            <label for="star1" title="1 yıldız" id="ratingDisabled">1 star</label>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="filter-item" style="margin-top:150px">
-                            <div class="block-content">
-                                <hr class="hrStyle-seven" />
-                                <div class="form-group text-center">
-                                    <button class="btn btn-primary" onclick="vba.route.ccnt.funcs.filterOperations(); return false;">Filtrele</button>
+                             
+                            <div class="filter-item">
+                                <h3 class="filter-title"> FİYATA GÖRE </h3>
+
+                                <div class="block-content">
+                                    <div id="slider-range" class="tiva-filter">
+                                        <div class="filter-item price-filter">
+                                            <div class="layout-slider">
+                                                <input id="price-filter" name="price" value="0;10000" />
+                                            </div>
+                                            <div class="layout-slider-settings"></div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+
+                            <div class="filter-item" >
+                                <div class="block-content">
+                                    <hr class="hrStyle-seven" />
+                                    <div class="form-group text-center">
+                                        <button class="btn btn-primary" type="submit">Filtrele</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
 
@@ -208,7 +123,6 @@
                                                 <option value="2">Fiyat: Önce en yüksek</option>
                                                 <option value="3">Ürün Adı: A'dan Z'ye</option>
                                                 <option value="4">Ürün Adı: Z'den A'ya</option>
-                                                <option value="5">Stokta var</option>
                                             </select>
                                         </div>
                                     </form>
