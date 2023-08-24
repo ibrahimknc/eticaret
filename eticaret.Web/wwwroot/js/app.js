@@ -1539,7 +1539,7 @@ var vba = {
                                                                     <div class="avatar">
                                                                         <img src="/img/profil_avatar.png" alt="" class="imgBoxShadow" width="70" height="70">
                                                                     </div>
-                                                                    <div class="product-rating ml-5">
+                                                                    <div class="product-rating ml-2">
                                                                         ${ratingHtml}
                                                                     </div>
                                                                 </div>
