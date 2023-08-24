@@ -1,10 +1,11 @@
 ﻿using eticaret.Data;
 using eticaret.Domain.Entities;
-using eticaret.Services.userServices.Dto; 
+using eticaret.Services.userServices.Dto;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace eticaret.Services.userServices
 {
@@ -268,11 +269,11 @@ namespace eticaret.Services.userServices
                     else
                     {
                         response["type"] = "error"; response["message"] = "Favori Daha Önce Eklenmiş.";
-                    } 
+                    }
                 }
                 else if (userID == Guid.Empty && productID == Guid.Empty && favoriteID != Guid.Empty)
                 {
-                    var productToDelete = _dbeticaretContext.userFavorites.FirstOrDefault(x=> x.id == favoriteID); 
+                    var productToDelete = _dbeticaretContext.userFavorites.FirstOrDefault(x => x.id == favoriteID);
                     if (productToDelete != null)
                     {
                         _dbeticaretContext.userFavorites.Remove(productToDelete);
@@ -302,7 +303,11 @@ namespace eticaret.Services.userServices
         {
             try
             {
-                var query = _dbeticaretContext.userFavorites
+                var pattern = "\\b" + (string.IsNullOrEmpty(search) ? null : Regex.Escape(search)) + "\\b";
+                var regex = new Regex(pattern, RegexOptions.IgnoreCase);
+                var userFavorites = _dbeticaretContext.userFavorites.ToList();
+
+                var query = userFavorites
                    .Join(
                        _dbeticaretContext.products,
                        userFavorite => userFavorite.productID,
@@ -319,10 +324,11 @@ namespace eticaret.Services.userServices
                        x.UserFavorite.userID == userID &&
                        (string.IsNullOrEmpty(search) ||
                        (!string.IsNullOrEmpty(search) &&
-                       (x.Product.name.Contains(search) ||
-                       x.Product.tags.Contains(search) ||
-                       x.Product.details.Contains(search)))
-                   ))
+
+                       ((regex.IsMatch(x.Product.name)) |
+                (regex.IsMatch(x.Product.tags)) |
+                (regex.IsMatch(x.Product.details)))
+                       )))
                    .OrderByDescending(x => x.Product.id)
                    .Select(x => new
                    {

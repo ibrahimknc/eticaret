@@ -3,6 +3,7 @@ using eticaret.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace eticaret.Services.categoriesServices
 {
@@ -37,16 +38,20 @@ namespace eticaret.Services.categoriesServices
                     startingPrice = Convert.ToInt32(price.Split(";")[0]);
                     endPrice = Convert.ToInt32(price.Split(";")[1]);
                 }
+                var pattern = "\\b" + (string.IsNullOrEmpty(search) ? null : Regex.Escape(search)) + "\\b";
+                var regex = new Regex(pattern, RegexOptions.IgnoreCase);
 
-                var query = _dbeticaretContext.products.Where(x =>
-                (isStock == 0 ||(isStock == 1 && x.stock <= 0) || (isStock == 2 && x.stock > 0) ) &
+                var products = _dbeticaretContext.products.ToList();
+
+                var query = products.Where(x =>
+                (isStock == 0 || (isStock == 1 && x.stock <= 0) || (isStock == 2 && x.stock > 0)) &
                 (filterPrice == false | (filterPrice == true & x.salePrice >= startingPrice & x.salePrice <= endPrice)) &
                 x.isActive == true &
                 x.categoriID == id &
-                (string.IsNullOrEmpty(search) | (!string.IsNullOrEmpty(search) &
-                ((x.name.Contains(search)) |
-                (x.tags.Contains(search)) |
-                (x.details.Contains(search)))
+              (string.IsNullOrEmpty(search) | (!string.IsNullOrEmpty(search) &
+                ((regex.IsMatch(x.name)) |
+                (regex.IsMatch(x.tags)) |
+                (regex.IsMatch(x.details)))
                 )))
                     .Select(x => new
                     {
@@ -85,7 +90,7 @@ namespace eticaret.Services.categoriesServices
                 response["c"] = count; response["name"] = categoryName; response["tags"] = tags;
 
             }
-            catch
+             catch
             {
                 response["type"] = "error"; response["message"] = "";
             }

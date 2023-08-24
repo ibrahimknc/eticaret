@@ -1302,9 +1302,8 @@ var vba = {
 
                                 $("#tagsContainer").empty();
                                 $.each(res.tags, function (index, item) {
-                                    var random = new Random();
-                                    var randomNumber = random.Next(1, item.tag.split(",").Length);
-                                    $("#tagsContainer").append("<li><a href=\"/search/" + item.split(",")[randomNumber] + "\" title=\"" + item.split(",")[randomNumber] + "\">" + item.split(",")[randomNumber] + "</a></li> ")
+                                    var random = Math.floor(Math.random() * item.split(",").length);
+                                    $("#tagsContainer").append("<li><a href=\"/search/" + item.split(",")[random] + "\" title=\"" + item.split(",")[random] + "\"># " + item.split(",")[random] + "</a></li> ")
                                 });
 
                             } else {
@@ -1497,7 +1496,7 @@ var vba = {
                                 classes: 'alert-danger',
                                 duration: 5000
                             });
-                            vba.root.checkLogin();
+                            vba.root.checkLogin(); 
                         }
                         else if (res.type == "inActive") {
                             vba.route.getController("/", "/");
@@ -1562,7 +1561,8 @@ var vba = {
                                                             </div>`);
                                 }
 
-                                if (res.productImageList.length > 0) {
+                                if (res.productImageList.length > 0 && $(".thumb-images.owl-theme.owl-carousel").length == 0) { 
+                                    
                                     var responseHTML = `<div class="thumb-images owl-theme owl-carousel">`;
                                     $.each(res.productImageList, function (index, item) {
                                         responseHTML += `<img class="img-responsive" src="/uploads/products/${item.url}" alt="${item.product.name} Image"> `;
@@ -1628,11 +1628,11 @@ var vba = {
                     }).fail(function () {
                         $("#pages_placeholder .dataContainer").html(" <div class='col-lg-12 mb-3'> <div class='row g-0 bg-light py-4'><div class='col-md-12 d-flex align-items-center justify-content-center'> 😔 Üzgünüm, talebinizle eşleşen birşey bulamadık 😔</div></div></div>");
                     });
-                    $.getScript("/js/main.js", function () { }); //Template CSS   
+                    $.getScript("/js/main.js", function () { }); //Template CSS 
                     vba.root.changeLoading(false);
                 }
                 vba.route.ccnt.funcs.getItems();
-
+                $.getScript("/js/main.js", function () { }); //Template CSS 
                 vba.route.ccnt.funcs.updateUserFavorite = function () {
                     vba.root.changeLoading(true);
                     var post = {
@@ -1660,7 +1660,7 @@ var vba = {
                     vba.root.changeLoading(false);
                 }
                 vba.route.ccnt.funcs.updateComment = function (form) {
-                    vba.root.changeLoading(true);
+                    
 
                     var elem = vba.serializeForm(form);
                     var post = {
@@ -1700,7 +1700,7 @@ var vba = {
                             duration: 5000
                         });
                     }
-
+                    vba.root.changeLoading(false);
                 }
             }
         },

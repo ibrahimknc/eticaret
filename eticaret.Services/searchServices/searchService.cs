@@ -3,6 +3,7 @@ using eticaret.Services.searchService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace eticaret.Services.searchServices
 {
@@ -25,14 +26,17 @@ namespace eticaret.Services.searchServices
         {
             try
             {
+                var pattern = "\\b" + (string.IsNullOrEmpty(search) ? null : Regex.Escape(search)) + "\\b";
+                var regex = new Regex(pattern, RegexOptions.IgnoreCase);
 
-                var query = _dbeticaretContext.products.Where(x =>
+                var products = _dbeticaretContext.products.ToList();
+                var query = products.Where(x =>
                 (listSorting <= 4 | (listSorting == 5 && x.stock > 0)) &
-                x.isActive == true & 
+                x.isActive == true &
                 (string.IsNullOrEmpty(search) | (!string.IsNullOrEmpty(search) &
-                ((x.name.Contains(search)) |
-                (x.tags.Contains(search)) |
-                (x.details.Contains(search)))
+                ((regex.IsMatch(x.name)) |
+                (regex.IsMatch(x.tags)) |
+                (regex.IsMatch(x.details)))
                 )))
                     .Select(x => new
                     {
@@ -61,7 +65,7 @@ namespace eticaret.Services.searchServices
                         query = query.OrderByDescending(x => x.Product.id);
                         break;
                 }
-
+                
                 var count = query.Count();
                 var responseList = query.Skip((page - 1) * itemsPerPage).Take(itemsPerPage).ToList(); 
 

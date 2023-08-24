@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace eticaret.Services.shopServices
 {
@@ -25,15 +26,19 @@ namespace eticaret.Services.shopServices
         public Dictionary<string, object> getProduct(Guid shopID, int page, int itemsPerPage, string search, int listSorting)
         {
             try
-            { 
-                var query = _dbeticaretContext.products.Where(x =>
+            {
+                var pattern = "\\b" + (string.IsNullOrEmpty(search) ? null : Regex.Escape(search)) + "\\b";
+                var regex = new Regex(pattern, RegexOptions.IgnoreCase);
+
+                var products = _dbeticaretContext.products.ToList();
+                var query = products.Where(x =>
                 (listSorting <= 4 | (listSorting == 5 && x.stock > 0)) &
                 x.isActive == true &
                 x.shopID == shopID &
                 (string.IsNullOrEmpty(search) | (!string.IsNullOrEmpty(search) &
-                ((x.name.Contains(search)) |
-                (x.tags.Contains(search)) |
-                (x.details.Contains(search)))
+                ((regex.IsMatch(x.name)) |
+                (regex.IsMatch(x.tags)) |
+                (regex.IsMatch(x.details)))
                 )))
                     .Select(x => new
                     {
