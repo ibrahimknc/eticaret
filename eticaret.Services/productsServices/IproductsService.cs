@@ -1,4 +1,5 @@
-﻿using System;
+﻿using eticaret.Services.productsServices.Dto;
+using System;
 using System.Collections.Generic;
 
 namespace eticaret.Services.productsServices
@@ -7,6 +8,6 @@ namespace eticaret.Services.productsServices
     {
         public Dictionary<string, object> getProduct(Guid id, string ip);
         public Dictionary<string, object> updateComment(Guid userID, Guid productID, int rating, string detail);
-       
+        public List<tagsDto> getTags(string number); 
     }
 }

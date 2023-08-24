@@ -1302,7 +1302,9 @@ var vba = {
 
                                 $("#tagsContainer").empty();
                                 $.each(res.tags, function (index, item) {
-                                    $("#tagsContainer").append("<li><a href=\"/search/" + item.split(",")[0] + "\" title=\"" + item.split(",")[0] + "\">" + item.split(",")[0] + "</a></li> ")
+                                    var random = new Random();
+                                    var randomNumber = random.Next(1, item.tag.split(",").Length);
+                                    $("#tagsContainer").append("<li><a href=\"/search/" + item.split(",")[randomNumber] + "\" title=\"" + item.split(",")[randomNumber] + "\">" + item.split(",")[randomNumber] + "</a></li> ")
                                 });
 
                             } else {

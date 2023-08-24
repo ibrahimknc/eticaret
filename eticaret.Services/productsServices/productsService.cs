@@ -1,5 +1,6 @@
 ﻿using eticaret.Data;
-using eticaret.Domain.Entities; 
+using eticaret.Domain.Entities;
+using eticaret.Services.productsServices.Dto;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -81,7 +82,7 @@ namespace eticaret.Services.productsServices
                 else
                 {
                     response["type"] = "inActive"; response["message"] = "";
-                } 
+                }
             }
             catch
             {
@@ -125,6 +126,15 @@ namespace eticaret.Services.productsServices
             return response;
         }
 
-      
+        public List<tagsDto> getTags(string number)
+        {
+            int takeNumber = Convert.ToInt32(number);
+            var tags = _dbeticaretContext.products.Where(x => x.isActive == true).Take(takeNumber).OrderByDescending(x => x.creatingTime).Select(x => new tagsDto
+            {
+                tag = x.tags
+            }
+            ).ToList();
+            return tags;
+        }
     }
 }

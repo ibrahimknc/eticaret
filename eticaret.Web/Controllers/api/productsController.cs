@@ -55,6 +55,13 @@ namespace eticaret.Web.Controllers.api
             }
         }
 
-        
+        [Route("[action]"), HttpPost]
+        public IActionResult getTags([FromForm] string number)
+        {
+            var response = _IproductsService.getTags(number);
+            return Ok(new { type = "success", message = "", data = response });
+        }
+
+
     }
 }

@@ -10,6 +10,7 @@ namespace eticaret.Domain.Entities
         public string phone { get; set; }
         public string address { get; set; }
         public string keywords { get; set; }
-        public string description { get; set; } 
+        public string description { get; set; }
+        public string footerDetail { get; set; }
     }
 }

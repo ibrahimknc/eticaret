@@ -99,35 +99,43 @@
                                 <!-- Language -->
                                 <div class="dropdown language">
                                     <div class="dropdown-toggle" data-toggle="dropdown">
-                                        <img src="/img/language-en.jpg" alt="Language English">
+                                        <i class="fa fa-language mt-1 mr-2" aria-hidden="true"></i>
                                     </div>
                                     <div class="dropdown-menu">
                                         <div class="item">
-                                            <a href="#" title="Language English"><img src="/img/language-en.jpg" alt="Language English"> English</a>
+                                            <a href="#" onclick="doGTranslate('tr|tr');jQuery('div.switcher div.selected a').html(jQuery(this).html());return false;" title="Türkçe"><img src="/img/language/turkish.png" height="18" width="22" alt="turkish" class="mr-2" />Türkçe</a>
                                         </div>
                                         <div class="item">
-                                            <a href="#" title="Language French"><img src="/img/language-fr.jpg" alt="Language French"> French</a>
+                                            <a href="#" onclick="doGTranslate('tr|en');jQuery('div.switcher div.selected a').html(jQuery(this).html());return false;" title="English"><img src="/img/language/english.jpg" height="18" width="22" alt="english" class="mr-2" />İngilizce</a>
                                         </div>
+                                        <div class="item">
+                                            <a href="#" onclick="doGTranslate('tr|ru');jQuery('div.switcher div.selected a').html(jQuery(this).html());return false;" title="Rusia" class="dropdown-item"><img src="/img/language/russia.jpg" height="18" width="22" alt="Rusia" class="mr-2" />Rusça</a>
+                                        </div>
+                                        <div class="item">
+                                            <a href="#" onclick="doGTranslate('tr|ar');jQuery('div.switcher div.selected a').html(jQuery(this).html());return false;" title="Arabic" class="dropdown-item"><img src="/img/language/arabic.png" height="18" width="22" alt="arabic" class="mr-2" />Arapça</a>
+                                        </div>
+                                        <div style="display:none" id="google_translate_element"></div>
                                     </div>
                                 </div>
 
-                                <!-- Currency -->
+                                @*  <!-- Currency -->
                                 <div class="dropdown currency">
-                                    <div class="dropdown-toggle" data-toggle="dropdown">
-                                        USD
-                                    </div>
-                                    <div class="dropdown-menu">
-                                        <div class="item">
-                                            <a href="#" title="USD">USD</a>
-                                        </div>
-                                        <div class="item">
-                                            <a href="#" title="EUR">EUR</a>
-                                        </div>
-                                        <div class="item">
-                                            <a href="#" title="GBP">GBP</a>
-                                        </div>
-                                    </div>
+                                <div class="dropdown-toggle" data-toggle="dropdown">
+                                USD
                                 </div>
+                                <div class="dropdown-menu">
+                                <div class="item">
+                                <a href="#" title="USD">USD</a>
+                                </div>
+                                <div class="item">
+                                <a href="#" title="EUR">EUR</a>
+                                </div>
+                                <div class="item">
+                                <a href="#" title="GBP">GBP</a>
+                                </div>
+                                </div>
+                                </div>*@
+
                             </div>
                         </div>
                     </div>
@@ -157,11 +165,11 @@
                                         <a href="/" title="Homepage">Ana Sayfa</a>
                                         <div class="dropdown-menu">
                                             <ul>
-                                                <li><a href="/#categories" title="categories">Kategoriler</a></li> 
-                                                <li><a href="/#productFavorite" title="todayFavorite">Günün Favoriler</a></li>
-                                                <li><a href="/#bulletin" title="bulletin">Bülten</a></li>
-                                                <li><a href="/#lastcomments" title="lastcomments">Son Yorumlar</a></li>
-                                                <li><a href="/#lastproducts" title="lastproducts">Son Eklenen Ürünler</a></li>
+                                                <li><a href="/default#categories" title="categories"><i class="zmdi zmdi-caret-right mr-3"></i> Kategoriler</a></li>
+                                                <li><a href="/default#productFavorite" title="todayFavorite"><i class="zmdi zmdi-caret-right mr-3"></i> Günün Favoriler</a></li>
+                                                <li><a href="/default#bulletin" title="bulletin"><i class="zmdi zmdi-caret-right mr-3"></i> Bülten</a></li>
+                                                <li><a href="/default#lastcomments" title="lastcomments"><i class="zmdi zmdi-caret-right mr-3"></i> Son Yorumlar</a></li>
+                                                <li><a href="/default#lastproducts" title="lastproducts"><i class="zmdi zmdi-caret-right mr-3"></i> Son Eklenen Ürünler</a></li>
                                             </ul>
                                         </div>
                                     </li>
@@ -211,8 +219,8 @@
 
                             <!-- Search -->
                             <div class="form-search">
-                                <form id="searchForm" onsubmit="vba.root.search(this); return false;" >
-                                    <input type="text" class="form-input" placeholder="Search" name="data">
+                                <form id="searchForm" onsubmit="vba.root.search(this); return false;">
+                                    <input type="text" class="form-input" placeholder="Ürün Ara" name="data">
                                     <button type="submit" class="fa fa-search"></button>
                                 </form>
                             </div>
@@ -221,11 +229,11 @@
                 </div>
             </div>
         </header>
-         
-        <!-- Main Content --> 
+
+        <!-- Main Content -->
         <div id="content" class="site-content">
             <div id="pages_placeholder">
-                                @RenderBody()
+                @RenderBody()
             </div>
         </div>
 
@@ -234,7 +242,7 @@
             <div class="footer">
                 <div class="container">
                     <div class="row">
-                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 footer-col">
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 footer-col">
                             <div class="block text">
                                 <div class="block-content">
                                     <a href="/" class="logo-footer">
@@ -242,8 +250,7 @@
                                     </a>
 
                                     <p>
-                                        Lorem ipsum dolor sit amet, consectetur adipisc ing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.<br>
-                                        Ut enim ad minim veniam, quis nostrud exercita tion ullamco laboris nisi ut aliquip.
+                                       @await layout.settingsAsync("footerDetail")
                                     </p>
                                 </div>
                             </div>
@@ -261,40 +268,22 @@
                             </div>
                         </div>
 
-                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 footer-col">
+                        <div class="col-lg-5 col-md-5 col-sm-6 col-xs-12 footer-col">
                             <div class="block menu">
-                                <h2 class="block-title">BİLGİ</h2>
-
+                                <h2 class="block-title">ÜRÜN ETİKETLERİ</h2> 
                                 <div class="block-content">
-                                    <ul>
-                                        <li><a href="#">Specials</a></li>
-                                        <li><a href="#">New products</a></li>
-                                        <li><a href="#">Best sellers</a></li>
-                                        <li><a href="#">Terms and conditions</a></li>
-                                        <li><a href="#">Our stores</a></li>
-                                        <li><a href="#">Contact us</a></li>
-                                    </ul>
+                                    <div class="d-flex flex-wrap m-n1">
+                                        @foreach (var item in (List<tagsDto>)await response.getTags("10"))
+                                        {
+                                           var random = new Random();
+                                           var randomNumber = random.Next(1, item.tag.Split(",").Length);
+                                           <a href="/search/@(item.tag.Split(",")[randomNumber])" class="btn btn-sm btn-outline-success m-1 text-transform-capitalize" title="@(item.tag.Split(",")[randomNumber])">@(item.tag.Split(",")[randomNumber])</a> 
+                                        }
+                                    </div>
                                 </div>
                             </div>
                         </div>
-
-                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 footer-col">
-                            <div class="block menu">
-                                <h2 class="block-title">HESABINIZ</h2>
-
-                                <div class="block-content">
-                                    <ul>
-                                        <li><a href="#">My orders</a></li>
-                                        <li><a href="#">My merchandise returns</a></li>
-                                        <li><a href="#">My credit slips</a></li>
-                                        <li><a href="#">My addresses</a></li>
-                                        <li><a href="#">My personal info</a></li>
-                                        <li><a href="#">My vouchers</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-
+ 
                         <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 footer-col">
                             <div class="block text">
                                 <h2 class="block-title">
@@ -340,9 +329,8 @@
                 <div class="container">
                     <div class="payment">
                         <img src="/img/payment.png" alt="Payment">
-                    </div>
-
-                    <div class="copyright">Copyright &copy; 2023 <a href="/"><b><span class="text-success">@await layout.settingsAsync("title")</span></b></a> </div>
+                    </div> 
+                    <div class="copyright">Copyright &copy; 2023 <a href="/"><b><span class="text-success">@await layout.settingsAsync("title")</span></b></a> Tüm Haklar Saklıdır. </div>
                 </div>
             </div>
         </footer>
@@ -365,7 +353,7 @@
             </div>
         </div>
     </div>
-     
+
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content" style="overflow: auto">
@@ -375,7 +363,7 @@
 
     <!-- Vendor JS -->
     <script src="/libs/jquery/jquery.js"></script>
-    <script src="/libs/bootstrap/js/bootstrap.js"></script> 
+    <script src="/libs/bootstrap/js/bootstrap.js"></script>
     <script src="/libs/jquery.countdown/jquery.countdown.js"></script>
     <script src="/libs/nivo-slider/js/jquery.nivo.slider.js"></script>
     <script src="/libs/owl.carousel/owl.carousel.min.js"></script>
@@ -385,8 +373,9 @@
     <script src="/libs/slider-range/js/jquery.slider.js"></script>
     <script src="/libs/elevatezoom/jquery.elevatezoom.js"></script>
     <script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit2"></script>
+    <script src="/js/language.js"></script>
      
-
     <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.11.0/build/alertify.min.js"></script>
     <script type="text/javascript" src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
@@ -403,5 +392,5 @@
     <script src="/js/app.js?v=0.01"></script>
     <!-- Template CSS -->
     <script src="/js/main.js"></script>
-</body> 
+</body>
 </html>

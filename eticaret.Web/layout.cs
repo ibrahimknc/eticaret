@@ -49,6 +49,9 @@ public class layout
             case "description":
                 reqest = veriyoneticisi.setting.description.ToString();
                 break;
+            case "footerDetail":
+                reqest = veriyoneticisi.setting.footerDetail.ToString();
+                break;
             default:
                 break;
         }

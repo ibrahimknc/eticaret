@@ -15,5 +15,7 @@ namespace eticaret.Services.settingsServices.Dto
 		public string address { get; set; }
 		public string keywords { get; set; }
 		public string description { get; set; }
-	}
+        public string footerDetail { get; set; }
+
+    }
 }
